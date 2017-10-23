@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <style>
+          body{
+            min-height:100vh;
+            box-sizing: border-box;
+          }
+          .advice{
+            padding:35px 15px 0;
+          }
+          textarea{
+            font-size:16px;
+            padding:10px;
+            box-sizing: border-box;
+            background-color: white;
+            width:100%;
+            border:1px solid #9e2831;
+          }
+          .opera{
+            margin-top:30px;
+            text-align:center;
+          }
+          .opera button{
+            border-radius: 20px;
+            color:white;
+            background: #9e2831;
+            padding: 15px 55px;
+          }
+      </style>
+  </head>
+  <body>
+    <div class="advice">
+      <textarea id="content" placeholder="请输入您的建议，您的宝贵建议是我们做的更好的动力！" name="name" rows="8" cols="40"></textarea>
+      <div class="opera">
+        <button onclick="advice()">提交反馈</button>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../script/service.js"></script>
+
+  <script type="text/javascript">
+  function advice(){
+    if($('#content').val().length>1){
+      postData('/feedbacks',function(data){
+        if(data.code==200){
+          api.toast({
+                  msg: '感谢您，宝贵的建议已提交，我们正在努力做的更好',
+                  duration:3000,
+                  location: 'middle'
+              });
+              $('#content').val("")
+
+        }
+        else{
+          api.toast({
+                  msg: '抱歉，提交失败,请稍后再试',
+                  duration:3000,
+                  location: 'middle'
+              });
+        }
+      },{"content":$('#content').val()},{'authorization':$api.getStorage('token')})
+    }
+
+  }
+      apiready = function(){
+
+      };
+  </script>
+  </html>

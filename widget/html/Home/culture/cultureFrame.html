@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <style>
+      img{
+        width:90px;
+      }
+
+          ul{
+            font-size:0;
+            padding:0 10px;
+            box-sizing:border-box;
+          }
+          li{
+            vertical-align: middle;
+            height:155px;
+            font-size:12px;
+            display: inline-block;
+            width: 33%;
+            text-align: center;
+            margin-top:10px;
+          }
+          li span{
+            margin-top:5px;
+            margin-left:10px;
+            display: block;
+
+            text-align: left;
+          }
+          ul{
+            width:100%;
+          }
+      </style>
+  </head>
+  <body>
+    <div class="cultureList">
+      <ul>
+
+      </ul>
+
+  </body>
+  <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../script/service.js"></script>
+
+  <script type="text/javascript">
+  var url="http://116.62.170.181:8081"
+
+  function errHandle(obj){
+    $('img').bind('error',function(){
+      $(this).attr('src','../../../image/default.png')
+    })
+    if(obj){
+      $(obj).attr('src','../../../image/default.png')
+    }
+  }
+  errHandle()
+  function inner(id,title){
+
+    api.openWin({
+        name: 'content',
+        url: '../../../html/Home/content.html',
+        pageParam:{
+          contentId:id,
+          category:'cultures',
+          title:api.pageParam.title
+        }
+    });
+  }
+      apiready = function(){
+
+      var cur=1
+      api.setCustomRefreshHeaderInfo({
+      bgColor: '#eee',
+      images: [
+          'widget://image/refresh/dropdown0.png',
+          'widget://image/refresh/dropdown1.png',
+          'widget://image/refresh/dropdown2.png',
+          'widget://image/refresh/dropdown3.png',
+          'widget://image/refresh/dropdown4.png',
+          'widget://image/refresh/dropdown5.png',
+          'widget://image/refresh/dropdown6.png'
+      ],
+      tips: {
+          pull: '下拉刷新',
+          threshold: '松开立即刷新',
+          load: '正在刷新'
+      }
+  }, function() {
+    cur=1
+      //下拉刷新被触发，自动进入加载状态，使用 api.refreshHeaderLoadDone() 手动结束加载中状态
+      //下拉刷新被触发，使用 api.refreshHeaderLoadDone() 结束加载中状态
+      getData('/cultures',function(data){
+        api.hideProgress();
+        $('.cultureList ul').html(" ")
+        obj=$('.cultureList ul')
+
+        if(data.data.length>=1){
+          data.data.forEach(function(item){
+            if(item.title.length>=12){
+              item.title=item.title.substring(0,14)+'...'
+            }
+            obj.append('<li onclick="inner('+item.id+')"><img  src="'+url+item.pic+'" onerror="errHandle(this)" alt=""><span>'+item.title+'</span></li>')
+          })
+        }
+        else{
+          return false
+        }
+        api.refreshHeaderLoadDone()
+
+      },{"page":cur,"page_size":"20"},{"Authorization":$api.getStorage('token')})
+
+
+  });
+
+        api.addEventListener({
+          name: 'scrolltobottom'
+      }, function(ret, err){
+              cur++
+              api.showProgress({
+              title: '努力加载中...',
+              text: '先喝杯茶...',
+              modal: false
+          });
+          getData('/cultures',function(data){
+            api.hideProgress();
+            obj=$('.cultureList ul')
+
+            if(data.data.length>=1){
+              data.data.forEach(function(item){
+                if(item.title.length>=14){
+                  item.title=item.title.substring(0,14)+'...'
+                }
+                obj.append('<li onclick="inner('+item.id+')"><img src="'+url+item.pic+'" onerror="errHandle(this)" alt=""><span>'+item.title+'</span></li>')
+              })
+            }
+            else{
+              return false
+            }
+
+          },{"page":cur,"page_size":"20"},{"Authorization":$api.getStorage('token')})
+          api.hideProgress();
+
+      });
+        api.showProgress({
+        title: '努力加载中...',
+        text: '先喝杯茶...',
+        modal: false
+    });
+
+          getData('/cultures',function(data){api.hideProgress();
+            obj=$('.cultureList ul')
+            data.data.forEach(function(item){
+              if(item.title.length>=14){
+                item.title=item.title.substring(0,14)+'...'
+              }
+              obj.append('<li onclick="inner('+item.id+')"><img src="'+url+item.pic+'" onerror="errHandle(this)" alt=""><span>'+item.title+'</span></li>')
+            })
+          },{"page":cur,"page_size":"20"},{"Authorization":$api.getStorage('token')})
+
+      };
+  </script>
+  </html>

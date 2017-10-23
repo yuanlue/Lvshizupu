@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <style>
+      body{
+        min-height: 100vh;
+        background: #eee;
+        box-sizing: border-box;
+      }
+      ul li{
+        background-color: white;
+        line-height: 50px;
+        padding:0 10px;
+        border-bottom:1px solid #eee;
+        font-size:16px;
+      }
+      ul li:before{
+        content:"";
+        display: inline-block;
+        background:url('../../../image/ar.png') no-repeat;
+        background-size: contain;
+        width:8px;
+        height:12px;
+        float: right;
+        margin-top:20px;
+      }
+
+      ul li:active{
+        background: #eee
+      }
+      .opera{
+        line-height: 40px;
+        width:100%;
+        position: fixed;
+        bottom:0;
+        background-color: white;
+        text-align: center;
+        color:#9e2831;
+      }
+      .clear{
+        margin-top:15px;
+      }
+      ul li:active{
+        background: #eee
+      }
+      </style>
+  </head>
+  <body>
+<div class="setting">
+  <ul>
+    <li onclick="modify()"><a><span>修改密码</span></a></li>
+
+    <!-- <li style=“display:none” onclick="message()"><a><span>消息设置</span></a></li> -->
+    <li class="clear" style="display:none;" onclick="clearS()"><a><span>清除缓存</span></a></li>
+    <li onclick="about()"><a><span>关于</span></a></li>
+
+    <li onclick="exit()"><a><span>退出应用</span></a></li>
+
+
+  </ul>
+  <div class="opera" onclick="again()">
+    退出登录
+  </div>
+</div>
+  </body>
+  <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript">
+  function about(){
+    api.openWin({
+        name: 'about',
+        url: '../../../html/user/setting/about.html',
+
+    });
+
+  }
+  function clearS(){
+    var dialogBox = api.require('dialogBox');
+
+    dialogBox.alert({
+        texts: {
+            content: '清除缓存聊天记录也将会清除，确定清除吗？',
+            leftBtnTitle: '取消',
+            rightBtnTitle: '确认'
+        },
+        styles: {
+            bg: '#fff',
+            w: 300,
+
+            content: {
+                color: '#000',
+                size: 14
+            },
+            left: {
+                marginB: 7,
+                marginL: 20,
+                w: 130,
+                h: 35,
+                corner: 2,
+                color:'#fff',
+
+                bg: '#c2262b',
+                size: 12
+            },
+            right: {
+                marginB: 7,
+                marginL: 10,
+                w: 130,
+                h: 35,
+                corner: 2,
+                color:'#fff',
+                bg: '#c2262b',
+                size: 12
+            }
+        }
+    }, function(ret) {
+        if (ret.eventType == 'left') {
+            dialogBox.close({
+                dialogName: 'alert'
+            });
+
+        }
+        else{
+          $api.clearStorage();
+
+
+          api.execScript({
+              name: 'root',
+              frameName: 'home',
+              script: 'init();'
+          });
+
+          api.execScript({
+              name: 'root',
+              frameName: 'user',
+              script: 're();'
+          });
+          api.toast({
+                  msg: '注销成功',
+                  duration:2000,
+                  location: 'bottom'
+              });
+              api.openWin({
+                  name: 'login',
+                  url: '../../../html/login/login.html',
+                  useWKWebView:false,
+                  historyGestureEnabled:false,
+                  slidBackEnabled:false
+              });
+
+        }
+    });
+  }
+  function message(){
+    api.openWin({
+        name: 'messageSetting',
+        url: '../../../html/user/setting/messageSetting.html',
+
+    });
+  }
+  function modify(){
+      api.openWin({
+          name: 'modifyPassword',
+          url: '../../../html/user/setting/modifyPassword.html',
+
+      });
+
+  }
+  function again(){
+    $api.clearStorage();
+
+
+    api.closeWin({
+        name: 'home'
+    });
+
+
+    api.execScript({
+        name: 'home',
+        frameName: 'user',
+        script: 're();'
+    });
+    api.execScript({
+        name: 'home',
+        frameName: 'home',
+        script: 're();'
+    });
+    api.toast({
+            msg: '注销成功',
+            duration:2000,
+            location: 'bottom'
+        });
+        api.openWin({
+            name: 'login',
+            url: '../../../html/login/login.html',
+            useWKWebView:false,
+            historyGestureEnabled:false,
+            slidBackEnabled:false
+        });
+  }
+  function exit(){
+    var dialogBox = api.require('dialogBox');
+dialogBox.alert({
+    texts: {
+        content: '确定要退出该应用吗？',
+        leftBtnTitle: '取消',
+        rightBtnTitle: '确认'
+    },
+    styles: {
+        bg: '#fff',
+        w: 300,
+
+        content: {
+            color: '#000',
+            size: 14
+        },
+        left: {
+            marginB: 7,
+            marginL: 20,
+            w: 130,
+            h: 35,
+            corner: 2,
+            color:'#fff',
+
+            bg: '#c2262b',
+            size: 12
+        },
+        right: {
+            marginB: 7,
+            marginL: 10,
+            w: 130,
+            h: 35,
+            corner: 2,
+            color:'#fff',
+            bg: '#c2262b',
+            size: 12
+        }
+    }
+}, function(ret) {
+    if (ret.eventType == 'left') {
+        dialogBox.close({
+            dialogName: 'alert'
+        });
+
+    }
+    else{
+      api.closeWidget({
+              id: 'A6050245549832',  //填写自己的id
+              retData: {name:'closeWidget'},
+              silent:true
+          });
+    }
+});
+  }
+      apiready = function(){
+
+      };
+  </script>
+  </html>

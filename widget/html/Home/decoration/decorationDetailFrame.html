@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <style>
+      a{
+        color:#333;
+      }
+      body{
+        padding-top:200;
+        padding-bottom:40px;
+        min-height: 100vh;
+        background: #eee;
+      }
+      .tab{
+        z-index:99;
+        position: fixed;
+        background: #fef7d5;
+      }
+      .tab ul{
+        height:40px;
+        display: table
+      }
+      .tab ul li{
+        position: relative;
+        font-size:14px;
+        display: table-cell;
+        line-height: 40px;
+        width: 1%;
+        text-align: center;
+      }
+      .banner{
+        position: relative;
+        padding-top: 40px;
+      }
+      .banner .over{
+        top:12px;
+        position: absolute;
+        width:70px;
+        border-top-right-radius:12px;
+        border-bottom-right-radius:12px;
+        font-size:11px;
+        line-height: 21px;
+        text-align: center;
+        color:#eee;
+        background: white;
+      }
+      .banner .being{
+        top:12px;
+        position: absolute;
+        width:70px;
+        border-top-right-radius:12px;
+        border-bottom-right-radius:12px;
+        font-size:11px;
+        line-height: 21px;
+        text-align: center;
+        color:#c2262b;
+        background: white;
+
+      }
+      .tab ul .active:after{
+        display: block;
+        margin:0 auto;
+        content:"";
+        left:calc(12.5vw - 40px);
+        width:80px;
+        position: absolute;
+          background: #9e2932;
+          height:2px
+      }
+      .banner img{
+        width:100%;
+      }
+      .intro{
+        box-shadow: 0 1px 1px #ccc;
+        padding:257px 10px 15px;
+        background: white;
+      }
+      .intro h1{
+        font-size:16px;
+      }
+      .intro .process{
+        position: relative;
+        width:100%;
+        border-radius: 10px;
+        height:8px;
+        background: #eee;
+        margin:15px 0;
+      }
+      .intro .process .inner{
+        width:100%;
+      }
+      .intro .process .inner img{
+        width:100%;
+      }
+      .intro  .process span{
+        position: absolute;
+        top:0;
+        width:79%;
+        border-radius: 10px;
+        height:8px;
+        background: #c2262a;
+
+      }
+      .intro ul{
+        display: table;
+      }
+      .intro ul li{
+        width: 1%;
+        font-size: 14px;
+        display: table-cell;
+        text-align: left;
+        color:#999;
+      }
+      .intro ul li span{
+        display: block;
+        color:#333;
+      }
+      .projectIntro,.projectDetail,.projectGress{
+        background: white;
+        margin-top:10px;
+        font-size:14px;
+      }
+      .projectIntro .being{
+        float: right;
+        color:#c2262a;
+      }
+      .projectIntro header,.projectIntro footer,.projectDetail header,.projectDetail footer,.projectGress header{
+        padding:0 10px;
+        font-weight: bold;
+        border-bottom:1px solid #e3e3e3;
+        line-height: 38px;
+      }
+      .projectIntro footer,.projectDetail footer{
+        border-top:1px solid #e3e3e3;
+      }
+      .projectDetail footer{
+        text-align: center;
+        vertical-align: middle;
+        color:#999999;
+      }
+      .projectIntro .inner{
+        width:100%;
+        box-sizing: border-box;
+        padding:0 10px;
+      }
+      .projectIntro .inner p {
+        line-height: 30px;
+      }
+      .projectDetail .inner img{
+        width:100%;
+      }
+      .projectDetail .inner p{
+        text-indent: 2em;
+      }
+      .projectDetail .inner,.projectGress .inner{
+        font-size:14px;
+        padding:10px;
+        line-height: 21px;
+        width:100%;
+        box-sizing: border-box;
+      }
+      .projectGress .inner img{
+        width:100%;
+      }
+      .projectGress .title{
+        color:#999;
+        padding:10px 10px 0;
+      }
+      .opera{
+        font-size:14px;
+        line-height: 40px;
+        text-align: center;
+        position: fixed;
+        bottom:0;
+        background-color: #9e2831;
+        color:white;
+        width: 100%;
+      }
+      .over{
+        background-color: #ccc;
+        color:#fff
+      }
+      .bg{
+        background: rgba(0,0,0,0.3);
+        position: fixed;
+        top:0;
+        display: none;
+        width:100vw;
+        height: 100vh;
+        z-index:1
+      }
+      [v-cloak]{
+        display: none;
+      }
+    .dedetail  .headTitle{
+      color:#912931;
+      font-size:16px;
+      font-size:
+      }
+
+      </style>
+  </head>
+  <body>
+<div class="dedetail" v-cloak>
+  <div class="tab">
+    <ul>
+      <li class="active"><a href="#intro">项目介绍</a></li>
+      <li><a href="#detail">项目详情</a></li>
+      <li><a href="#process">项目进展</a></li>
+      <li><a href="#result">结果公示</a></li>
+    </ul>
+  </div>
+
+  <div class="intro">
+    <h1>{{dataDetail.name}}</h1>
+    <div class="process"><span></span></div>
+    <ul>
+      <li>目标筹款/元<span>{{dataDetail.capital}}</span></li>
+      <li>当前筹款/元<span>{{dataDetail.current_capital}}</span></li>
+      <li>捐款人数<span>{{dataDetail.donation_count}}</span></li>
+    </ul>
+  </div>
+  <div class="projectIntro" id="intro">
+    <header >项目介绍
+      <span v-if="ac==1" class="being">项目进行中</span>
+      <span v-if="ac==0" class="being">项目已结束</span>
+      <span v-if="ac==2" class="being">项目尚未开始</span>
+
+    </header>
+    <div class="inner">
+        <p>项目发起机构：{{dataDetail.organization}}</p>
+        <p>项目发起时间：{{dataDetail.start_at}}</p>
+        <p>项目截止时间：{{dataDetail.end_at}}</p>
+        <p>项目公布时间：{{dataDetail.publish_at}}</p>
+    </div>
+    <footer>该项目累计获得{{dataDetail.current_capital}}元捐款</footer>
+  </div>
+  <div class="projectDetail" id="detail">
+    <header class="being">项目详情</header>
+    <div class="inner">
+
+      <p v-html="dataDetail.intro">
+    </p>
+    </div>
+    <footer style="display:none">查看更多</footer>
+  </div>
+  <div class="projectGress" id="process">
+    <header >项目进展</header>
+
+    <div v-for="(item,index) in dataDetail.process_tracks">
+    <p class="title headTitle">{{item.title}}</p>
+    <p class="title">{{item.track_at}}发布</p>
+
+    <div class="inner">
+      <p v-html=" item.detail">
+
+      </p>
+      <img v-for="p in dataDetail.process_tracks[index].pictures"  v-bind:src="url+p" :onerror="errorImg" alt="">
+
+    </div>
+    </div>
+  </div>
+  <div class="result projectGress" id="result">
+    <header>结果公布</header>
+    <div v-for="item in dataDetail.result_tracks">
+    <p class="title headTitle">{{item.title}}</p>
+    <p class="title">{{item.track_at}}发布</p>
+
+    <div class="inner">
+      <p v-html=" item.detail">
+      </p>
+      <img v-for="p in dataDetail.result_tracks[0].pictures" v-bind:src="url+p" :onerror="errorImg" alt="">
+
+    </div>
+    </div>
+  </div>
+  <div class="bg" @click="cancel()"></div>
+  <div class="opera" v-if="ac==1" onclick="want()">我要捐款</div>
+  <div class="opera over" v-if="ac==0" >已经结束</div>
+  <div class="opera over" v-if="ac==2" >尚未开始</div>
+
+</div>
+  </body>
+  <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../script/vue.js"></script>
+  <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../script/service.js"></script>
+
+  <script type="text/javascript">
+  var bg=$('.bg')
+      function active(index){
+          $('.tab ul li').removeClass('active')
+          $('.tab ul li').eq(index).addClass('active')
+      }
+      function want(){
+        api.openWin({
+            name: 'apply',
+            url: '../../../html/Home/decoration/apply.html',
+            pageParam:{
+              id:api.pageParam.id
+            }
+
+        });
+      }
+      $(window).scroll(function(){
+      var scrollBottom = $(document).height() - $(window).height() - $(window).scrollTop();
+        if(  $(document).scrollTop()<$('#detail').offset().top){
+          active(0)
+        }
+        if($('#process').offset().top>  $(document).scrollTop()&&  $(document).scrollTop()>=$('#detail').offset().top){
+          active(1)
+        }
+        if(  $(document).scrollTop()>=$('#process').offset().top&&  $(document).scrollTop()<$('#result').offset().top){
+          active(2)
+        }
+        if(  $(document).scrollTop()>=$('#result').offset().top||scrollBottom==0){
+          active(3)
+        }
+      })
+      apiready = function(){
+
+      dialogBox = api.require('dialogBox');
+      var app=new Vue({
+        el: '.dedetail',
+        data: {
+          dataDetail:[],
+          img:[],
+          ac:api.pageParam.ac,
+          url:"http://116.62.170.181:8081",
+            errorImg:"this.src='../../../image/default.png'"
+        },
+        created:function(){
+          var that=this
+          var UIScrollPicture = api.require('UIScrollPicture');
+          api.showProgress({
+          title: '努力加载中...',
+          text: '先喝杯茶...',
+          modal: false
+      });
+          getData('/donations/'+api.pageParam.id,function(data){
+            api.hideProgress();
+
+            that.dataDetail=data.data
+            that.dataDetail.pictures.forEach(function(item){
+              item="http://116.62.170.181:8081"+item
+              that.img.push(item)
+            })
+            rate=parseFloat(data.data.current_capital/data.data.capital)
+            $('.process span').width(rate*100+"%")
+          api.hideProgress();
+
+          },{"page":that.cur,"page_size":"20"},{"Authorization":$api.getStorage('token')})
+UIScrollPicture.open({
+    rect: {
+        x: 0,
+        y: 42,
+        w: api.winWidth,
+        h: 200
+    },
+    data: {
+        paths: that.img
+    },
+    styles: {
+        caption: {
+            height: 35,
+            color: '#E0FFFF',
+            size: 13,
+            url:"http://116.62.170.181:8081",
+            bgColor: '#696969',
+            position: 'bottom'
+        },
+        indicator: {
+           dot:{
+             w:10,
+             h:10,
+             r:5,
+             margin:6
+          },
+            align: 'center',
+            color: '#FFFFFF',
+            activeColor: '#9e2931'
+              }
+          },
+          placeholderImg: 'widget://res/slide1.jpg',
+          contentMode: 'scaleToFill',
+          interval: 3,
+          fixedOn: api.frameName,
+          loop: true,
+          fixed: false
+      }, function(ret, err) {
+          if (ret) {
+          } else {
+              alert(JSON.stringify(err));
+          }
+      });
+
+        },
+        methods:{
+          cancel:function(){
+            $('.bg').hide()
+            api.closeFrame({
+                name: 'donReg'
+            });
+
+          }
+
+      }
+      })
+
+
+      };
+  </script>
+  </html>

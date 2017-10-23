@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <style>
+      ul li:active{
+        background: #eee;
+      }
+          body{
+          min-height:100vh;
+          background: #eee;
+          }
+          .remark{
+            margin-top:10px;
+            text-align: center;
+            color:#999999;
+            font-size:13px;
+          }
+          .conListFrame .search{
+            padding:15px;
+            background: white;
+          }
+          .conListFrame .search input{
+            border-radius: 20px;
+            padding:0 10px;
+            box-sizing: border-box;
+            border:1px solid #881b22;
+            width:75%;
+            font-size:15px;
+            line-height: 35px;
+            text-align: cetner;
+          }
+          .conListFrame .search button{
+            float: right;
+            background:#881b22;
+            color:white;
+            font-size: 15px;
+            line-height: 35px;
+            border-radius: 20px;
+            width:70px;
+          }
+          .list{
+            margin-top:12px;
+            background: white;
+            padding:0 15px;
+          }
+          .list ul li {
+            line-height: 50px;
+            border-bottom:1px solid #eee;
+          }
+          .list ul li img{
+            margin-right:10px;
+            width:45px;
+            vertical-align: middle;
+            border:1px solid #eee;
+          }
+          [v-cloak]{
+            display: none;
+          }
+      </style>
+  </head>
+  <body>
+  <div class="conListFrame" v-cloak>
+    <div class="search" >
+      <input v-model="searchText" type="text" placeholder="输入关键词查询">
+      <button>搜索</button>
+     </div>
+     <div class="list">
+       <ul>
+         <li @click="inner()" v-for="item in list "><img v-bind:src="item.imgpath" alt="">{{item.name}}</li>
+
+       </ul>
+     </div>
+     <div class="remark">
+      共三家企业入驻
+     </div>
+  </div>
+  </body>
+  <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../script/vue.js"></script>
+
+  <script type="text/javascript">
+      apiready = function(){
+        var app=new Vue({
+          el: '.conListFrame',
+          data: {
+            list:[
+              {
+                "name":"吕氏集团",
+                "imgpath":"../../../image/demo1.png"
+              },
+              {
+                "name":"雅丽洁（国际）集团有限公司",
+                "imgpath":"../../../image/demo2.png"
+              },{
+                "name":"广东卓粤集团",
+                "imgpath":"../../../image/demo3.png"
+              }
+            ],
+            searchText:""
+          },
+          created:function(){
+
+
+          },
+        methods:{
+          inner:function(){
+            api.openWin({
+                name: 'marketInnerWin',
+                url: '../../../html/Home/market/markectInnerWin.html',
+            });
+
+          }
+
+        }
+        })
+      };
+  </script>
+  </html>

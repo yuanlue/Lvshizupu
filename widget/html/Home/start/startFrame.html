@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <style>
+      body{
+        padding-top:40px;
+        box-sizing: border-box;
+        background:#eee;
+        min-height: 100vh;
+      }
+      .tab{
+        top:0;
+        position: fixed;
+        background: #fef7d5;
+      }
+      .tab ul{
+        height:40px;
+        display: table
+      }
+      .tab ul li{
+
+        position: relative;
+        font-size:14px;
+        display: table-cell;
+        line-height: 40px;
+        width: 1%;
+        text-align: center;
+      }
+      .tab ul .active:after{
+        display: block;
+        margin:0 auto;
+        content:"";
+        left:calc(25vw - 40px);
+        width:80px;
+        position: absolute;
+          background: #9e2932;
+          height:2px
+      }
+
+      .lvstart ul li{
+        border-bottom:15px solid #eee;
+            background: white;
+        padding:10px;
+      }
+      .lvstart ul li>div{
+        max-width:61%;
+        vertical-align: top;
+        display: inline-block;
+      }
+      .lvstart ul li .inner{
+        margin-left:7px;
+      }
+      .lvstart ul li>div>p{
+        margin-top:5px;
+        font-size:12px;
+      }
+      .lvstart ul li>div h1{
+
+        font-size:16px;
+      }
+      .lvstart ul li img{
+        width:100px;
+      }
+      .ac ul li {
+        width:100%;
+        box-sizing: border-box;
+      }
+      .ac ul li .thum{
+        width:100%;
+        box-sizing: border-box;
+      }
+      .ac ul li img{
+        width:100%;
+      }
+      .startA .ac ul li>div{
+        max-width: 100%;
+        width:100%;
+        vertical-align: top;
+        display: inline-block;
+      }
+      [v-cloak]{
+        display: none;
+      }
+      </style>
+  </head>
+  <body>
+    <div class="startA" v-cloak>
+    <div class="tab">
+      <ul>
+        <li v-bind:class="{active:ac}"  @click="contact('lv')">吕氏明星</li>
+        <li v-bind:class="{active:!ac}"  @click="contact('activity')">明星活动</li>
+      </ul>
+    </div>
+    <div class="lvstart ac" v-if="ac==false">
+      <ul>
+        <li @click="acinner(item.id,'star_actives')" v-for="item in acList">
+        <div class="thum">
+          <img v-bind:src="url+item.pic"  :onerror="errorImg" alt="">
+          <p>{{item.title}}</p>
+        </div>
+
+        </li>
+
+
+      </ul>
+    </div>
+    <div v-if="ac==true" class=" lvstart">
+      <ul>
+        <li @click="acinner(item.id,'stars')" v-for="item in startList">
+        <div class="thum">
+          <img v-bind:src="url+item.avatar" :onerror="errorImg" alt="">
+        </div>
+        <div class="inner" >
+          <h1>{{item.name}}</h1>
+          <p>标签：{{item.tag}}</p>
+          <p class="intro">介绍：<span v-html="item.intro.substring(0,50)+'...'"></span></p>
+
+        </div>
+        </li>
+
+      </ul>
+
+
+    </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../script/vue.js"></script>
+  <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../script/service.js"></script>
+
+  <script type="text/javascript">
+  var url="http://116.62.170.181:8081"
+
+  apiready = function(){
+    var app=new Vue({
+      el: '.startA',
+      data: {
+        ac:true,
+        startList:[],
+        acList:[],
+        cur:1,
+        url:"http://116.62.170.181:8081",
+        accur:1,
+        errorImg: 'this.src="../../../image/default.png"'
+      },
+      created:function(){
+        var that = this
+        api.showProgress({
+        title: '努力加载中...',
+        text: '先喝杯茶...',
+        modal: false
+    });
+        getData('/stars?page='+that.cur+"&page_size=10",function(data){
+        that.startList=data.data
+        api.hideProgress();
+
+      },{'page':that.cur,'page_size':10},{'authorization':$api.getStorage('token')})
+        api.addEventListener({
+          name: 'scrolltobottom'
+        }, function(ret, err){
+
+              api.showProgress({
+              title: '努力加载中...',
+              text: '先喝杯茶...',
+              modal: false
+          });
+          api.hideProgress();
+          if(that.ac==true){
+            that.cur++
+
+              getData('/stars?page='+that.cur+"&page_size:10",function(data){api.hideProgress();
+                if(data.data.length>=1){
+                  data.data.forEach(function(item){
+                      that.startList.push(item)
+                  })
+                }
+                else{
+                  return false
+                }
+
+              },{},{"Authorization":$api.getStorage('token')})
+          }
+          else{
+            that.accur++
+            getData('/star_actives?page='+that.accur+"&page_size=10",function(data){api.hideProgress();
+              if(data.data.length>=1){
+                data.data.forEach(function(item){
+                    that.acList.push(item)
+                })
+              }
+              else{
+                return false
+              }
+
+            },{},{"Authorization":$api.getStorage('token')})
+          }
+          //   getData('/actives',function(data){api.hideProgress();
+          //     obj=$('.ac ul')
+          //     if(data.data.length>=1){
+          //       data.data.forEach(function(item){
+          //           obj.append('<li onclick="inner('+item.id+')"><div class="thum">  <span class="being">活动进行中</span><img src="'+item.pic+'" alt=""><p>'+item.title+'</p>  </div></li></li>')
+          //       })
+          //     }
+          //     else{
+          //       return false
+          //     }
+          //
+          //   },{"page":cur,"page_size":"10"},{"Authorization":$api.getStorage('token')})
+          //   api.hideProgress();
+          //
+          // });
+        })
+      },
+    methods:{
+        contact:function(str){
+          var that=this
+      
+          if(str=='lv'){
+            this.ac=true
+            that.cur=1
+            getData('/stars',function(data){
+              api.hideProgress()
+              that.startList=data.data
+            },{"page":that.cur,"page_size":"10"},{'authorization':$api.getStorage('token')})
+
+          }
+          else{
+            this.ac=false;
+            that.accur=1
+            getData('/star_actives',function(data){
+              api.hideProgress()
+
+            that.acList=data.data
+            },{"page":that.accur,"page_size":"10"},{'authorization':$api.getStorage('token')})
+          }
+
+        },
+        acinner:function(id,category){
+          api.openWin({
+              name: 'content',
+              url: '../../../html/Home/content.html',
+              pageParam:{
+                contentId:id,
+                category:category,
+                title:api.pageParam.title
+              }
+          });
+        }
+
+
+    }
+    })
+  };
+  </script>
+  </html>

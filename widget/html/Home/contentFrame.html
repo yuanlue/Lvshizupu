@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+          body{
+
+          }
+          .content h1{
+            color:#9e2931;
+            font-size:16px;
+            text-align: center;
+            margin-top:20px;
+          }
+          .content .from{
+            font-size:12px;
+            color:#999999;
+            text-indent:0;
+            text-align: center;
+          }
+          .content .time{
+            padding:0 10px;
+            font-size:12px;
+            color:#999999;
+            margin: 10px 0;
+            text-align: right;
+          }
+          .thumb{
+            text-align: center;
+            margin-bottom:10px;
+          }
+          .thumb img {
+            width:80%;
+            display: block;
+            margin:0 auto;
+          }
+          .content .inner{
+            padding:0 10px;
+            font-size:14px;
+            line-height: 30px;
+          }
+          .act{
+
+            font-size:14px;
+            line-height: 30px;
+          }
+          .neirong{
+            padding:0 10px;
+          }
+          img{
+            width:100%;
+            display: block;
+            margin:10px auto;
+          }
+          .inner p{
+            line-height: 30px;
+            text-indent: 2em;
+          }
+          h1{
+            text-indent: 0;
+            margin:10px ;
+          }
+          .contacttel{
+            text-indent: 0;
+          }
+          .sta{
+            font-size:14px;
+          }
+
+      </style>
+  </head>
+  <body>
+<div class="content">
+  <h1></h1>
+  <p class="from"></p>
+  <div class="thumb">
+    <img src="" alt="">
+  </div>
+  <div class="neirong">
+  <p class="inner"> </p>
+  </div>
+  <p class="time"></p>
+
+</div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+
+  <script type="text/javascript" src="../../script/service.js"></script>
+
+  <script type="text/javascript">
+  var url="http://116.62.170.181:8081"
+
+      apiready = function(){
+        function errHandle(obj){
+          $('img').bind('error',function(){
+            $(this).attr('src','../../image/default.png')
+          })
+          if(obj){
+            $(obj).attr('src','../../image/default.png')
+          }
+        }
+        errHandle()
+        api.showProgress({
+        title: '努力加载中...',
+        text: '先喝杯茶...',
+        modal: false
+    });
+    if($api.getStorage('token')){
+        getData('/'+api.pageParam.category+'/'+api.pageParam.id,function(data){
+        api.hideProgress();
+        if(api.pageParam.category=='cultures'){
+        $('.content h1').html(data.data.title)
+        $('.content .from').html(data.data.branch)
+        $('.thumb img').attr('src',url+data.data.pic)
+        $('.inner').html(data.data.detail)
+        $('.time').html(data.data.created_at)
+      }
+      else if(api.pageParam.category=='history_celebrities'){
+        $('.content h1').text(data.data.name)
+        $('.content .from').text(data.data.assess)
+        $('.thumb img').attr('src',url+data.data.avatar)
+        $('.inner').html(data.data.intro)
+      }
+      else if(api.pageParam.category=='actives'){
+        $('.content h1').text(data.data.title)
+        $('.content .from').html(data.data.assess)
+        $('.thumb img').attr('src',url+data.data.pic)
+        $('.inner').html(data.data.detail)
+        if(data.data.active_status==1){
+            $('.neirong').append('<p class="sta">活动进行中</p>')
+        }else{
+          $('.neirong').append('<p class="sta">活动已结束</p>')
+
+        }
+        $('.neirong').append('<p class="act">开始时间：'+data.data.start_at+'</p>')
+        $('.neirong').append('<p class="act">截止时间：'+data.data.end_at+'</p>')
+        $('.neirong').append('<p class="act">截止时间：'+data.data.organization+'</p>')
+        $('.neirong').append('<p class="act">联系人：'+data.data.contact+'</p>')
+        $('.neirong').append('<p class="contacttel act">联系电话：'+data.data.contact_tel+'</p>')
+        $('.neirong').append('<p class="act">地址：'+data.address+'</p>')
+
+      }
+      else if(api.pageParam.category=='stars'){
+        $('.content h1').text(data.data.name)
+        $('.content .from').text(data.data.tag)
+        $('.thumb img').attr('src',url+data.data.avatar)
+        $('.inner').html(data.data.intro)
+      }
+      else if(api.pageParam.category=='star_actives'){
+        $('.neirong').append('<p class="act">活动地址：'+data.data.address+'</p>')
+            $('.neirong').append('<p class="act">活动时间：'+data.data.active_at+'</p>')
+          $('.content h1').text(data.data.title)
+        $('.inner').html(data.data.content)
+          $('.thumb img').attr('src',url+data.data.pic)
+      }
+        },{},{"Authorization":$api.getStorage('token')})
+      }
+      };
+  </script>
+  </html>

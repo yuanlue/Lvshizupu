@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <style>
+          body{
+            min-height: 100vh;
+            background: white;
+            box-sizing: border-box;
+          }
+          .Marketinner .tab{
+            padding-top:22px;
+            width:240px;
+            margin:0 auto;
+            color:#881b22;
+          }
+          .Marketinner .tab ul {
+            font-size: 0;
+          }
+          .Marketinner .tab ul li{
+            border-collapse: collapse;
+            border:1px solid #881b22;
+            box-sizing: border-box;
+            font-size:13px;
+            display: inline-block;
+            width:80px;
+            line-height: 25px;
+            text-align: center;
+          }
+          .intro,.product,.need{
+            padding:0 15px;
+            width:100%;
+            margin-bottom:10px;
+            box-sizing: border-box;
+            margin-top:20px;
+          }
+          .intro img{
+            display: block;
+            margin:0 auto;
+          }
+          .intro p{
+            line-height: 30px;
+            text-indent: 2em;
+          }
+          .active{
+            background: #881b22;
+            color:white;
+          }
+          .need ul li{
+            padding:10px 0;
+            box-sizing: border-box;
+            width:100%;
+            border-bottom:1px solid #eee;
+            display: table;
+          }
+          .need ul li>img{
+            vertical-align: top;
+            display: table-cell;;
+            width:110px;
+            border:1px solid #eee;
+          }
+          .need ul li>div{
+            vertical-align: top;
+
+            display: table-cell;;
+          }
+          .need ul li>div h1{
+            font-size:16px;
+          }
+          .need ul li>div img{
+            width:15px;
+          }
+          .need ul li>div .time{
+            color:#999;
+            margin:10px 0 15px;;
+            font-size:14px;
+          }
+          .product ul{
+            font-size:0;
+          }
+          .product ul li{
+            margin-top:10px;
+            text-align: center;
+            display: inline-block;
+            width:50%;
+          }
+          .product ul li p{
+            margin-top:5px;
+            font-size: 16px
+          }
+          .product ul li span{
+            color:#881b22;
+            font-size:14px;
+          }
+          .product ul li button{
+            font-size:12px;
+            display: block;
+            width:100px;
+            background: #881b22;
+            color:white;
+            line-height: 25px;
+            margin:5px auto;
+          }
+          .product ul li img{
+            width:80%
+          }
+          .need .status{
+            font-size:12px;
+
+          }
+      </style>
+  </head>
+  <body>
+  <div class="Marketinner">
+    <div class="tab">
+      <ul>
+        <li onclick="navchange('intro',0)" class="active">公司简介</li>
+        <li onclick="navchange('product',1)" >主营产品</li>
+        <li onclick="navchange('need',2)" >供需产品</li>
+      </ul>
+    </div>
+    <div class="intro frame">
+      <img src="../../../image/demo1.png" alt="">
+      <p>吕氏集团下辖辽宁吕氏化工（集团）有限公司、营口辽河化工研究所股份有限公司、营口中天实业有限公司、吕氏物流、吕氏农场等多家企业。</p>
+      <p>辽宁吕氏化工（集团）有限公司，是吕氏集团的核心企业，成立于1994年，是一家致力于环保胶粘剂研发、生产与销售的高新技术企业。公司引进最先进的科研、检测设备；拥有一支化工专家、教授领衔的技术研发队伍。同时与国内多所高等院校合作，在民用粘合剂、工业粘合剂、军用粘合剂领域中做出了杰出贡献，产品质量水平和环保水平始终处于国内领先地位。</p>
+    </div>
+    <div class="product frame">
+      <ul>
+        <li><img src="../../../image/product1.png" alt="">
+          <p>产品名称</p>
+          <span>￥98/件</span>
+          <button>去商城购买</button>
+        </li>
+        <li><img src="../../../image/product1.png" alt="">
+          <p>产品名称</p>
+          <span>￥98/件</span>
+          <button>去商城购买</button>
+        </li>
+        <li><img src="../../../image/product1.png" alt="">
+          <p>产品名称</p>
+          <span>￥98/件</span>
+          <button>去商城购买</button>
+        </li>
+        <li><img src="../../../image/product1.png" alt="">
+          <p>产品名称</p>
+          <span>￥98/件</span>
+          <button>去商城购买</button>
+        </li>
+      </ul>
+    </div>
+    <div class="need frame">
+      <ul>
+        <li>
+          <img src="../../../image/product1.png" alt="">
+
+        <div>
+          <h1>本公司急需一批体育器材</h1>
+          <p class="time">发布时间：2017年10月22日</p>
+          <p class="status">
+            <img src="../../../image/renzheng.png" alt="">
+            <span>已经认证</span>
+          </p>
+        </div>
+          </li>
+      </ul>
+    </div>
+  </div>
+  </body>
+  <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
+
+  <script type="text/javascript">
+  function navchange(obj,num){
+    $('.frame').hide()
+    $('.tab ul li').removeClass('active')
+      $('.tab ul li').eq(num).addClass('active')
+    $('.'+obj).show()
+
+  }
+      apiready = function(){
+
+      };
+  </script>
+  </html>

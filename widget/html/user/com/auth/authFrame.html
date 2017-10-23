@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../../css/api.css"/>
+      <style>
+      ul li{
+        padding:0 10px;
+        line-height: 50px;
+        border-bottom:1px solid #eee;
+      }
+      ul li label{
+        position: relative;
+        float: right
+      }
+      ul li input[type='text'],ul li input[type='number']{
+        text-align: right;
+        float: right;
+        line-height: 50px;
+      }
+      ul li input[type='radio']{
+        position: absolute;
+        opacity:0
+      }
+      ul li  label .icon{
+        margin:0 7px;
+        vertical-align: middle;
+        display: inline-block;
+        background:url('../../../../image/noactive.png') no-repeat;
+        background-size: contain;
+        width:15px;
+        height: 15px;
+      }
+      ul li label input:checked+.icon{
+        background-image:url('../../../../image/active.png');
+
+      }
+      ul li input[type='date']{
+        float: right;
+        height:50px;
+        background:white;
+        text-align: right;
+      }
+      *:focus {
+           outline: none;
+          background-color: transparent;
+       }
+       .address{
+         color:#ccc;
+         float: right;
+       }
+       .opera{
+         background: #9e2931;
+         color:white;
+         position: fixed;
+         width: 100%;
+         bottom:0;
+         line-height: 40px;
+         text-align: center;
+       }
+      </style>
+  </head>
+  <body>
+    <ul>
+      <li>企业名称<input id="name" type="text" placeholder="请输入企业名称"></li>
+      <li>企业代码<input id="card" type="number" placeholder="请输入企业号码"></li>
+      <li>手机号码<input id="mobile" type="text" placeholder="请输入本人手机号"></li>
+      <li>所属行业<input id="indust" type="text" placeholder="请输入细分行业"></li>
+      <li>成立时间<input id="time"  type="date" placeholder="请选择成立日期" ></li>
+      <li>行业细分<input id="classify" type="text" placeholder="请输入细分行业"></li>
+      <li>产品方向<input id="product" type="text" placeholder="请输入企业的主营产品"></li>
+      <li>所属地<span id="address" class="address" onclick="selectAdd()">点击选择所在地</span></li>
+
+      <li class="sexy">是否入驻商城<label for="yes"><input id="yes" checked  type="radio" name="market"><i class="icon"></i>是</label><label for="no"><input id="no" type="radio" name="market"><i class="icon"></i>否</label></li>
+
+    </ul>
+    <div class="opera" onclick="sure()">
+      申请入驻
+    </div>
+  </body>
+  <script type="text/javascript" src="../../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../../script/service.js"></script>
+
+  <script type="text/javascript">
+
+  function sure(){
+    if($('#address').text()!="点击选择所在地"){
+    if($('#address').text().split('/')[2].length==0){
+      var para={
+              "company": {
+              "name": $('#name').val(),
+              "industry": 1,
+              "product": $('#product').val(),
+              "nationality":"中国",
+               "province":$('.address').text().split('/')[0],
+                "city":$('.address').text().split('/')[0],
+               "sen_industry":$('#classify').val(),
+              "uscc_code": $('#card').val(),
+              "shop_id": "",
+              "creation_at":$('#time').val()
+
+
+              }
+              }
+    }
+    else{
+      var para={
+              "company": {
+              "name": $('#name').val(),
+              "industry": 1,
+              "product": $('#product').val(),
+              "nationality":"中国",
+               "province":$('.address').text().split('/')[0],
+                "city":$('.address').text().split('/')[1],
+               "sen_industry":$('#classify').val(),
+              "uscc_code": $('#card').val(),
+              "shop_id": "",
+              "creation_at":$('#time').val()
+
+              }
+              }
+    }
+    postData('/companies',function(data){
+      alert(JSON.stringify(data))
+      if(data.code==200){
+        api.toast({
+                msg: '申请成功',
+                duration:2000,
+                location: 'bottom'
+            });
+          api.closeWin();
+
+      }
+      else{
+        api.toast({
+                msg: '填写信息有误，请重试',
+                duration:2000,
+                location: 'bottom'
+            });
+      }
+    },para,{'authorization':$api.getStorage('token')})
+}
+else{
+  api.toast({
+          msg: '填写信息有误，请重试',
+          duration:2000,
+          location: 'bottom'
+      });
+}
+  }
+  function selectAdd(){
+    var citySelector = api.require('citySelector');
+
+    citySelector.open({
+      y: api.frameHeight / 1.6,
+      fixedOn: api.frameName
+  }, function(ret, err) {
+      if (ret) {
+      $('.address').text(ret.province+'/'+ret.city+'/'+ret.county)
+      $('.address').css('color','black')
+      } else {
+          alert(JSON.stringify(err));
+      }
+  });
+  }
+
+      apiready = function(){
+
+
+      };
+  </script>
+  </html>

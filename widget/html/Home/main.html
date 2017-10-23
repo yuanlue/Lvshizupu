@@ -1,0 +1,645 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/swiper-3.4.2.min.css" />
+	<style>
+    body{
+      min-height:100vh;
+      box-sizing:border-box;
+      background:#ededed;
+    }
+    .guideline{
+      background: #fff;
+      padding:15px 0;
+      box-sizing: border-box;
+      box-shadow: 1px 3px 5px #ccc;
+
+    }
+    .guideline ul{
+      font-size:0;
+      margin:0;
+      padding:0;
+    }
+    .guideline ul li{
+      position: relative;
+      text-align:center;
+      width:25%;
+      font-size:14px;
+      text-align: center;
+      display: inline-block;
+    }
+    .guideline ul li span{
+      display: block;
+      margin:5px 0;
+    }
+    .guideline ul li img{
+      width:43px;
+    }
+    .activity{
+      padding:0 10px;
+    }
+    .activity  .content{
+      min-height:100px;
+
+    }
+    .banner{
+      width:100%;
+      height:250px
+    }
+    .banner{
+      width:100%;
+      margin:0;
+      padding:55px 10px 15px;
+      box-sizing: border-box;
+      background-image: url("../../image/banner.png");
+      background-color: #ededed;
+      background-repeat: no-repeat;
+      background-position: top;
+      background-size: contain;
+    }
+    .banner .guideline{
+      background: white;
+      border-bottom-left-radius:12px;
+      border-bottom-right-radius:12px;
+      height:177px;
+      width:100%;
+    }
+    .header>img{
+      margin-right:5px;
+      width:18px;
+      vertical-align: middle;
+    }
+    .header{
+      line-height: 38px;
+    }
+    .header .content{
+      width:100%;
+    }
+    .acThumb{
+      position: relative;
+    }
+    .acThumb img,.start .thumb img{
+      width:100%;
+    }
+    .acThumb .being,  .mujuan .being{
+      top:12px;
+      position: absolute;
+      width:70px;
+      border-top-right-radius:12px;
+      border-bottom-right-radius:12px;
+      font-size:11px;
+      line-height: 21px;
+      text-align: center;
+      color:#c2262b;
+      background: white;
+    }
+    .mujuan .being{
+      width:35px;
+    }
+      .acThumb .over,  .mujuan .over{
+        top:12px;
+        position: absolute;
+        width:70px;
+        border-top-right-radius:12px;
+        border-bottom-right-radius:12px;
+        font-size:11px;
+        line-height: 21px;
+        text-align: center;
+        color:#666666;
+        background: white;
+      }
+      .mujuan .over{
+        width:35px;
+      }
+    .activity .content h1{
+      font-size:15px;
+      margin:10px 0 5px;
+    }
+    .activity .content p{
+      font-size:12px;
+      color:#999;
+    }
+    .activity,.mujuan,.start,.culture{
+      padding-bottom:12px;
+      background: white;
+    }
+    .mujuan,.start,.culture{
+      margin-top:10px;
+      padding-bottom:10px;
+      padding: 10px;
+      padding-top:0;
+    }
+    .mujuan .thumb img{
+      width:115px;
+    }
+    .mujuan .thumb {
+      vertical-align: top;
+    }
+    .mujuan .thumb,.mujuan .splide{
+      display: inline-block;
+    }
+    .mujuan .splide {
+      margin-left:10px;
+    }
+    .mujuan .splide h1{
+      font-size:15px;
+    }
+    .mujuan .process{
+      width:53vw;
+      border-radius: 10px;
+      height:8px;
+      background: #eee;
+      position: relative;
+      margin:15px 0;
+    }
+    .mujuan .process span{
+      position: absolute;
+      background: #9e2932;
+      display: block;
+      width:0;
+      border-radius: 10px;
+      height:8px;
+    }
+    .mujuan .text{
+      font-size:12px;
+    }
+    .mujuan .text i {
+      color:#999;
+      font-style: normal;
+    }
+    .mujuan .text .person{
+      float: right;
+    }
+    .start h1{
+      font-size:15px;
+    }
+    .culture ul{
+      width:100%;
+    }
+    .culture ul li{
+
+      font-size:12px;
+      height:155px;
+      vertical-align: middle;
+
+      font-size:12px;
+      display: inline-block;
+      width: 33%;
+      text-align: center
+
+    }
+    ul li:active{
+      background: #eee;
+    }
+    .culture ul li img{
+      width:90px;
+    }
+    .culture ul li p{
+      margin-top:5px;
+      margin-left:10px;
+      text-align: left;
+      width: 90px;
+    }
+    .quanzi i{
+      display: inline-block;
+      min-width:10px;
+      min-height:10px;
+      text-align: center;
+      line-height: 10px;
+      font-style: normal;
+      color:white;
+      font-size:8px;
+      position: absolute;
+      background: #9e2932;
+      border-radius: 50%;
+      top:0;
+      opacity:0;
+    }
+    .mujuan .thumb{
+      position: relative;
+    }
+	</style>
+</head>
+<body>
+  <div class="banner">
+    <div class="guideline">
+      <ul>
+        <li onclick="navchange('zupu')">
+          <img src="../../image/zupu.png" alt="">
+          <span>族谱</span>
+        </li>
+          <li onclick="navchange('culture')"><img src="../../image/wenhua.png" alt=""><span>文化</span></li>
+          <li onclick="navchange('activity')"><img src="../../image/huodong.png" alt=""><span>活动</span></li>
+          <li onclick="navchange('famous')"><img src="../../image/mingren.png" alt=""><span>名人</span></li>
+          <li onclick="navchange('start')"><img src="../../image/mingxing.png" alt=""><span>明星</span></li>
+          <li class="quanzi" onclick="friend()">
+            <img src="../../image/quanzi.png" alt="">
+            <span>圈子<i></i></span>
+          </li>
+          <li onclick="navchange('decoration')"><img src="../../image/mujuan.png" alt=""><span>募捐</span></li>
+          <li onclick="navchange('market')"><img src="../../image/shangmao.png" alt=""><span>商贸</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="activity">
+    <div class="header"><img src="../../image/huodong.jpg" alt="">宗亲活动</div>
+        <div class="content">
+          <div class="acThumb">
+            <span class="label"></span>
+            <img src="" alt="">
+          </div>
+          <h1></h1>
+          <p></p>
+        </div>
+
+  </div>
+
+    <div class="mujuan" onclick="navchange('decoration')">
+      <div class="header"><img src="../../image/mujuan.jpg" alt="">爱心募捐</div>
+      <div class="thumb">
+        <span class="label"></span>
+        <img src="../../image/default.png" alt="">
+      </div>
+      <div class="splide">
+        <h1></h1>
+        <div class="process"><span></span></div>
+        <p class="text"><span class="gap">还差<i></i></span><span class="person"><i></i>人已捐</span></p>
+      </div>
+    </div>
+    <div class="start">
+      <div class="header"><img src="../../image/mingxing.jpg" alt="">明星活动</div>
+      <div class="startList swiper-container">
+        <div class="swiper-wrapper">
+
+        </div>
+      </div>
+    </div>
+    <div class="culture">
+      <div class="header"><img src="../../image/wenhua.jpg" alt="">宗亲文化</div>
+        <ul>
+
+        </ul>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../../script/service.js"></script>
+<script type="text/javascript" src="../../script/swiper-3.4.2.min.js"></script>
+
+
+<script type="text/javascript">
+function re(){
+  alert('shuaxin')
+  window.location.reload()
+}
+//去重复
+var url="http://116.62.170.181:8081"
+
+Array.prototype.unique = function(){
+ var res = [this[0]];
+ for(var i = 1; i < this.length; i++){
+  var repeat = false;
+  for(var j = 0; j < res.length; j++){
+   if(this[i] == res[j]){
+    repeat = true;
+    break;
+   }
+  }
+  if(!repeat){
+   res.push(this[i]);
+  }
+ }
+ return res;
+}
+function re(){
+if($api.getStorage('messageList')){
+if($api.getStorage('messageList').length<1){
+  $('.quanzi i').text("")
+  $('.quanzi i').css('opacity',0)
+}
+ else{
+   $('.quanzi i').text($api.getStorage('messageList').length)
+     $('.quanzi i').css('opacity',1)
+ }
+}
+}
+$( document ).ajaxComplete(function() {
+  api.refreshHeaderLoadDone()
+});
+
+
+function errHandle(obj){
+  $('img').bind('error',function(){
+    $(this).attr('src','../../image/default.png')
+  })
+  if(obj){
+    $(obj).attr('src','../../image/default.png')
+  }
+}
+errHandle()
+function inner(id,title,url){
+  api.openWin({
+      name: 'content',
+      url: '../../html/Home/content.html',
+      pageParam:{
+        contentId:id,
+        category:url,
+        title:title
+      }
+  });
+}
+function mujuan(){
+
+  api.openWin({
+      name: 'content',
+      url: '../../html/decoration/decoration.html',
+
+  });
+}
+function init(){
+
+  getData('/donations',function(data){
+    $('.mujuan .thumb img').attr('src',url+data.data[0].pictures[0])
+    $('.mujuan h1').text(data.data[0].name)
+    $('.mujuan .gap i').text(data.data[0].rest_captial)
+    $('.mujuan .person i').text(data.data[0].donation_count)
+    var rate=parseFloat((data.data[0].capital-data.data[0].rest_captial)/data.data[0].capital)
+      $('.mujuan .process>span').width(53 * rate +'vw')
+      var startTime=new Date(data.data[0].start_at.split(' ')[0]).getTime()
+      var endTime=new Date(data.data[0].end_at.split(' ')[0]).getTime()
+      var nowTime=new Date().getTime()
+      if(nowTime<=endTime&&nowTime>=nowTime){
+          $('.mujuan .label').addClass('being')
+        $('.mujuan .label').text('进行中')
+      }
+      else if(nowTime>endTime){
+          $('.mujuan .label').addClass('over')
+        $('.mujuan .label').text('已结束')
+      }
+      else if(nowTime<startTime){
+          $('.mujuan .label').addClass('over')
+        $('.mujuan .label').text('未开始')
+
+      }
+  },{"page":"1","page_size":"1"},{'Authorization':$api.getStorage('token')})
+  getData('/actives',function(data){
+    if(data.data.length<=0){
+      $('.activity').hide()
+      return false;
+
+    }
+    var startTime=new Date(data.data[0].start_at.split(' ')[0]).getTime()
+    var endTime=new Date(data.data[0].end_at.split(' ')[0]).getTime()
+    var nowTime=new Date().getTime()
+    if(nowTime<=endTime&&nowTime>=nowTime){
+        $('.content .label').addClass('being')
+      $('.content .label').text('活动进行中')
+    }
+    else if(nowTime>endTime){
+        $('.content .label').addClass('over')
+      $('.content .label').text('活动已经结束')
+    }
+    else if(nowTime<startTime){
+        $('.content .label').addClass('over')
+      $('.content .label').text('活动尚未开始')
+
+    }
+    $('.activity').click(function(){
+      inner(data.data[0].id,'活动详情','actives')
+    })
+    $('.content img').attr('src',url+data.data[0].pic)
+    $('.content h1').text(data.data[0].title)
+    $('.content p').text(data.data[0].created_at)
+  },{ 'page': '1', 'page_size': '1' },{'Authorization':$api.getStorage('token')})
+  getData('/star_actives',function(data){
+    if(data.data.length<=0){
+      $('.start').hide()
+      return false;
+
+    }
+    data.data.forEach(function(item){
+      $('.start .swiper-wrapper').append('<div onclick="inner('+item.id+',&quot;明星活动&quot;,&quot;star_actives&quot;)" class="startSingle swiper-slide">'
+          +'<div class="thumb">'
+            +'<img src="'+url+item.pic+'" alt="">'
+          +'</div>'
+            +'<h1>'+item.title+'</h1>'
+          +'</div>')
+    })
+    var mySwiper = new Swiper ('.swiper-container', {
+      direction: 'horizontal',
+      loop: true,
+      autoplay:false,
+      speed:1000
+
+      // 如果需要分页器
+
+    })
+  },{ 'page': '1', 'page_size': '3' },{'Authorization':$api.getStorage('token')})
+  getData('/cultures',function(data){
+    if(data.data.length<=0){
+      $('.culture').hide()
+      return false;
+    }
+    obj=$('.culture ul')
+    obj.html('')
+    if(data.data.length>3){
+      for(var i=0;i<3;i++){
+      obj.append("<li onclick='inner("+data.data[i].id+",&quot;文化&quot;,&quot;cultures&quot;)'><img src='"+url+data.data[i].pic+"' onerror='errHandle(this)'  ><p>"+data.data[i].title+"</p></li>")
+      }
+    }
+      else{
+        for(var i=0;i<data.data.length;i++){
+        obj.append("<li onclick='inner("+data.data[i].id+",&quot;文化&quot;,&quot;cultures&quot;)'><img src='"+url+data.data[i].pic+"' onerror='errHandle(this)'  ><p>"+data.data[i].title+"</p></li>")
+        }
+      }
+  },{ 'page': '1', 'page_size': '3' },{'Authorization':$api.getStorage('token')})
+}
+function navchange(obj){
+  api.openWin({
+      name: obj,
+      url: '../../html/Home/'+obj+'/'+obj+'.html',
+      pageParam:{
+        token:$api.getStorage('token')
+      }
+  });
+
+}
+
+function friend(){
+
+      if($api.getStorage('uid')!='null'&&$api.getStorage('uid')!='undefined'&&$api.getStorage('joined_family')!='false'){
+        api.openWin({
+            name: 'friend',
+            url: '../../html/friend/friendWin.html',
+
+        });
+
+      }else{
+        api.toast({
+                msg: '您还尚未加入宗亲，请先加入宗亲',
+                duration:2000,
+                location: 'bottom'
+            });
+            return false
+      }
+
+}
+    apiready = function(){
+      //culture
+      var contactManList=[];
+      var messageList=[];//接收消息列表
+
+      if($api.getStorage('uid')!='null'&&$api.getStorage('uid')!='undefined'&&$api.getStorage('joined_family')!='false'){
+        ws = new WebSocket("wss://wx2.kuaiyunma.com/sub/chat/"+$api.getStorage('uid'));
+        ws.onmessage = function(evt){
+          if($api.getStorage('messageList')){
+            messageList=$api.getStorage('messageList')
+          }
+          else{
+            messageList=[];
+          }
+
+          var audio = api.require('audio');
+
+          var time=new Date(JSON.parse(evt.data).created_at).getTime()
+
+          if($api.getStorage('readRecord')){
+
+
+            $api.getStorage('readRecord').forEach(function(item){
+
+              if(item.uid==JSON.parse(evt.data).sender){
+
+                if(parseInt(item.readTime)<parseInt(time)){
+                  messageList.push(evt.data)
+
+                  if(messageList.length<1){
+                    $('.quanzi i').css('opacity',0)
+                  }
+                  else{
+                      $('.quanzi i').css('opacity',1)
+                  }
+                  audio.play({
+                      path: 'http://dx.sc.chinaz.com/Files/DownLoad/sound1/201511/6571.mp3'
+                  }, function(ret, err) {
+
+                  });
+                          var str="receive('"+evt.data+"')";
+                          api.execScript({
+                              name: 'friendDetail',
+                              frameName: 'contact',
+                              script: str
+                          });
+                          api.execScript({
+                              name: 'friend',
+                              script: str
+                          });
+
+                }
+                else{
+                  return false;
+                }
+              }
+              else{
+               //  alert(item.uid)
+               //  alert(JSON.parse(evt.data).sender)
+               //  messageList.push(evt.data)
+               //  alert(messageList+"weidu")
+               //  $('.quanzi i').text(messageList.length)
+               //  $api.setStorage('messageList', messageList);//未读消息
+               //  audio.play({
+               //      path: 'http://dx.sc.chinaz.com/Files/DownLoad/sound1/201511/6571.mp3'
+               //  }, function(ret, err) {
+                //
+               //  });
+               //          var str="receive('"+evt.data+"')";
+               //          api.execScript({
+               //              name: 'friendDetail',
+               //              frameName: 'contact',
+               //              script: str
+               //          });
+               //          api.execScript({
+               //              name: 'friend',
+               //              script: str
+               //          });
+              }
+            })
+            if(messageList.length>=1){
+                 messageList=messageList.unique()
+            }
+            $('.quanzi i').text(messageList.length)
+
+            $api.setStorage('messageList', messageList);//未读消息
+
+          }
+          else{
+             messageList.push(evt.data)
+             $('.quanzi i').text(messageList.length)
+
+             messageList.push(evt.data)
+             if(messageList.length<1){
+               $('.quanzi i').css('opacity',0)
+             }
+             else{
+                 $('.quanzi i').css('opacity',1)
+             }
+            $api.setStorage('messageList', messageList);//未读消息
+            audio.play({
+                path: 'http://dx.sc.chinaz.com/Files/DownLoad/sound1/201511/6571.mp3'
+            }, function(ret, err) {
+
+            });
+                    var str="receive('"+evt.data+"')";
+                    api.execScript({
+                        name: 'friendDetail',
+                        frameName: 'contact',
+                        script: str
+                    });
+                    api.execScript({
+                        name: 'friend',
+                        script: str
+                    });
+          }
+
+
+        }
+      }
+
+
+      init()
+      api.setCustomRefreshHeaderInfo({
+      bgColor: '#eee',
+      images: [
+          'widget://image/refresh/dropdown0.png',
+          'widget://image/refresh/dropdown1.png',
+          'widget://image/refresh/dropdown2.png',
+          'widget://image/refresh/dropdown3.png',
+          'widget://image/refresh/dropdown4.png',
+          'widget://image/refresh/dropdown5.png',
+          'widget://image/refresh/dropdown6.png'
+      ],
+      tips: {
+          pull: '下拉刷新',
+          threshold: '松开立即刷新',
+          load: '正在刷新'
+      }
+  }, function() {
+      //下拉刷新被触发，自动进入加载状态，使用 api.refreshHeaderLoadDone() 手动结束加载中状态
+      //下拉刷新被触发，使用 api.refreshHeaderLoadDone() 结束加载中状态
+        init()
+
+
+  });
+
+
+}
+
+</script>
+
+</html>

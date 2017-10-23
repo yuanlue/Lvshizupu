@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <style>
+
+        .reg header{
+          line-height: 40px;
+          padding:0 10px;
+          border-bottom:1px solid #eee;
+        }
+        .contain {
+          padding:10px;
+        }
+        .contain .change label{
+          padding:10px 15px;
+          border-radius: 5px;
+          font-size:12px;
+          border:1px solid #dcdcdc;
+        }
+        .userInput input[type='number'],.contact .name,.contact .tel{
+          width:200px;
+          margin-top:15px;
+          font-size:14px;
+          border:1px solid #dcdcdc;
+          padding:10px;
+        }
+        .contact{
+          display: none;
+        }
+        .contact .name{
+          width:145px;
+        }
+        .contact .tel{
+          float: right;
+          width: 95px;
+        }
+        .opera{
+          width:100%;
+          margin-top:20px;
+          background-color: #9e2831;
+          text-align: center;
+          line-height: 40px;
+          color:white;
+        }
+        .userInput span {
+          position: relative;
+        }
+        .userInput span .icon{
+
+          background:url('../../../image/noactive.png') no-repeat;
+          background-size: contain;
+          width:15px;
+          height: 15px;
+        }
+        .userInput span input:checked+.icon{
+          background-image:url('../../../image/active.png');
+
+        }
+        .userInput span input{
+          position: absolute;
+          opacity: 0;
+          right:0;
+          z-index:1;
+        }
+        .change input{
+          opacity: 0;
+          position: absolute;
+        }
+        .change input:checked+label{
+          background: #9e2831;
+          color:white;
+        }
+        ul li{
+          display: inline-block;
+        }
+        .opa{
+          background: rgba(0,0,0,0.3);
+          height:300px;;
+        }
+      .contact  .name{
+          display: block;
+          box-sizing: border-box;
+          width:100%;
+        }
+
+      </style>
+  </head>
+  <body>
+<div class="reg">
+    <header>请输入捐款金额</header>
+    <div class="contain">
+    <div class="change">
+
+      </div>
+      <div class="userInput">
+        <input id="fee" onfocus="money()" type="number" placeholder="请输入金额（元）">
+        <span> 匿名：<input onchange="ann()" checked id="annoy" type="checkbox"><span class="icon"></span></span>
+      </div>
+      <div class="contact">
+        <input id="name" class="name" type="text" placeholder="输入姓名或者企业名称">
+      </div>
+      <div class="opera" onclick="pay()">立即捐款</div>
+    </div>
+</div>
+  </body>
+  <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
+
+  <script type="text/javascript">
+  var is_anonymous=0;
+function money(){
+  $("input[name='money']").each(function(){
+    $(this).removeAttr("checked");
+  })
+}
+  function ann(){
+    if($('#annoy').is(':checked')==true){
+      is_anonymous=1
+      $('.contact').hide()
+    }
+    else{
+      is_anonymous=0
+    $('.contact').show()
+    }
+  }
+  function pay(){
+    if($('#fee').val().length<1){
+      api.toast({
+              msg: '请输入正确金额',
+              duration:2000,
+              location: 'bottom'
+          });
+      return false
+    }
+    var fee=parseFloat($('#fee').val()).toFixed(2)
+    api.openWin({
+        name: 'Payway',
+        url: '../../../html/Home/decoration/Payway.html',
+        pageParam: {
+            payId: api.pageParam.payId,
+            amount:fee,
+            name:$('#name').val(),
+            is_anonymous:is_anonymous
+        },
+        bounces:false
+    });
+
+  }
+      apiready = function(){
+
+      };
+  </script>
+  </html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+          body{
+
+          }
+          ul li{
+            padding:0 10px;
+            line-height: 50px;
+            border-bottom:1px solid #eee;
+          }
+          ul li span{
+            float: right
+          }
+      </style>
+  </head>
+  <body>
+    <div class="userInfo">
+      <ul>
+        <li id="name">姓名 <span></span></li>
+        <li id="sex">性别<span></span></li>
+        <li id="tel">手机号<span></span></li>
+        <li id="state">宗亲状态<span></span></li>
+      </ul>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+
+  <script type="text/javascript" src="../../script/service.js"></script>
+
+  <script type="text/javascript">
+      apiready = function(){
+        api.showProgress({
+        title: '努力加载中...',
+        text: '先喝杯茶...',
+        modal: false
+    });
+          getData('/clan_users/'+$api.getStorage('uid'),function(data){
+              api.hideProgress();
+            if(data.data==null){
+              return false
+            }
+
+            if(data.data.mobile){
+              $('#tel>span').text(data.data.mobile)
+
+            }
+            $('#name>span').text(data.data.name)
+            if(data.data.sex==0){
+              $('#sex>span').text('男')
+            }
+            else{
+              $('#sex>span').text('女')
+            }
+            if($api.getStorage('joined_family')=='true'){
+                  $('#state>span').text('已加入宗亲')
+            }
+            else{
+              $('#state>span').text('未加入宗亲')
+            }
+
+
+
+          },{},{'authorization':$api.getStorage('token')})
+      };
+  </script>
+  </html>

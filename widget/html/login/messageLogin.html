@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      *:focus {
+           outline: none;
+          background-color: transparent;
+       }
+      body{
+          background: url("../../image/background.png");
+          background-position: bottom center;;
+          background-size: cover;
+          height:100vh;
+          padding-top:108px;
+          box-sizing: border-box;
+          overflow: hidden;
+      }
+          .logo{
+            text-align: center;
+          }
+        .logo img{
+          width:87px;
+        }
+        .loginInfo{
+          font-size:13px;
+          margin:0 auto 0;
+          line-height:35px;
+          padding-top:10px;
+          border-bottom:1px solid #35322a;
+          width:80vw;
+        }
+        .info{
+          margin-top:70px;
+        }
+        @media screen and (max-width: 320px) {
+          .info{
+            margin-top:45px;
+          }
+}
+        .info .text{
+          display: block;
+          width:80vw;
+          margin:20px auto;
+        }
+        @media screen and (max-width: 320px) {
+          .info .text{
+            display: block;
+            width:80vw;
+            margin:10px auto;
+          }
+}
+        .info .text .message,.info .text .message{
+          color:#9e2931;
+          font-size:12px;
+        }
+        .info .text .forget{
+          color:blue;
+          font-size:12px;
+          float: right;
+        }
+        .opera{
+          text-align: center;
+        }
+        .opera button{
+          width:80vw;
+          color:white;
+          padding:12px 0;
+          border-radius: 20px;
+          background: url('../../image/status.png');
+          background-size: cover;
+          background-position: bottom center;
+        }
+        .register{
+          margin-top:10px;
+          text-align: center;
+          font-size:13px;
+        }
+        .other{
+          text-align: center;
+          margin-top:20px;
+          font-size:12px;
+        }
+        .other p:before,  .other p:after{
+          content:"";
+          display: inline-block;
+          width:75px;
+          margin:0 5px;
+          vertical-align: middle;
+          height:1px;
+          background:#9e2931;
+        }
+        .other ul{
+          margin-top:10px;
+        }
+        .other li img{
+          width:36px;
+        }
+        .register span{
+          color:#9e2931;
+          text-decoration: underline;
+        }
+        .loginInfo{
+          position: relative;
+        }
+        .loginInfo i{
+          display: inline-block;
+          background: url('../../image/closeeye.png');
+          height:10px;
+          background-size: cover;
+          position: absolute;
+          width:23px;
+          bottom:10px;
+          right:0;
+        }
+        .loginInfo .active{
+          background: url('../../image/openeye.png') no-repeat;
+          display: inline-block;
+          height:15px;
+          background-size: contain;
+          position: absolute;
+          width:23px;
+          bottom:10px;
+          right:0;
+        }
+      </style>
+  </head>
+  <body>
+  <div class="logo">
+    <img src="../../image/logo.png" alt="">
+  </div>
+  <div class="info">
+    <div class="loginInfo"><input type="text" id="userName" placeholder="请输入手机号"></div>
+    <div class="loginInfo"> <input type="password" id="auth" placeholder="请输入密码"><i onclick="eye()"></i></div>
+    <p class="text"><span onclick="messageLogin()" class="message">使用短信登录</span><span onclick="forget()" class="forget">忘记密码？</span></p>
+    <div class="opera">
+      <button onclick="login()">登录</button>
+    </div>
+    <p class="register">还未注册，点击<span onclick="regis()">立即注册</span></p>
+  </div>
+  <div class="other" style="display:none">
+      <p>第三方登录</p>
+      <ul>
+        <li><img src="../../image/wechat.png" alt=""></li>
+      </ul>
+  </div>
+
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/sha1.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/exit.js"></script>
+
+
+  <script type="text/javascript">
+  function forget(){
+    api.openWin({
+        name: 'forget',
+        url: '../../html/login/forget.html',
+
+    });
+
+  }
+  tar=$api.dom('body')
+  $api.css(tar,'height:'+window.screen.height+'px');
+  function eye(){
+    a=$('#auth').attr('type')
+    if(a!='password'){
+      $('#auth').attr('type','password')
+    }
+    else{
+      $('#auth').attr('type','text')
+    }
+    $('.loginInfo i').toggleClass("active");
+
+  }
+
+  function regis(){
+    api.openFrame({
+        name: 'register',
+        url: '../../html/login/register.html',
+        rect: {
+            x: 0,
+            y: 0,
+            w: 'auto',
+            h: 'auto'
+        },
+        bounces: false,
+        bgColor: 'rgba(0,0,0,0)',
+        vScrollBarEnabled: true,
+        hScrollBarEnabled: true,
+        slidBackEnabled:false
+    });
+  }
+  function messageLogin(){
+    api.openFrame({
+        name: 'loginFrame',
+        url: '../../html/login/loginFrame.html',
+        rect: {
+            x: 0,
+            y: 0,
+            w: 'auto',
+            h: 'auto'
+        },
+        bounces: false,
+        bgColor: 'rgba(0,0,0,0)',
+        vScrollBarEnabled: true,
+        hScrollBarEnabled: true,
+        slidBackEnabled:false
+    });
+  }
+  function login(){
+    postData('/users/login',function(data){
+      if(data.code==200){
+        api.toast({
+                msg: '登录成功',
+                duration:2000,
+                location: 'bottom'
+            });
+            $api.setStorage('token',data.data.token)
+            $api.setStorage('mobile',data.data.mobile);
+            $api.setStorage('uid',data.data.uid);
+            $api.setStorage('avata',data.data.avatar);
+
+            $api.setStorage('joined_family',data.data.joined_family);
+
+            api.execScript({
+                name: 'home',
+                frameName: 'userCenter',
+                script: 're();'
+            });
+            api.openWin({
+                name: 'home',
+                url: '../../html/Home/homeWin.html',
+                useWKWebView:false,
+                pageParam:{
+                  token:data.data.token
+                },
+                historyGestureEnabled:false,
+                slidBackEnabled:false
+            });
+      }
+      else{
+        api.toast({
+                msg: '密码错误，请重试',
+                duration:2000,
+                location: 'bottom'
+            });
+      }
+    },{
+      "user":{
+          "mobile":$('#userName').val(),
+          'password':$('#auth').val()
+    }})
+  }
+      apiready = function(){
+        if(api.pageParam.tel){
+          $('#userName').val(api.pageParam.tel)
+        }
+
+      };
+  </script>
+  </html>

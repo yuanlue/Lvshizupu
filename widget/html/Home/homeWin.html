@@ -1,0 +1,374 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>底部导航</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin:0;
+        }
+        #footer {
+            width: 100%;
+            text-align: center;
+            height: 56px;
+            line-height: 55px;
+            background-color: #fff;
+            border-top:1px solid #dbdbdb;
+        }
+        #footer li img{
+          width:24px;
+          vertical-align: middle;
+          display: inline
+        }
+        ul {
+
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+        }
+
+
+        #footer{
+          position: fixed;
+          bottom:0;
+        }
+        #footer li {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+            height: 48px;
+        }
+
+        .bottom_btn {
+
+            background-position-y: 4px;
+            font-size: 14px;
+            color: #323237;
+            height: 39px;
+            margin-left:5px;
+            background-repeat: no-repeat no-repeat;
+            background-position-x: center;
+            background-size: 30px;
+        }
+
+
+
+        .active .bottom_btn {
+            color: #9e2932;
+            background-size: 30px;
+        }
+
+        .topbar {
+            background-image: url("../../image/status.png");
+            background-size: cover;
+            height: 50px;
+            border-bottom: 1px solid #DDDFE3;
+            line-height: 50px;
+            text-align: center;
+            font-size:17px;
+            display: none;
+            color:white;
+
+        }
+
+        .activebar {
+            display: block;
+            padding: 0;
+            margin:0;
+        }
+        .top{
+          height:25px;
+          background: black;
+        }
+        ul li:active{
+          background: #eee
+        }
+        #footer ul .active:before{
+          content:"";
+          display:inline-block;
+          background: url("../../image/fish.png") no-repeat;
+          background-size: cover;
+          width:28px;
+          height:12px;
+          position: absolute;
+          bottom:12px;
+
+        }
+        header>div{
+          position: relative;
+        }
+        header>div>span{
+          width:20px;
+          position: absolute;
+          right:10px;
+        }
+          header>div>span img{
+            width:100%;
+          }
+          header>div>span i{
+            position: absolute;
+            top:5px;
+            right:10px;
+            font-size:12px;
+            border-radius: 50%;
+            background: white;
+            line-height: 15px;
+            font-style: normal;
+            text-align: center;
+            width:15px;
+            height:15px;
+            display:none;
+            color:#9e2932;
+          }
+    </style>
+</head>
+<body>
+  <div class="top"></div>
+<div id="wrap">
+    <header>
+        <div id="cloud" class="topbar  activebar">
+                    天下吕氏
+                    <span>
+                      <img onclick="message()" src="../../image/message.png" alt="">
+                      <i></i>
+                    </span>
+
+        </div>
+
+        <div id="dev" class="topbar ">
+                    商城
+                    <span><img onclick="message()" src="../../image/message.png" alt="">
+                      <i></i>
+</span>
+
+        </div>
+        <div id="doc" class="topbar ">
+                    我的
+                    <span><img onclick="message()" src="../../image/message.png" alt="">
+                      <i></i>
+</span>
+
+        </div>
+    </header>
+
+    <div id="footer">
+        <ul>
+            <li tapmode="active" class="active" onclick="randomSwitchBtn(this,'cloud',0)">
+              <img src="../../image/lv.png" alt="">
+                <a class="bottom_btn cloud">首页</a>
+            </li>
+
+
+
+            <li tapmode="active" onclick="randomSwitchBtn(this,'dev',1)">
+              <img src="../../image/shang.png" alt="">
+
+                <a class="bottom_btn dev ">商城</a>
+            </li>
+
+            <li tapmode="active" onclick="randomSwitchBtn(this,'doc',2)">
+              <img src="../../image/ren.png" alt="">
+
+                <a class="bottom_btn doc ">我的</a>
+            </li>
+
+        </ul>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../../script/exit.js"></script>
+<script type="text/javascript" src="../../script/enc_base64.js"></script>
+<script type="text/javascript" src="../../script/service.js"></script>
+
+<script type="text/javascript">
+
+function re(){
+  $('header>div>span i').hide()
+  sysInfo=[];
+  sysNum=0;
+}
+
+function message(){
+  api.openWin({
+      name: 'remind',
+      url: '../../html/friend/remind.html'
+  });
+
+}
+    apiready = function () {
+      var time=new Date()
+      var sysNum=0;
+      var sysInfoMessage=[]
+      if($api.getStorage('uid')!='null'&&$api.getStorage('uid')!='undefined'&&$api.getStorage('joined_family')=='false'){
+        ws = new WebSocket("wss://wx2.kuaiyunma.com/sub/sys/"+$api.getStorage('uid'));
+        ws.onmessage = function(evt){
+          alert(evt.data)
+          if($api.getStorage('sysInfo')){
+            sysInfoMessage=$api.getStorage('sysInfo')
+          }
+          sysNum++;
+          if(sysNum>0){
+            $('header>div>span i').show()
+            $('header>div>span i').text(sysNum)
+            sysInfoMessage.push(evt.data)
+            $api.setStorage('sysInfo', sysInfoMessage);
+          }
+
+        };
+      }
+
+
+            api.addEventListener({
+            name:'offline'
+        }, function(ret, err){
+          api.toast({
+                  msg: '当前网络状态不稳定',
+                  duration:2000,
+                  location: 'bottom'
+              });
+        });
+
+        exitApp()
+      var u = navigator.userAgent;
+      var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+      var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+      if(isiOS){
+        $('.top').hide()
+      }
+
+      // function getNewMessage(){
+      //   rong.setOnReceiveMessageListener(function (ret, err) {
+      //
+      //                   api.sendEvent({
+      //                            name :'getNewMessage',
+      //                            extra : {
+      //                               data : ret.result.message
+      //                            }
+      //                    })
+      //
+      // })
+      // }
+      var UIChatBox = api.require('UIChatBox');
+      // rong.init(function(ret, err){
+      //     if (ret.status == 'error')
+      //         api.toast({ msg: err.code });
+      // });
+  // getNewMessage()
+  $.ajax({
+    "url": "https://api.cn.ronghub.com/user/getToken.json",
+    "cache": false,
+    "headers": {
+      "appKey": "lmxuhwagl06ud",
+      "appSecret": 'fBjNe6uY8foiUh'
+    },
+    "data": {
+      "portraitUri": "http://wx.qlogo.cn/mmhead/PiajxSqBRaEIFokNHj9VibzSg9s8al9cp5Yticn1AdJTibTuKDK7wyH5JA/132",
+      "userId": api.pageParam.token
+    },
+    "type": "POST",
+    success:function(data){
+      rong.connect({
+      token: data.token},
+      function(ret, err){
+          if (ret.status == 'success')
+              api.toast({ msg: ret.result.userId });
+});
+    }
+  })
+
+//       rong.getTotalUnreadCount(function(ret, err) {
+//       })
+//       rong.getConversationList(function (ret, err) {
+//
+// })
+        var $header = $api.dom('header');
+        $api.fixIos7Bar($header);
+        var $body = $api.dom('body');
+        var $footer = $api.byId('footer');
+        var header_h = $api.offset($header).h;
+        var body_h = $api.offset($body).h;
+        var footer_h = $api.offset($footer).h;
+
+        var rect_h = body_h - header_h - footer_h;
+        var y=50+  $('.top').height()
+        if(isiOS){
+        var y=43+  $('.top').height()
+        }
+        else{
+          rect_h=rect_h-25
+        }
+
+        api.openFrameGroup({
+            name: 'group',
+            scrollEnabled: false,
+
+            rect: {  x: 0,
+                     y: y,
+                     w: 'auto',
+                     h:rect_h
+                  },
+            index: 0,
+            frames: [
+                {
+                    name: 'home',
+                    url: '../../html/Home/main.html',
+                    customRefreshHeader: 'UIPullRefreshFlash',
+                    reload:true
+
+
+
+                },
+
+
+                {
+                    name: 'market',
+                    url: '../../html/market/marketWin.html',
+                    reload:true
+                },
+                {
+                    name: 'userCenter',
+                    url: '../../html/user/userCenterWin.html',
+                    reload:true
+                }
+            ]
+        }, function (ret, err) {
+          $('ul').find('li').removeClass('active')
+          $('header').find('div').removeClass('activebar')
+          $('header').find('div').eq(ret.index).addClass('activebar')
+          $('ul').find('li').eq(ret.index).addClass('active')
+
+
+        });
+//                滑动
+
+    }
+    // 随意切换按钮
+    function randomSwitchBtn(obj, name, index) {
+        var $header = $api.dom('header');
+        var $titleBar = $api.domAll($header, '.topbar');
+        for (var i = 0; i < $titleBar.length; i++) {
+            $api.removeCls($titleBar[i], 'activebar');
+        }
+        $api.addCls($api.byId(name), 'activebar');
+        var $footer = $api.byId('footer');
+        var $footerBar = $api.domAll($footer, 'li');
+        for (var j = 0; j < $footerBar.length; j++) {
+            $api.removeCls($footerBar[j], 'active');
+        }
+        $api.addCls(obj, 'active');
+
+        api.setFrameGroupIndex({
+            name: 'group',
+            index: index
+        });
+
+    }
+</script>
+</html>

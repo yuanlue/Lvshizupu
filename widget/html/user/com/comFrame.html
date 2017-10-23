@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <style>
+      body{
+        min-height:100vh;
+        background-color: #eee;
+      }
+
+      ul li{
+        background-color: #fff;
+        line-height: 50px;
+        padding:0 10px;
+        border-bottom:1px solid #eee;
+        font-size:16px;
+      }
+      ul li:before{
+        content:"";
+        display: inline-block;
+        background:url('../../../image/ar.png') no-repeat;
+        background-size: contain;
+        width:8px;
+        height:12px;
+        float: right;
+        margin-top:20px;
+      }
+      ul li img{
+        width:23px;
+        margin-right:10px;
+        vertical-align: middle;
+      }
+      ul li:active{
+        background: #eee
+      }
+      .product{
+        margin-top:10px;
+      }
+      </style>
+  </head>
+  <body>
+    <div class="com">
+      <ul>
+        <li onclick="navchange('mycom')">我的企业</li>
+        <li onclick="navchange('auth')">入驻认证</li>
+        <li style="display:none" onclick="navchange('supply')" class="product">供需产品</li>
+        <li style="display:none;">我的服务</li>
+      </ul>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../script/service.js"></script>
+  <script type="text/javascript">
+  function navchange(url){
+    if(url=='auth'){
+      getData('/companies/approval',function(data){
+        if(data.data.exists==false){
+          //没有申请
+          return false
+        }
+        else{
+          api.openWin({
+              name: url,
+              url: '../../../html/user/com/auth/success.html',
+              bounces:false
+          });
+        }
+      },{},{'authorization':$api.getStorage('token')})
+    }
+    api.openWin({
+        name: url,
+        url: '../../../html/user/com/'+url+'/'+url+'.html',
+        bounces:false
+    });
+
+  }
+      apiready = function(){
+
+      };
+  </script>
+  </html>

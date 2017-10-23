@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../../css/api.css"/>
+      <style>
+          body{
+            min-height:100vh;
+            background: #eee;
+            box-sizing: border-box;
+          }
+          ul li {
+            padding:15px;
+            background-color: white;
+            margin-bottom:10px;
+          }
+
+        ul li>div{
+          display: inline-block;
+        }
+          ul li>img{
+            margin-right:10px;
+            width:37px;
+            vertical-align: middle;
+          }
+        ul li .info{
+          font-size:16px;
+          vertical-align: middle;
+          line-height: 25px;
+          }
+          ul li .info img{
+            vertical-align: middle;
+            margin-right:5px;
+            width:20px;
+          }
+          ul li .info span{
+          vertical-align: middle;
+          }
+          ul li .info .heart{
+            margin-left:10px;
+          }
+          ul li:before{
+            content:"";
+            display: inline-block;
+            background:url('../../../../image/ar.png') no-repeat;
+            background-size: contain;
+            width:8px;
+            height:12px;
+            float: right;
+            margin-top:20px;
+          }
+      </style>
+  </head>
+  <body>
+  <div class="supply">
+    <ul>
+      <li class="need"><img src="../../../../image/xu.png" alt="">
+        <div class="info">
+          <p>发布需求信息：50/200</p>
+          <p><img src="../../../../image/yelloweye.png" alt=""><span>100000</span></p>
+        </div>
+      </li>
+      <li class="need"><img src="../../../../image/gong.png" alt="">
+        <div class="info">
+          <p>发布需求信息：50/200</p>
+          <p>
+            <img src="../../../../image/yelloweye.png" alt=""><span>100000</span>
+            <img class="heart" src="../../../../image/heart.png" alt=""><span>100000</span>
+          </p>
+        </div>
+      </li>
+    </ul>
+  </div>
+  </body>
+  <script type="text/javascript" src="../../../../script/api.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+
+      };
+  </script>
+  </html>

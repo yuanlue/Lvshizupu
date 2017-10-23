@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <style>
+      body{
+        background:#eee;
+
+        min-height: 100vh;
+        box-sizing: border-box;
+      }
+      .tab{
+        background: #fef7d5;
+      }
+      .tab ul{
+        height:40px;
+        display: table
+      }
+      .tab ul li{
+
+        position: relative;
+        font-size:14px;
+        display: table-cell;
+        line-height: 40px;
+        width: 1%;
+        text-align: center;
+      }
+      .tab ul .active:after{
+        display: block;
+        margin:0 auto;
+        content:"";
+        left:calc(25vw - 40px);
+        width:80px;
+        position: absolute;
+          background: #9e2932;
+          height:2px
+      }
+      .lvstart ul li{
+        background: white;
+        padding:10px;
+        border-bottom:10px solid #eee;
+      }
+      .lvstart ul li>div{
+        vertical-align: top;
+        width:100%;
+        display: inline-block;
+      }
+      .lvstart ul li .inner{
+        margin-left:7px;
+      }
+      .lvstart ul li>div>p{
+        margin-top:5px;
+      }
+      .lvstart ul li>div h1{
+
+        font-size:16px;
+      }
+      .lvstart ul li img{
+        width:100%;
+
+      }
+      .lvstart ul li p{
+        font-size:14px;
+      }
+      .ac ul li {
+        width：100%;
+      }
+      .ac ul li img{
+        width:100%;
+      }
+      .thum{
+        width:100%;
+        position: relative;
+      }
+      .thum>span{
+        top:12px;
+        position: absolute;
+        width:70px;
+        border-top-right-radius:12px;
+        border-bottom-right-radius:12px;
+        font-size:11px;
+        line-height: 21px;
+        text-align: center;
+        background: white;
+      }
+      .thum .being{
+                color:#c2262b;
+      }
+      .thum .over{
+        color:#666666;
+      }
+      </style>
+  </head>
+  <body>
+    <div class="startA">
+
+    <div class="lvstart ac" >
+      <ul>
+
+      </ul>
+    </div>
+
+    </div>
+  </body>
+  <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../script/vue.js"></script>
+  <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../script/service.js"></script>
+  <script type="text/javascript">
+  var url="http://116.62.170.181:8081"
+
+  function errHandle(obj){
+    $('img').bind('error',function(){
+      $(this).attr('src','../../../image/default.png')
+    })
+    if(obj){
+      $(obj).attr('src','../../../image/default.png')
+    }
+  }
+  errHandle()
+  function inner(id){
+    api.openWin({
+        name: 'content',
+        url: '../../../html/Home/content.html',
+        pageParam:{
+          contentId:id,
+          category:'actives',
+          title:api.pageParam.title
+        }
+    });
+
+  }
+  apiready = function(){
+    var cur=1
+    api.showProgress({
+    title: '努力加载中...',
+    text: '先喝杯茶...',
+    modal: false
+});
+api.setCustomRefreshHeaderInfo({
+bgColor: '#eee',
+images: [
+    'widget://image/refresh/dropdown0.png',
+    'widget://image/refresh/dropdown1.png',
+    'widget://image/refresh/dropdown2.png',
+    'widget://image/refresh/dropdown3.png',
+    'widget://image/refresh/dropdown4.png',
+    'widget://image/refresh/dropdown5.png',
+    'widget://image/refresh/dropdown6.png'
+],
+tips: {
+    pull: '下拉刷新',
+    threshold: '松开立即刷新',
+    load: '正在刷新'
+}
+}, function() {
+  cur=1
+//下拉刷新被触发，自动进入加载状态，使用 api.refreshHeaderLoadDone() 手动结束加载中状态
+//下拉刷新被触发，使用 api.refreshHeaderLoadDone() 结束加载中状态
+getData('/actives',function(data){api.hideProgress();
+  obj=$('.ac ul')
+    obj=$('.ac ul').html(" ")
+  if(data.data.length>=1){
+    data.data.forEach(function(item){
+      if(item.active_status==false){
+        obj.append('<li onclick="inner('+item.id+')"><div class="thum">  <span class="over">活动已经结束</span><img onerror="errHandle(this)" src="'+url+item.pic+'" alt=""><p>'+item.title+'</p>  </div></li></li>')
+
+      }
+      else{
+        obj.append('<li onclick="inner('+item.id+')"><div class="thum">  <span class="being">活动进行中</span><img onerror="errHandle(this)" src="'+url+item.pic+'" alt=""><p>'+item.title+'</p>  </div></li></li>')
+
+      }
+    })
+  }
+  else{
+    return false
+  }
+  api.refreshHeaderLoadDone()
+
+  },{"page":cur,"page_size":"10"},{"Authorization":$api.getStorage('token')})
+
+
+});
+api.addEventListener({
+  name: 'scrolltobottom'
+}, function(ret, err){
+      cur++
+      api.showProgress({
+      title: '努力加载中...',
+      text: '先喝杯茶...',
+      modal: false
+  });
+    getData('/actives?page='+cur+"&page_size=10",function(data){api.hideProgress();
+      obj=$('.ac ul')
+      if(data.data.length>=1){
+        data.data.forEach(function(item){
+          if(item.active_status==false){
+            obj.append('<li onclick="inner('+item.id+')"><div class="thum">  <span class="over">活动已经结束</span><img onerror="errHandle(this)" src="'+url+item.pic+'" alt=""><p>'+item.title+'</p>  </div></li></li>')
+
+          }
+          else{
+            obj.append('<li onclick="inner('+item.id+')"><div class="thum">  <span class="being">活动进行中</span><img onerror="errHandle(this)" src="'+url+item.pic+'" alt=""><p>'+item.title+'</p>  </div></li></li>')
+
+          }        })
+      }
+      else{
+        return false
+      }
+
+    },{"page":cur+1,"page_size":"10"},{"Authorization":$api.getStorage('token')})
+    api.hideProgress();
+
+  });
+      getData('/actives',function(data){
+        api.hideProgress()
+        obj=$('.ac ul')
+
+        data.data.forEach(function(item){
+          if(item.active_status==true){
+            obj.append('<li onclick="inner('+item.id+')"><div class="thum">  <span class="being">活动进行中</span><img onerror="errHandle(this)" src="'+url+item.pic+'" alt=""><p>'+item.title+'</p>  </div></li></li>')
+          }
+          else{
+            obj.append('<li onclick="inner('+item.id+')"><div class="thum">  <span class="over">活动已经结束</span><img onerror="errHandle(this)" src="'+url+item.pic+'" alt=""><p>'+item.title+'</p>  </div></li></li>')
+
+          }        })
+      },{"page":cur,"page_size":"10"},{"Authorization":$api.getStorage('token')})
+
+  };
+  </script>
+  </html>

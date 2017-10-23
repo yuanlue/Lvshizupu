@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <style>
+
+
+          ul li{
+            padding:0 15px;
+            font-size:16px;
+            line-height: 50px;
+            border-bottom:1px solid #eee;
+          }
+          ul li img{
+            margin-right:10px;
+
+            vertical-align: middle;
+            width:27px;
+          }
+      </style>
+  </head>
+  <body>
+    <div class="payway">
+        <ul>
+          <li style="display:none" onclick="pay()"><img src="../../../image/wechatpay.png" alt="">微信</li>
+          <li onclick="pay()"><img src="../../../image/paypal.png" alt="">支付宝</li>
+        </ul>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../script/service.js"></script>
+
+  <script type="text/javascript">
+  function pay(){
+  var aliPayPlus = api.require('aliPayPlus');
+
+  postData('/alipay/pay',function(res){
+  //发送验证码
+    if(res.code==200){
+
+      aliPayPlus.payOrder({
+    orderInfo: res.data
+}, function(ret, err) {
+    if(ret.code==9000){
+      api.toast({
+              msg: '捐款成功，谢谢您的支持',
+              duration:2000,
+              location: 'bottom'
+          });
+          api.execScript({
+              name: 'record',
+              frameName: 'recordFrame',
+              script: 're();'
+          });
+
+        api.openWin({
+            name: 'paySuccess',
+            url: '../../../html/Home/decoration/paySuccess.html'
+        });
+
+
+    }
+    else{
+      api.toast({
+              msg: '支付失败，请重试',
+              duration:2000,
+              location: 'bottom'
+          });
+    }
+});
+    }
+  },
+  {'donation_id':api.pageParam.payId,'is_anonymous':api.pageParam.is_anonymous,'name':api.pageParam.name,'amount':api.pageParam.amount},
+  {'Authorization':$api.getStorage('token')}
+)
+  }
+      apiready = function(){
+
+      };
+  </script>
+  </html>

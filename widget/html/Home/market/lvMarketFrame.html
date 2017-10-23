@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <style>
+      body{
+        background: #eee;
+        min-height:100vh;
+      }
+        .lvMarket  header{
+            line-height: 40px;
+            background: #eee;
+            font-size:14px;
+            padding:0 10px;
+        }
+        .lvMarket .rank{
+          background: white;
+        }
+        .lvMarket  header>img{
+          width:16px;
+          vertical-align: middle;
+          margin-right:10px
+        }
+        .lvMarket .rank ul{
+          padding:0 15px;
+        }
+        .lvMarket .rank ul li>div>img{
+          display: inline-block;
+          width:75px;
+          display: table-cell;
+
+          border:1px solid #eee;
+          vertical-align: middle;
+        }
+        .lvMarket .rank ul li{
+          width:100%;
+          padding:15px 0;
+          display: table;
+          border-bottom:1px solid #eee;
+        }
+        .lvMarket .rank ul li>div{
+          display: table
+        }
+        .lvMarket .rank ul li>div>i{
+          display: table-cell;
+          margin-right:10px;
+          color:#9e2931;
+          padding-right:10px;
+
+          vertical-align: middle;
+          font-weight: bold;
+        }
+        .lvMarket .rank ul li >div>div{
+          display: table-cell;
+
+          vertical-align: top;
+        }
+        .lvMarket .rank ul li >div>div {
+          line-height: 20px;
+          margin-left:10px;
+          padding-left:10px;
+
+        }
+        .lvMarket .rank ul li >div>div span{
+          vertical-align: middle;
+        }
+        .lvMarket .rank ul li >div>div img{
+          margin-right:5px;
+          width:17px;
+          vertical-align: top;
+        }
+        .lvMarket .rank ul li >div span{
+          font-size:12px;
+          margin-top:10px;
+        }
+        .lvMarket .newCom {
+          overflow: auto;
+        }
+        ::-webkit-scrollbar{width:0px}
+          .lvMarket .newCom ul{
+            width:100%;
+            height:170px;
+            box-sizing: border-box;
+            padding:0 15px;
+            overflow: auto;
+            -webkit-overflow-scrolling:touch;
+            white-space:nowrap;
+
+          }
+        .lvMarket .newCom ul li{
+          padding:10px;
+          display: inline-block;
+          background:white;
+          width:130px;
+          height:160px;
+          padding:10px;
+          box-sizing: border-box;
+        }
+        .lvMarket .newCom ul li img{
+        width:100%;
+        }
+        .lvMarket .newCom ul li p{
+          margin-top:10px;
+          font-size:14px;
+          line-height: 30px;
+          height:30px;
+          overflow: hidden;
+            white-space:normal;
+        }
+        ul li:active{
+          background: #eee;
+        }
+          .lvMarket .newCom ul li span{
+            color:#666;
+            font-size: 12px;
+            width:100%;
+            white-space:normal;
+          }
+          .opera{
+            text-align: center;
+            margin-top:20px;
+            margin-bottom:20px;
+          }
+          .opera button{
+            width:150px;
+            border:1px solid #9e2931;
+            border-radius: 20px;
+            height:37px;
+            color:#9e2931;
+          }
+      </style>
+  </head>
+  <body>
+<div class="lvMarket">
+  <div class="rank">
+    <header><img src="../../../image/rank.png" alt="">关注排行榜</header>
+    <ul>
+      <li onclick="cominner()">
+        <div>
+        <i>NO.1</i>
+        <img src="../../../image/demo1.png" alt="">
+      <div>
+        <p>吕氏集团</p>
+        <span><img src="../../../image/zan.png" alt="">79689</span>
+      </div>
+      </div>
+    </li>
+    <li onclick="cominner()">
+      <div>
+      <i>NO.1</i>
+      <img src="../../../image/demo2.png" alt="">
+    <div>
+      <p>雅丽洁（国际）集团有限公司</p>
+      <span><img src="../../../image/zan.png" alt="">9689</span>
+    </div>
+    </div>
+  </li>
+  <li onclick="cominner()">
+    <div>
+    <i>NO.2</i>
+    <img src="../../../image/demo3.png" alt="">
+  <div>
+    <p>广东卓粤集团</p>
+    <span><img src="../../../image/zan.png" alt="">689</span>
+  </div>
+  </div>
+</li>
+    </ul>
+  </div>
+  <div class="newCom">
+    <header><img src="../../../image/build.png" alt="">新入驻企业</header>
+    <div class="newCom">
+      <ul>
+        <li onclick="cominner()">
+          <img src="../../../image/demo1.png" alt="">
+          <p>吕氏集团</p>
+          <span>入驻时间2017-09-12</span>
+        </li>
+        <li onclick="cominner()">
+          <img src="../../../image/demo2.png" alt="">
+          <p>雅丽洁（国际）集团有限公司</p>
+          <span>入驻时间2017-09-12</span>
+        </li>
+        <li onclick="cominner()">
+          <img src="../../../image/demo3.png" alt="">
+          <p>广东卓粤集团</p>
+          <span>入驻时间2017-09-12</span>
+        </li>
+      </ul>
+    <div class="opera"  onclick="allcom()">
+      <button>查看所有企业</button>
+    </div>
+    </div>
+  </div>
+</div>
+  </body>
+  <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript">
+  function cominner(){
+    api.openWin({
+        name: 'marketInnerWin',
+        url: '../../../html/Home/market/markectInnerWin.html',
+    });
+
+  }
+  function allcom(){
+    api.openWin({
+        name: 'comListWin',
+        url: '../../../html/Home/market/comListWin.html',
+
+    });
+
+  }
+      apiready = function(){
+
+      };
+  </script>
+  </html>

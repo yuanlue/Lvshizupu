@@ -1,0 +1,458 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+	<style>
+  body{
+    min-height: 100vh;
+  }
+  .top{
+    height:25px;
+    background: black;
+  }
+  .topbar {
+      background-image: url("../../image/status.png");
+      background-size: cover;
+      height: 50px;
+      border-bottom: 1px solid #DDDFE3;
+      line-height: 50px;
+      text-align: center;
+      font-size:17px;
+      color:white;
+
+  }
+  #cloud .return{
+    width:12px;
+    position: absolute;
+    left:10px;
+    top:13px;
+  }
+  #cloud .search{
+    width:21px;
+    position: absolute;
+    right:10px;
+    top:13px;
+  }
+  .tab{
+    background: #fef7d5;
+  }
+  .tab ul{
+    height:40px;
+    display: table
+  }
+  .tab ul li{
+    position: relative;
+    font-size:14px;
+    display: table-cell;
+    line-height: 40px;
+    width: 1%;
+    text-align: center;
+  }
+
+  .tab ul .active:after{
+    display: block;
+    margin:0 auto;
+    content:"";
+    left:calc(25vw - 40px);
+    width:80px;
+    position: absolute;
+      background: #9e2932;
+      height:2px
+  }
+  .tab ul .recent:before{
+    content:"";
+    display: inline-block;
+    background-color: #9e2932;
+    top:10px;
+    right:40px;
+    width:10px;
+    height:10px;
+    border-radius: 50%;
+    position: absolute;
+  }
+	</style>
+</head>
+<body>
+  <div class="top"></div>
+  <header>
+      <div id="cloud" class="topbar  activebar">
+        <img class="return" onclick="api.closeWin()" src="../../image/return.png" alt="">
+                  圈子
+        <img class="search" onclick="search()" src="../../image/search.png" alt="">
+      </div>
+  </header>
+  <div class="tab">
+    <ul>
+      <li class="active"  onclick="contact('all')">通讯录</li>
+      <li  onclick="contact('contact')">常用联系人<i class="quan"></i></li>
+    </ul>
+  </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../../script/service.js"></script>
+
+<script type="text/javascript">
+function receive(obj){
+  if($api.getStorage('messageList')){
+     messageList=$api.getStorage('messageList')
+  }
+  $('.tab ul li').removeClass('active')
+  $('.tab ul li').eq(1).addClass('active')
+  $('.tab ul li').eq(1).addClass('recent')
+
+  getData('/recent_contacts',function(data){
+    data.data.forEach(function(item){
+      item.title=item.name
+      item.subTitle=item.nationality+item.province+item.city
+      if(item.avatar==null){
+        item.imgPath="widget://image/male.png"
+      }
+      else{
+        item.imgPath=item.avatar
+      }
+            messageList.forEach(function(p){
+
+              if(item.uid==JSON.parse(p).sender){
+                item.remark="有未读消息"
+              }
+            })
+
+    })
+
+    UIListView.reloadData({
+  data: data.data
+}, function(ret) {
+  for(var i=0;i<data.data.length;i++){
+    UIListView.setSwipeBtns({
+        index: i,
+        btns: [{
+            bgColor: '#9e2831',
+            activeBgColor: '#388e8e',
+            width: 75,
+            title: '',
+            titleSize: 0,
+            titleColor: '#fff',
+            icon: 'widget://image/delete.png',
+            iconWidth: 21
+        }],
+    }, function(ret, err) {
+    });
+  }
+
+});
+  },{},{'authorization':$api.getStorage('token')})
+}
+function search(){
+    api.openWin({
+        name: 'search',
+        url: '../../html/friend/search.html',
+
+    });
+
+}
+function contact(obj){
+    if(obj=='all'){
+      $('.tab ul li').removeClass('active')
+      $('.tab ul li').eq(0).addClass('active')
+      api.showProgress({
+      title: '努力加载中...',
+      text: '先喝杯茶...',
+      modal: false
+  });
+      getData('/clan_users',function(data){
+        api.hideProgress();
+        data.data.forEach(function(item){
+          item.title=item.name
+          item.subTitle=item.nationality+item.province+item.city
+          if(item.avatar==null){
+            item.imgPath="widget://image/male.png"
+          }
+          else{
+            item.imgPath=item.avatar
+          }
+
+        })
+        UIListView.reloadData({
+      data: data.data
+  }, function(ret) {
+    if (ret.eventType=='clickContent') {
+      UIListView.getDataByIndex({
+      index:ret.index
+      }, function(ret, err) {
+          if (ret) {
+            api.openWin({
+                name: 'friendDetail',
+                url: '../../html/friend/friendDetail.html',
+                rect: {
+                    x: 0,
+                    y: api.pageParam.header_height,
+                    w: 'auto',
+                    h: api.pageParam.footer_height
+                },
+                pageParam:{
+                  'id':ret.data.uid,
+                  'title':ret.data.title,
+                  'avatar':ret.data.avatar
+                },
+                bounces: true,
+                bgColor: 'rgba(0,0,0,0)',
+                vScrollBarEnabled: true,
+                hScrollBarEnabled: true,
+                showScrollBar:true
+            });
+          } else {
+              (JSON.stringify(err));
+          }
+  });
+    }
+  });
+      },{},{"Authorization":$api.getStorage('token')})
+    }
+    else{
+      $('.tab ul li').removeClass('active')
+      $('.tab ul li').eq(1).addClass('active')
+      var messageList=[];
+      if($api.getStorage('messageList')){
+         messageList=$api.getStorage('messageList')
+      }
+
+      api.showProgress({
+      title: '努力加载中...',
+      text: '先喝杯茶...',
+      modal: false
+  });
+
+    //请求常用联系人api
+  getData('/recent_contacts',function(data){
+    api.hideProgress();
+    data.data.forEach(function(item){
+      item.title=item.name
+      item.mesNum=0;
+      item.subTitle=item.nationality+item.province+item.city
+      messageList.forEach(function(p){
+        if(JSON.parse(p).sender==item.uid){
+          item.remark="(有未读的消息)"
+
+        }
+      })
+      if(item.avatar==null){
+        item.imgPath="widget://image/male.png"
+      }
+      else{
+      item.imgPath=item.avatar
+      }
+
+    })
+
+    UIListView.reloadData({
+  data: data.data
+}, function(ret) {
+  for(var i=0;i<data.data.length;i++){
+    UIListView.setSwipeBtns({
+        index: i,
+        btns: [{
+            bgColor: '#9e2831',
+            activeBgColor: '#388e8e',
+            width: 75,
+            title: '',
+            titleSize: 0,
+            titleColor: '#fff',
+            icon: 'widget://image/delete.png',
+            iconWidth: 21
+        }],
+    }, function(ret, err) {
+    });
+  }
+
+});
+  },{},{'authorization':$api.getStorage('token')})
+
+
+    }
+}
+
+    apiready = function(){
+      var u = navigator.userAgent;
+      var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+      var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+
+      UIListView = api.require('UIListView');
+      if(isiOS){
+      $('.top').css({'background':'white',"height":"20px"})
+       }
+    if($api.getStorage('messageList')&&$api.getStorage('messageList').length>0){
+      $('.tab ul li').eq(1).addClass('recent')
+
+    }
+       api.showProgress({
+       title: '努力加载中...',
+       text: '先喝杯茶...',
+       modal: false
+   });
+  getData('/clan_users',function(data){
+    api.hideProgress();
+
+    data.data.forEach(function(item){
+      item.title=item.name
+      item.subTitle=item.nationality+item.province+item.city
+      if(item.avatar==null){
+        item.imgPath="widget://image/male.png"
+      }
+      else{
+      item.imgPath=item.avatar
+      }
+    })
+    UIListView.open({
+        rect: {
+            x: 0,
+            y: 50+  $('.top').height()+43,
+            w: api.winWidth,
+            h:api.frameHeight-(50+  $('.top').height()+40)
+        },
+        data: data.data,
+
+        styles: {
+            borderColor: '#eee',
+            item: {
+                bgColor: '#fff',
+                activeBgColor: '#ccc',
+                height: 75.0,
+                imgWidth: 40,
+                imgHeight: 40,
+                imgCorner: 20,
+                placeholderImg: '',
+                titleSize: 14.0,
+                titleColor: '#000',
+                subTitleSize: 12.0,
+                subTitleColor: '#000',
+                remarkColor: '#000',
+                remarkSize: 12,
+                remarkIconWidth: 0
+            }
+        },
+        fixedOn: api.frameName
+    }, function(ret, err) {
+        if(ret.eventType=='clickRightBtn'){
+          index=ret.index
+            UIListView.getDataByIndex({
+                index: ret.index
+            }, function(ret, err){
+                deleteData('/recent_contacts/'+ret.data.id,function(data){
+                  if(data.code==200){
+                        UIListView.deleteItem({
+                          index:index
+                      }, function(ret, err) {
+                        api.toast({
+                                msg: '删除成功',
+                                duration:2000,
+                                location: 'bottom'
+                            });
+                      });
+                  }
+                },{},{'authorization':$api.getStorage('token')})
+            });
+
+        }
+        if (ret.eventType=='clickContent') {
+          var index=ret.index
+          UIListView.getDataByIndex({
+          index:ret.index
+          }, function(ret, err) {
+              if (ret) {
+                var tar=ret
+                ret.data.remark=""
+            UIListView.updateItem({
+              index: index,
+              data: tar.data,
+      }, function(ret, err) {
+          if (ret) {
+          } else {
+              alert(JSON.stringify(err));
+          }
+      });
+      var hadRead=[];
+      var signRead=[]
+      var isold=false
+      if($api.getStorage('messageList')){
+
+        if($api.getStorage('readRecord')){
+          signRead=$api.getStorage('readRecord')
+        }
+        var messageList=$api.getStorage('messageList')
+        messageList.forEach(function(item){
+          if(JSON.parse(item).sender!=ret.data.uid){
+            hadRead.push(item)
+          }
+        })
+        if(hadRead.length<=0){
+          $('.tab ul li').removeClass('recent')
+        }//没有读的消息
+        $api.setStorage('messageList', hadRead);
+
+      }
+
+        var time=new Date().getTime()
+        var format={
+          "readTime":time,
+          "uid":ret.data.uid
+        }
+        if(signRead.length>=1){
+          signRead.forEach(function(item){
+            if(item.uid==ret.data.uid){
+              item.readTime=time  //更新已读时间 打开过的
+              isold=true
+            }
+
+          })
+        }
+
+        if(isold==false){
+          signRead.push(format)
+        }
+        $api.setStorage('readRecord', signRead);
+        api.execScript({
+            name: 'home',
+            frameName: 'home',
+            script: 're();'
+        });
+                api.openWin({
+                    name: 'friendDetail',
+                    url: '../../html/friend/friendDetail.html',
+                    rect: {
+                        x: 0,
+                        y: api.pageParam.header_height,
+                        w: 'auto',
+                        h: api.pageParam.footer_height
+                    },
+                    pageParam:{
+                      'id':ret.data.uid,
+                      'title':ret.data.title,
+                      'avatar':ret.data.avatar
+                    },
+                    bounces: true,
+                    bgColor: 'rgba(0,0,0,0)',
+                    vScrollBarEnabled: true,
+                    hScrollBarEnabled: true,
+                    showScrollBar:true
+                });
+              } else {
+                  (JSON.stringify(err));
+              }
+      });
+
+
+        } else {
+        }
+    });
+  },{},{"Authorization":$api.getStorage('token')})
+
+
+}
+
+</script>
+</html>

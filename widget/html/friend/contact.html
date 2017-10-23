@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      html{
+        background: #eee;
+
+      }
+          body{
+            min-height:100vh;
+            background: #eee;
+            padding-top:10px;
+            box-sizing: border-box;
+          }
+          i{
+            display: block;
+          }
+          i>img{
+            border-radius: 50%;
+            width:50px;
+          }
+          i span>img{
+            max-width:100px;
+          }
+           i span{
+           vertical-align: top;
+           background: white;
+           border-radius: 5px;
+           display: inline-block;
+           padding:10px;
+           margin-left:15px;
+           margin-right:15px;
+         }
+         ul{
+           padding-bottom:100px;
+         }
+         li{
+           display: block;
+           padding:0 10px;
+         }
+
+         .other span{
+           margin-right:15px;
+           background:#9e2831;
+         }
+        .other i img,.other i span{
+          float: right;
+        }
+        i span{
+          position: relative;
+          max-width:60vw;
+          word-break:break-all;
+        }
+        .mine i span::before{
+          top:10px;
+          content:"";
+          display: inline-block;
+          position: absolute;
+          width: 0;
+          height: 0;
+          border-top: 5px solid transparent;
+          border-right: 10px solid white;
+          border-bottom: 5px solid transparent;
+          left:-10px;
+        }
+        .other i span{
+          color:white;
+        }
+        .mine i span{
+          color:black
+        }
+        .other i span::after{
+          content:"";
+          display: inline-block;
+          position: absolute;
+          width: 0;
+          height: 0;
+          border-top: 5px solid transparent;
+          border-left: 10px solid #9e2831;
+          border-bottom: 5px solid transparent;
+          right:-10px;
+                    top:10px;
+        }
+        .other:before,.other:after{
+          content: "";
+            clear: both;
+            display: block;
+            overflow: hidden;
+            font-size: 0;
+            height: 5px;
+        }
+        .mine,.other{
+          margin-top:10px;
+        }
+        .error{
+          color:white;
+          position: absolute;
+          font-style: normal;
+          font-size:18px;
+          display: inline-block;
+          width:20px;
+          height:20px;
+          text-align: center;
+          line-height: 20px;
+          left:-30px;
+          top:30px;
+          background: #9e2831;
+          border-radius: 50%;
+        }
+        .loadding{
+          position: absolute;
+          width:100px;
+          height:calc(100% - 20px);
+          text-align: center;
+          background: rgba(0,0,0,0.3)
+        }
+        ul li .loadding img{
+          margin-top: 10px;
+          float: none;
+        width:50px;
+        left:35px;
+        }
+      </style>
+  </head>
+  <body onscroll="scroll()">
+<div class="conversation" id="contact">
+  <ul>
+  </ul>
+</div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+
+  <script type="text/javascript">
+
+  var page=1;
+  var messageId
+  var myavata
+  var contactvata
+  var  obj=$api.dom('.conversation ul');
+
+
+  // function uploadVoice(ret){
+  //   var voice=ret.path
+  //   var card=new Date().getTime()+Math.floor(Math.random()*100)
+  //   var name+card+'.amr'
+  //   var path='/'+$api.getStorage('userInfo').uid+'/'+api.pageParam.id+'/'+name
+  //   upload(path,ret.path,function(data){
+  //     if(data.code==200){
+  //       window.scrollTo(0,$api.offset($api.byId("contact")).h);
+  //       var url=data.data.url
+  //       //上传成功后 发送消息
+  //       postData('/pub/chat/'+api.pageParam.id,function(data){
+  //         $('#'+card).html('<i class="other"><img src="../../image/male.jpeg"><span class="text"><img src="'+img+'"></span></i>')
+  //
+  //     },{'sender':$api.getStorage('userInfo').uid,'receiver':api.pageParam.id,'content':url,'message_type':'image'},{'authorization':$api.getStorage('token'),'Accept':"text/json" })
+  //
+  //     }
+  //     else{
+  //       $('#'+card).html('<i class="male"><img src="../../image/male.jpeg"><span class="text"><i class="error">!</i><img src="'+img+'"></span></i>')
+  //
+  //     }
+  //   },{"Authorization":$api.getStorage('token')},function(err){
+  //     $('#'+card).html('<i class="male"><img src="../../image/male.jpeg"><span class="text"><i class="error">!</i><img src="'+img+'"></span></i>')
+  //   })
+  // }
+  function uploadImg(ret){
+    var img =ret.imgPath
+    var card=new Date().getTime()+Math.floor(Math.random()*100)
+    var name=card+ret.imgName
+    var path='/'+$api.getStorage('uid')+'/'+api.pageParam.id+'/'+name
+
+    $api.append(obj,'<li class="other" id="'+card+'" ><i class="male"><img src="'+myavata+'"><span class="text"><i  class="loadding"><img src="../../image/loading_more.gif" alt=""></i><img src="'+ret.imgPath+'"></span></i></li>');
+    window.scrollTo(0,$api.offset($api.byId("contact")).h);
+
+    upload(path,ret.imgPath,function(data){
+      if(data.code==200){
+        window.scrollTo(0,$api.offset($api.byId("contact")).h);
+        var url=data.data.url
+        //上传成功后 发送消息
+        postData('/pub/chat/'+api.pageParam.id,function(data){
+          $('#'+card).html('<i class="other"><img src="'+myavata+'"><span class="text"><img onclick=\'detailImge("'+img+'")\' src="'+img+'"></span></i>')
+
+      },{'sender':$api.getStorage('uid'),'receiver':api.pageParam.id,'content':url,'message_type':'image'},{'authorization':$api.getStorage('token'),'Accept':"text/json" })
+
+      }
+      else{
+        $('#'+card).html('<i class="male"><img src="../../image/male.png"><span class="text"><i class="error">!</i><img onclick=\'detailImge("'+img+'")\' src="'+img+'"></span></i>')
+      }
+    },{"Authorization":$api.getStorage('token')},function(err){
+      $('#'+card).html('<i class="male"><img src="../../image/male.png"><span class="text"><i class="error">!</i><img src="'+img+'"></span></i>')
+    })
+
+
+  }
+  function detailImge(data){
+    var photoBrowser = api.require('photoBrowser');
+    photoBrowser.open({
+        images: [data.split('!')[0]],
+        placeholderImg: 'widget://image/default.png',
+        bgColor: '#000'
+    }, function(ret, err) {
+        if (ret) {
+            if(ret.eventType=="click"&&ret.index==0){
+              photoBrowser.close();
+            }
+        } else {
+        }
+    });
+  }
+  //处理类型
+  function typeDetail(data){
+    var  obj=$api.dom('.conversation ul');
+    if(data.data.length>0){
+      data.data.forEach(function(item){
+        if(item.sender==api.pageParam.id){
+            if(item.message_type=='image'){
+              //图片
+              $api.prepend(obj,'<li  class="mine" messageId="'+item.id+'" ><i class="male"><img src="'+contactvata+'"><span class="text"><img onclick=\'detailImge("'+item.content+'")\' src="'+item.content+'"></span></i></li>');
+
+            }
+            else if(item.message_type=='text'){
+              $api.prepend(obj,'<li class="mine" messageId="'+item.id+'"><i class="male"><img src="'+contactvata+'"><span class="text">'+item.content+'</span></i></li>');
+
+            }
+        }
+        else {
+          if(item.message_type=='image'){
+            //图片
+            $api.prepend(obj,'<li  class="other" messageId="'+item.id+'" ><i class="male"><img src="'+myavata+'"><span class="text"><img onclick=\'detailImge("'+item.content+'")\' src="'+item.content+'"></span></i></li>');
+
+          }
+          else if(item.message_type=='text'){
+            $api.prepend(obj,'<li class="other" messageId="'+item.id+'"><i class="male"><img src="'+myavata+'"><span class="text">'+item.content+'</span></i></li>');
+
+          }
+        }
+        if(item.sender==item.receiver){
+          if(item.message_type=='image'){
+            //图片
+            $api.prepend(obj,'<li class="other" messageId="'+item.id+'" ><i class="male"><img  src="'+myavata+'"><span class="text"><img onclick=\'detailImge("'+item.content+'")\'  src="'+item.content+'"></span></i></li>');
+
+          }
+          else if(item.message_type=='text'){
+            $api.prepend(obj,'<li class="other" messageId="'+item.id+'"><i class="male"><img src="'+myavata+'"><span class="text">'+item.content+'</span></i></li>');
+
+          }
+        }
+      })
+
+
+    }
+  }
+  //上滑加载
+function scroll(){
+  if($('body').scrollTop()==0){
+    api.showProgress({
+    title: '努力加载中...',
+    text: '先喝杯茶...',
+    modal: false
+});
+    page++;
+    getData('/messages',function(data){
+      var  obj=$api.dom('.conversation ul');
+
+      api.hideProgress();
+      typeDetail(data)
+
+    messageId=$('.conversation ul li').last().attr('messageId')
+
+    },{
+      'another':api.pageParam.id,
+      'from_id':"",
+      'page_size':10,
+      'from_id':messageId,
+      'page':page,
+    },{'authorization':$api.getStorage('token')})
+  }
+}
+//接收消息
+function receive(obj){
+  //发送者是当前这个人
+  obj=JSON.parse(obj)
+  if(obj.sender==api.pageParam.id){
+    var  tar=$api.dom('.conversation ul');
+    if(obj.message_type=='text'){
+      $api.append(tar,'<li class="mine" messageId="'+obj.id+'"><i class="male"><img src="'+contactvata+'"><span class="text">'+obj.content+'</span></i></li>');
+    }else if(obj.message_type='image'){
+      $api.append(tar,'<li  messageId="'+obj.id+'" class="mine" ><i class="male"><img  src="'+contactvata+'"><span class="text"><img onclick=\'detailImge("'+obj.content+'")\' src="'+obj.content+'"></span></i></li>');
+
+    }
+  }
+  setTimeout(function(){
+                           window.scrollTo(0,$api.offset($api.byId("contact")).h);
+                   },500)
+}
+  function init(){
+    api.showProgress({
+    title: '努力加载中...',
+    text: '先喝杯茶...',
+    modal: false
+});
+    getData('/messages',function(data){
+      var  obj=$api.dom('.conversation ul');
+
+      api.hideProgress();
+      typeDetail(data)
+      setTimeout(function(){
+                               window.scrollTo(0,$api.offset($api.byId("contact")).h);
+                       },500)
+
+    },{
+      'another':api.pageParam.id,
+      'from_id':"",
+      'page_size':10,
+      'page':1,
+    },{'authorization':$api.getStorage('token')})
+  }
+      apiready = function(){
+        if($api.getStorage('avata')=="null"||$api.getStorage('avata')==null){
+           myavata="../../image/male.png"
+        }
+        else{
+           myavata=$api.getStorage('avata')
+        }
+        if(api.pageParam.avatar==null){
+            contactvata="../../image/male.png"
+        }
+        else{
+          contactvata=api.pageParam.avatar
+        }
+        ws = new WebSocket("wss://wx2.kuaiyunma.com/sub/chat/"+$api.getStorage('uid'));
+
+        var UIChatBox = api.require('UIChatBox');
+        var  obj=$api.dom('.conversation ul');
+          init()
+        UIChatBox.open({
+            placeholder: '',
+            maxRows: 4,
+            texts: {
+                // recordBtn: {
+                //     normalTitle: '按住说话',
+                //     activeTitle: '松开结束'
+                // },
+                sendBtn: {
+                    title: '发送'
+                }
+            },
+            styles: {
+                inputBar: {
+                    borderColor: '#d9d9d9',
+                    bgColor: '#f2f2f2'
+                },
+                inputBox: {
+                    borderColor: '#B3B3B3',
+                    bgColor: '#FFFFFF'
+                },
+                emotionBtn:{
+
+                },
+                extrasBtn: {
+                    normalImg: 'widget://image/add1.png'
+                },
+                // keyboardBtn: {
+                //     normalImg: 'widget://image/key1.png'
+                // },
+                // speechBtn: {
+                //     normalImg: 'widget://image/key2.png'
+                // },
+                recordBtn: {
+                    normalBg: '#c4c4c4',
+                    activeBg: '#999999',
+                    color: '#000',
+                    size: 14
+                },
+                indicator: {
+                    target: 'both',
+                    color: '#c4c4c4',
+                    activeColor: '#9e9e9e'
+                },
+                sendBtn: {
+                    titleColor: '#4cc518',
+                    bg: '#999999',
+                    activeBg: '#46a91e',
+                    titleSize: 14
+                }
+            },
+            extras: {
+                titleSize: 10,
+                titleColor: '#a3a3a3',
+                btns: [{
+                    title: '相册',
+                    normalImg: 'widget://image/album1.png',
+                    activeImg: 'widget://image/album2.png'
+                }, {
+                    title: '拍照',
+                    normalImg: 'widget://image/carema.png',
+                    activeImg: 'widget://image/carema.png'
+                }]
+            }
+        }, function(res, err) {
+            if (res) {
+              var u = navigator.userAgent;
+              var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+              var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+
+              if(res.eventType=='clickExtras'){
+                  if(res.index==0){
+                    //相册
+                    if(isiOS){
+                      api.getPicture({
+                        sourceType: 'all',
+                        encodingType: 'jpg',
+                        mediaValue: 'pic',
+                        destinationType: 'url',
+                        allowEdit: true,
+                        quality: 50,
+                        targetWidth: 100,
+                        targetHeight: 100,
+                        saveToPhotoAlbum: false
+                    }, function(ret, err) {
+                        if (ret) {
+                            ret.imgName="";
+                            var card=new Date().getTime()+Math.floor(Math.random()*100)
+                            var name=card+ret.imgName+'.png'
+                            ret.imgPath=ret.data
+                            uploadImg(ret)
+                        } else {
+                        }
+                    });
+                    }
+                    else{
+                      //安卓处理图片
+                      var imageTool = api.require('imageTool');
+                      imageTool.openImage(function(ret, err) {
+                      if (ret) {
+                      uploadImg(ret)
+
+                      }
+                  });
+                    }
+                  }
+                  else if(res.index==1){
+                    //拍照
+                      if(isiOS){
+                        api.getPicture({
+                          sourceType: 'all',
+                          encodingType: 'jpg',
+                          mediaValue: 'pic',
+                          destinationType: 'url',
+                          allowEdit: true,
+                          quality: 50,
+                          targetWidth: 100,
+                          targetHeight: 100,
+                          saveToPhotoAlbum: false
+                      }, function(ret, err) {
+                          if (ret) {
+                              ret.imgName="";
+                              var card=new Date().getTime()+Math.floor(Math.random()*100)
+                              var name=card+ret.imgName+'.png'
+                              ret.imgPath=ret.data
+                              uploadImg(ret)
+                          } else {
+                          }
+                      });
+                      }
+                      else{
+                        var cameraTool = api.require('cameraTool');
+
+                        cameraTool.openCamera(function(ret, err) {
+                          //相机拍照
+                          uploadImg(ret)
+                         });
+                      }
+                  }
+              }
+                if(res.eventType=='send'){
+                  postData('/pub/chat/'+api.pageParam.id,function(data){
+                    $api.append(obj,'<li class="other" messageId="'+data.last_message_id+'"><i class="male"><img src="'+myavata+'"><span class="text">'+res.msg+'</span></i></li>');
+                    window.scrollTo(0,$api.offset($api.byId("contact")).h);
+
+                  },{'sender':$api.getStorage('uid'),'receiver':api.pageParam.id,'content':res.msg,'message_type':'text'},{'authorization':$api.getStorage('token'),'Accept':"text/json" })
+                }
+            } else {
+                alert(JSON.stringify(err));
+            }
+        });
+        //加载更多
+
+      UIChatBox.addEventListener({
+        target : 'recordBtn',
+        name : 'press'
+      }, function(ret, err) {
+              api.startRecord();
+              if(ret.path){
+              alert(JSON.stringify(ret))
+
+              }
+
+      });
+      UIChatBox.addEventListener({
+      target : 'recordBtn',
+      name : 'move_out'
+    }, function(ret, err) {
+      api.stopRecord(function(ret, err) {
+              alert('stop')
+
+      });
+    });
+//监听 recordBtn 按钮
+var frameht = api.frameHeight;//获取全局窗口高度
+//监听键盘聊天框键盘弹出,用于调整聊天窗口高度
+        UIChatBox.addEventListener({
+                    target: 'inputBar',
+                    name: 'move'
+                }, function(ret,err){
+
+                    if(ret.panelHeight>0){
+                            api.setFrameAttr({
+    name: 'contact',
+    rect: {
+                h:frameht-ret.panelHeight
+            },
+});
+                    }else{
+                    api.setFrameAttr({
+    name: 'contact',
+    rect: {
+                h:frameht
+            },
+});
+
+                    }
+
+   setTimeout(function(){
+                            window.scrollTo(0,$api.offset($api.byId("contact")).h);
+                    },20)
+
+                });
+UIChatBox.addEventListener({
+        target : 'recordBtn',
+        name : 'press_cancel'
+}, function(ret, err) {
+        if (ret) {
+                api.stopRecord(function(ret, err) {
+                        if (ret) {
+                            alert(JSON.stringify(ret))
+
+                        }
+                });
+        } else {
+                api.toast({
+                        msg : JSON.stringify('stopRecord:' + err)
+                });
+        }
+});
+
+      };
+  </script>
+  </html>

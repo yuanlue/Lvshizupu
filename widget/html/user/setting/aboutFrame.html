@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <style>
+      .banner{
+        background: url('../../../image/about.png') no-repeat;
+        background-size:cover;
+        width:100%;
+        background-position: center;
+        height:210px;
+      }
+      ul li{
+        line-height: 50px;
+        padding:0 10px;
+        border-bottom:1px solid #eee;
+        font-size:16px;
+      }
+      ul li:before{
+        content:"";
+        display: inline-block;
+        background:url('../../../image/ar.png') no-repeat;
+        background-size: contain;
+        width:8px;
+        height:12px;
+        float: right;
+        margin-top:20px;
+      }
+      ul li img{
+        width:23px;
+        margin-right:10px;
+        vertical-align: middle;
+      }
+      ul li:active{
+        background: #eee
+      }
+          body{
+
+          }
+      </style>
+  </head>
+  <body>
+    <div class="about">
+      <div class="banner">
+
+      </div>
+      <div class="opera">
+        <ul>
+          <li  onclick="update()"><a><span>检查更新</span></a></li>
+          <li onclick="about()"><a><span>关于吕氏</span></a></li>
+          <li onclick="private()"><a><span>隐私政策</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript">
+function update(){
+  var mam = api.require('mam');
+  mam.checkUpdate(function( ret, err ){
+    if (ret) {
+      if(ret.result.update==false){
+        api.toast({
+                msg: '已经是最新版本',
+                duration:2000,
+                location: 'bottom'
+            });
+      }
+      else {
+        var url=ret.source
+        var dialogBox = api.require('dialogBox');
+    dialogBox.alert({
+        texts: {
+            content: '发现最新版本'+ret.version+',是否下载？',
+            leftBtnTitle: '取消',
+            rightBtnTitle: '下载'
+        },
+        styles: {
+            bg: '#fff',
+            w: 300,
+
+            content: {
+                color: '#000',
+                size: 14
+            },
+            left: {
+                marginB: 7,
+                marginL: 20,
+                w: 130,
+                h: 35,
+                corner: 2,
+                color:'#fff',
+
+                bg: '#c2262b',
+                size: 12
+            },
+            right: {
+                marginB: 7,
+                marginL: 10,
+                w: 130,
+                h: 35,
+                corner: 2,
+                color:'#fff',
+                bg: '#c2262b',
+                size: 12
+            }
+        }
+    }, function(ret) {
+        if (ret.eventType == 'left') {
+            dialogBox.close({
+                dialogName: 'alert'
+            });
+
+        }
+        else{
+          api.download({
+          url: url,
+          report: true,
+          cache: true,
+          allowResume: true
+      }, function(ret, err) {
+          if (ret.state == 1) {
+              //下载成功
+              api.installApp({
+                appUri: ret.savePath
+            });
+          } else {
+             api.alert({ msg: "下载失败" });
+          }
+      });
+        }
+    });
+      }
+      } else{
+        alert( JSON.stringify( err ) );
+    }
+});
+}
+  function private(){
+    api.openWin({
+        name: 'private',
+        url: '../../../html/user/setting/private.html',
+
+    });
+  }
+  function about(){
+    api.openWin({
+        name: 'aboutInner',
+        url: '../../../html/user/setting/aboutInner.html',
+
+    });
+
+  }
+      apiready = function(){
+
+      };
+  </script>
+  </html>

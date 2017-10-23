@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <style>
+      body{
+        min-height:100vh;
+        background-color: #eee;
+        box-sizing: border-box;
+      }
+      .record .banner {
+        height:165px;
+        padding:0 10px;
+        background-color: #ffe0e0;
+
+      }
+          .record .banner img{
+            width:80px;
+            display:block;
+            margin:0 auto;
+          }
+          .record .graph{
+            box-shadow: 0 1px 2px #ccc;
+            padding:15px;
+            border-radius: 10px;
+            background: white;
+          }
+            .record .graph ul{
+              font-size:0;
+              width: 100%;
+            }
+            .record .graph ul li{
+              text-align:center;
+              width:49%;
+              font-size:14px;
+              display: inline-block;
+            }
+            .record .graph ul>li:first-child  {
+              border-right:1px solid #eee;
+            }
+            .record .graph ul>li p{
+              margin-top:10px;
+            }
+            .recordlist ul{
+              margin-top:50px;
+            }
+            .recordlist ul li{
+              padding:15px;
+              background: white;
+              margin-top:10px;
+            }
+            .recordlist .thumb{
+              width:110px;
+            }
+            .recordlist .thumb img{
+              width:100%;
+            }
+            .recordlist ul li>div{
+              display: inline-block;
+            }
+            .recordlist ul li>.slideText{
+              vertical-align: top;
+              width:calc(100% - 130px);
+              margin-left:10px;
+            }
+            .recordlist ul li>.slideText h1{
+              margin-bottom:5px;
+              font-size:16px;
+            }
+            .recordlist ul li>.slideText p{
+              color:#666;
+              margin-bottom:5px;
+            }
+            .recordlist ul li>.slideText p span{
+              color:black;
+            }
+            .recordlist ul li .thumb{
+              position: relative;
+            }
+              .recordlist ul .being .thumb:after{
+                left:0;
+                content:"筹款中";
+                top:12px;
+                position: absolute;
+                width:50px;
+                border-top-right-radius:12px;
+                border-bottom-right-radius:12px;
+                font-size:11px;
+                line-height: 21px;
+                text-align: center;
+                color:#c2262b;
+                background: white;
+              }
+              .none{
+                margin-top:10px;
+                padding:0 10px;
+                text-align: center;
+                color:#ccc;
+              }
+              .opera {
+                margin-top:20px;
+                text-align: center;
+              }
+              .opera button{
+                background-color: #9e2932;
+                color:white;
+                width:110px;
+                text-align: center;
+                line-height: 25px;
+                border-radius: 20px;
+              }
+              *:focus {
+                   outline: none;
+                  background-color: transparent;
+               }
+      </style>
+  </head>
+  <body>
+    <div class="record">
+      <div class="banner">
+        <img src="../../../image/box.png" alt="">
+        <div class="graph">
+          <ul>
+            <li class="money">累计捐款/元<p>50</p></li>
+            <li class="account">累计捐款次数/次<p>5</p></li>
+          </ul>
+        </div>
+      </div>
+      <div class="recordlist">
+        <ul>
+
+
+        </ul>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../script/service.js"></script>
+
+  <script type="text/javascript">
+  var url="http://116.62.170.181:8081"
+  function re(){
+    window.location.reload()
+  }
+  function list(){
+    api.openWin({
+        name: 'decoration',
+        url: '../../../html/Home/decoration/decoration.html',
+        pageParam:{
+          token:$api.getStorage('token')
+        }
+    });
+
+  }
+  function timeRank(starttime,endtime,item){
+    var date=new Date()
+    if(parseInt(date.getMonth()+1)<10){
+      var nowTime=date.getFullYear().toString()+"0"+(date.getMonth()+1).toString()+date.getDate().toString()
+
+    }
+    else{
+      var nowTime=date.getFullYear().toString()+(date.getMonth()+1).toString()+date.getDate().toString()
+
+    }
+      startT=starttime.split(" ")[0];
+      endT=endtime.split(" ")[0];
+      item.startTime=startT.split('-')[0]+startT.split('-')[1]+startT.split('-')[2];
+      item.endTime=endT.split('-')[0]+endT.split('-')[1]+endT.split('-')[2];
+
+      if(parseFloat(nowTime) < parseFloat(item.startTime)){
+        item.ac=2
+      }
+      else if(parseInt(nowTime)>parseInt(item.endTime)){
+        item.ac=0
+      }
+      else if(parseInt(nowTime)<=parseInt(item.endTime)&&parseInt(nowTime)>=parseInt(item.startTime)){
+        item.ac=1
+      }
+
+  }
+  function inner(id,ac){
+    api.openWin({
+        name: 'decorationDetail',
+        url: '../../../html/Home/decoration/decorationDetail.html',
+        pageParam:{
+          id:id,
+          ac:ac
+        }
+    });
+
+  }
+      apiready = function(){
+        api.setCustomRefreshHeaderInfo({
+        bgColor: '#eee',
+        images: [
+            'widget://image/refresh/dropdown0.png',
+            'widget://image/refresh/dropdown1.png',
+            'widget://image/refresh/dropdown2.png',
+            'widget://image/refresh/dropdown3.png',
+            'widget://image/refresh/dropdown4.png',
+            'widget://image/refresh/dropdown5.png',
+            'widget://image/refresh/dropdown6.png'
+        ],
+        tips: {
+            pull: '下拉刷新',
+            threshold: '松开立即刷新',
+            load: '正在刷新'
+        }
+    }, function() {
+        //下拉刷新被触发，自动进入加载状态，使用 api.refreshHeaderLoadDone() 手动结束加载中状态
+        //下拉刷新被触发，使用 api.refreshHeaderLoadDone() 结束加载中状态
+        getData('/donation_tracks',function(data){
+          $('.graph .money p').text(data.data.donation_amount)
+          $('.graph .account p').text(data.data.donation_count)
+          $('.recordlist ul').html(" ")
+          if(data.data.donation_records.length>0){
+            data.data.donation_records.forEach(function(item){
+
+              timeRank(item.start_at,item.end_at,item)
+
+              $('.recordlist ul').append('<li class="being" onclick="inner('+item.donation_id+','+item.ac+')">'
+                      +'<div class="thumb">'
+                      +'<img src="'+url+item.pictures[0]+'" alt="">'
+                      +'</div>'
+                      +'<div class="slideText">'
+                        +'<h1>'+item.name+'</h1>'
+                        +'<p>金额：<span>'+item.amount+'</span>元</p>'
+                        +'<p>时间：<span>'+item.created_at+'</span></p>'
+                      +'</div>'
+                    +'</li>'
+                  )
+
+            })
+          }
+          else{
+            $('.recordlist').append('<p class="none">亲，您还没有捐款哦,帮助别人就是帮助自己，爱心不在多少，而在于实际行动，点我现在就去做公益，献爱心，积德福</p>')
+            $('.recordlist').append('<div class="opera"><button onclick="list()">立即捐款</button></div>')
+          }
+          api.refreshHeaderLoadDone()
+
+        },{},{"Authorization":$api.getStorage('token')})
+
+
+    });
+        api.showProgress({
+        title: '努力加载中...',
+        text: '先喝杯茶...',
+        modal: false
+    });
+    getData('/donation_tracks',function(data){
+      api.hideProgress();
+      $('.graph .money p').text(data.data.donation_amount)
+      $('.graph .account p').text(data.data.donation_count)
+      if(data.data.donation_records.length>0){
+        data.data.donation_records.forEach(function(item){
+
+          timeRank(item.start_at,item.end_at,item)
+
+          $('.recordlist ul').append('<li class="being" onclick="inner('+item.donation_id+','+item.ac+')">'
+                  +'<div class="thumb">'
+                  +'<img src="'+url+item.pictures[0]+'" alt="">'
+                  +'</div>'
+                  +'<div class="slideText">'
+                    +'<h1>'+item.name+'</h1>'
+                    +'<p>金额：<span>'+item.amount+'</span>元</p>'
+                    +'<p>时间：<span>'+item.created_at+'</span></p>'
+                  +'</div>'
+                +'</li>'
+              )
+
+        })
+      }
+      else{
+        $('.recordlist').append('<p class="none">亲，您还没有捐款哦,帮助别人就是帮助自己，爱心不在多少，而在于实际行动，点我现在就去做公益，献爱心，积德福</p>')
+        $('.recordlist').append('<div class="opera"><button onclick="list()">立即捐款</button></div>')
+      }
+    },{},{'authorization':$api.getStorage('token')})
+
+      };
+  </script>
+  </html>

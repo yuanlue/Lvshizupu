@@ -1,0 +1,208 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+	<style>
+  .userCenter{
+    width: 100vw;
+  }
+    .userBanner{
+      padding-top:90px;
+      box-sizing: border-box;
+      height:225px;
+      width:100%;
+      background-image: url('../../image/userbanner.jpg') ;
+      background-repeat: no-repeat;
+      background-color: white;
+      background-size: contain;
+      background-position: top;
+      padding-bottom:20px;
+      border-bottom:1px solid #eee;
+    }
+    .userBanner .pic{
+      line-height: 0;
+      text-align: center;
+    }
+    .userBanner .pic img{
+        width:60px;
+        border-radius: 50%;
+    }
+    .userBanner .name{
+      font-size:16px;
+      color:#333;
+      text-align: center;
+    }
+    .userBanner >.info span{
+      padding:7px 15px;
+      border:1px solid #9e2831;
+      color:#9e2831;
+      border-radius: 20px;
+      display: inline-block;
+      font-size:14px;
+
+      margin:0 auto;
+    }
+    .info{
+      display: none;
+      margin-top:5px;
+      text-align: center;
+      font-size:14px;
+    }
+
+    ul li{
+      line-height: 50px;
+      padding:0 10px;
+      border-bottom:1px solid #eee;
+      font-size:16px;
+    }
+    ul li:before{
+      content:"";
+      display: inline-block;
+      background:url('../../image/ar.png') no-repeat;
+      background-size: contain;
+      width:8px;
+      height:12px;
+      float: right;
+      margin-top:20px;
+    }
+    ul li img{
+      width:23px;
+      margin-right:10px;
+      vertical-align: middle;
+    }
+    ul li:active{
+      background: #eee
+    }
+    .invate{
+      display: none;
+    }
+	</style>
+</head>
+<body>
+  <div class="userCenter">
+    <div class="userBanner">
+      <h1 class="pic"><img onclick="changePic()" src="../../image/male.png" alt=""></h1>
+      <p class="name"></p>
+      <p class="info"><span onclick="userInfo()">查看账户信息</span></p>
+    </div>
+    <ul>
+      <li class="invate" onclick="navchange('invitation')"><a><img class="icon" src="../../image/yaoqing.png" alt=""><span>邀请异性宗亲</span></a></li>
+      <li class="apply" onclick="navchange('join')"><a><img class="icon" src="../../image/shenqing.png" alt=""><span>申请加入宗亲  </span></a></li>
+      <li onclick="navchange('record')"><a><img class="icon" src="../../image/juankuan.png" alt=""><span>我的捐款记录</span></a></li>
+      <li onclick="navchange('com')"><a><img class="icon" src="../../image/qiyeguanli.png" alt=""><span>我的企业管理</span></a></li>
+      <li onclick="navchange('advice')"><a><img class="icon" src="../../image/fankui.png" alt=""><span>用户反馈</span></a></li>
+      <li onclick="navchange('setting')"><a><img class="icon" src="../../image/shezhi.png" alt=""><span>设置</span></a></li>
+
+    </ul>
+  </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../../script/service.js"></script>
+
+<script type="text/javascript">
+function changePic(){
+  api.getPicture({
+    sourceType: 'all',
+    encodingType: 'jpg',
+    mediaValue: 'pic',
+    destinationType: 'url',
+    allowEdit: true,
+    quality: 50,
+    targetWidth: 100,
+    targetHeight: 100,
+    saveToPhotoAlbum: false
+}, function(ret, err) {
+    if (ret.data.length>1) {
+      api.showProgress({
+      title: '努力上传图像...',
+      text: '先喝杯茶...',
+      modal: false
+  });
+    changeAvata(ret.data,{'authorization':$api.getStorage('token')},function(data){
+      api.hideProgress();
+
+      if(data.code==200){
+        obj=$api.dom('.name')
+        imgobj=$api.dom('.pic img')
+        $api.setStorage('avata', data.data.url);
+
+        $api.attr(imgobj,'src',data.data.url);
+      }
+
+
+
+    },function(err){
+      alert(JSON.stringify(err))
+
+      api.toast({
+              msg: '上传失败',
+              duration:2000,
+              location: 'bottom'
+          });
+    })
+
+    } else {
+
+    }
+});
+}
+function qidai(){
+  alert('功能正在全力开发，敬请期待~')
+}
+function re(){
+  window.location.reload()
+}
+function userInfo(){
+  api.openWin({
+      name: 'userInfo',
+      url: '../../html/user/userInfo.html',
+      bounces:false
+  });
+
+}
+function navchange(url){
+  if(url=="join"){
+    if($api.getStorage('joined_family')=="true"){
+        api.openWin({
+            name: 'joinSuccess',
+            url: '../../html/user/join/success.html',
+        });
+            return false;
+    }
+
+  }
+  api.openWin({
+      name: url,
+      url: '../../html/user/'+url+'/'+url+'.html',
+  });
+
+}
+function errHandle(obj){
+  $('img').bind('error',function(){
+    $(this).attr('src','../../image/male.png')
+  })
+  if(obj){
+    $(obj).attr('src','../../image/male.png')
+  }
+}
+
+    apiready = function(){
+      obj=$api.dom('.name')
+      imgobj=$api.dom('.pic img')
+      $api.text(obj,$api.getStorage('mobile'))
+      if($api.getStorage('joined_family')=='true'){
+        $('.info').show()
+        $('.invate').show()
+      }
+        $api.attr(imgobj,'src',$api.getStorage('avata'));
+errHandle()
+
+}
+
+</script>
+</html>

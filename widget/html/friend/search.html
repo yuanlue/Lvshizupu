@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      body{
+        min-height: 100vh;
+        background: #eee;
+      }
+      .top{
+        height:25px;
+        background: black;
+      }
+      .topbar {
+          background-image: url("../../image/status.png");
+          background-size: cover;
+          height: 50px;
+          border-bottom: 1px solid #DDDFE3;
+          line-height: 50px;
+          text-align: center;
+          font-size:17px;
+          color:white;
+
+      }
+      #cloud .return{
+        width:12px;
+        position: absolute;
+        left:10px;
+        top:13px;
+      }
+      #cloud .search{
+        float: right;
+        margin-right:10px;
+      }
+      .tab{
+          line-height:40px;
+          padding:0 10px;
+      }
+      .searchinner{
+        text-align: left;
+        background: rgba(255,255,255,0.8);
+        line-height: 20px;
+        border-radius: 20px;
+        width:70%;
+        margin-top:10px;
+        margin-left:5px;
+        display: inline-block;
+      }
+      *:focus {
+           outline: none;
+          background-color: transparent;
+       }
+      .searchinner >img{
+        margin-top:5px;
+        margin-left:10px;
+        width:21px;
+      }
+      .serachInput{
+        width:70%;
+
+        height:30px;
+        vertical-align: top;
+      }
+      </style>
+
+  </head>
+  <body>
+    <div class="top"></div>
+    <header>
+        <div id="cloud" class="topbar  activebar">
+          <img class="return" onclick="api.closeWin()" src="../../image/return.png" alt="">
+          <div class="searchinner">
+              <img src="../../image/res_search.png" alt="">
+              <input class="serachInput" type="text">
+          </div>
+          <span class="search" onclick="search()">搜索</span>
+        </div>
+    </header>
+    <div class="tab">
+        搜索结果
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+
+  <script type="text/javascript">
+  function search(){
+    //请求 刷新
+    getData('/clan_users?name='+$('.serachInput').val(),function(data){
+      if(data.data.length<1){
+        api.toast({
+                msg: '搜索结果为空',
+                duration:2000,
+                location: 'bottom'
+            });
+      }
+      data.data.forEach(function(item){
+        item.title=item.name
+        item.subTitle=item.nationality+item.province+item.city
+        if(item.imgpath==null){
+          item.imgPath="widget://image/male.png"
+        }
+      })
+      UIListView.open({
+          rect: {
+              x: 0,
+              y: 50+  $('.top').height()+43,
+              w: api.winWidth,
+              h:api.frameHeight-(50+  $('.top').height()+40)
+          },
+          data: data.data,
+
+          styles: {
+              borderColor: '#eee',
+              item: {
+                  bgColor: '#fff',
+                  activeBgColor: '#ccc',
+                  height: 75.0,
+                  imgWidth: 40,
+                  imgHeight: 40,
+                  imgCorner: 20,
+                  placeholderImg: '',
+                  titleSize: 14.0,
+                  titleColor: '#000',
+                  subTitleSize: 12.0,
+                  subTitleColor: '#000',
+                  remarkColor: '#000',
+                  remarkSize: 12,
+                  remarkIconWidth: 0
+              }
+          },
+          fixedOn: api.frameName
+      }, function(ret, err) {
+
+          if (ret.eventType=='clickContent') {
+            UIListView.getDataByIndex({
+            index:ret.index
+            }, function(ret, err) {
+                if (ret) {
+                  api.openWin({
+                      name: 'friendDetail',
+                      url: '../../html/friend/friendDetail.html',
+                      rect: {
+                          x: 0,
+                          y: api.pageParam.header_height,
+                          w: 'auto',
+                          h: api.pageParam.footer_height
+                      },
+                      pageParam:{
+                        'id':ret.data.uid,
+                        'title':ret.data.title
+                      },
+                      bounces: true,
+                      bgColor: 'rgba(0,0,0,0)',
+                      vScrollBarEnabled: true,
+                      hScrollBarEnabled: true,
+                      showScrollBar:true
+                  });
+                } else {
+                    alert(JSON.stringify(err));
+                }
+        });
+
+
+          } else {
+          }
+      });
+    },{},{"Authorization":$api.getStorage('token')})
+  }
+  apiready = function(){
+    var u = navigator.userAgent;
+
+    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+    var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+
+    UIListView = api.require('UIListView');
+    if(isiOS){
+    $('.top').css({'background':'white',"height":"20px"})
+     }
+
+
+
+}
+
+  </script>
+  </html>

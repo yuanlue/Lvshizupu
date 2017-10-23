@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../../css/api.css"/>
+      <style>
+          body{
+            min-height:100vh;
+            background: #eee;
+            box-sizing: border-box;
+          }
+          ul li{
+            background-color: #fff;
+            line-height: 50px;
+            padding:0 10px;
+            border-bottom:1px solid #eee;
+            font-size:16px;
+          }
+
+          ul li img{
+            width:23px;
+            margin-right:10px;
+            vertical-align: middle;
+          }
+          ul li:active{
+            background: #eee
+          }
+          ul li span{
+            float: right;
+          }
+          .product{
+            margin-top:10px;
+          }
+          .product span{
+            line-height: 1.5;
+            text-align: right;
+          }
+          .product span i{
+            text-decoration: none;
+            font-style: normal;
+            display: block;
+            color:#ccc;
+
+          }
+          h1{
+            text-align: center;
+            margin:10px 0;
+          }
+          h1 img{
+            border-radius: 50%;
+            width:70px;
+            height:70px;
+            border:2px solid #ccc;
+          }
+        .mycom{
+          padding:10px 0;
+          background: white;
+          margin-top:10px;
+        }
+        .none{
+          padding-top:60px;
+          color:#ccc;
+          text-align: center;
+        }
+      </style>
+  </head>
+  <body>
+
+
+  </body>
+  <script type="text/javascript" src="../../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../../script/jquery-3.2.1.min.js"></script>
+
+  <script type="text/javascript" src="../../../../script/service.js"></script>
+
+  <script type="text/javascript">
+      apiready = function(){
+        api.showProgress({
+        title: '努力加载中...',
+        text: '先喝杯茶...',
+        modal: false
+    });
+      getData('/companies',function(data){
+        api.hideProgress();
+
+        if(data.code==200){
+    if(data.data.length>1){
+      data.data.forEach(function(item){
+        $('body').append(
+          +'<div class="mycom">'
+            +'<h1></h1>'
+            +'<ul>'
+              +'<li>企业名称<span>'+item.name+'</span></li>'
+              +'<li class="product">营业执照<span>'+item.uscc_code+'<i>纳税人识别号</i></span></li>'
+              +'<li>行业分类<span>'+item.sen_industry+'</span></li>'
+              +'<li>主营产品<span>'+item.product+'</span></li>'
+            +'</ul>'
+        +'</div>'
+        )
+
+      })
+    }
+    else{
+        $('body').append('<div class="none">暂无数据</div>')
+    }
+
+        }
+      },{},{'authorization':$api.getStorage('token')})
+      };
+  </script>
+  </html>
