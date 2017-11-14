@@ -4,18 +4,14 @@
       <meta charset="utf-8">
       <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
       <title>title</title>
-      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../../../css/api.css"/>
       <style>
-      body{
-        width:100%;
-        overflow-x:hidden;
-      }
           .top{
             height:25px;
             background: black;
           }
           .topbar {
-            background-image: url("../../../image/status.png");
+            background-image: url("../../../../image/status.png");
             background-size: cover;
             height: 50px;
             border-bottom: 1px solid #DDDFE3;
@@ -30,19 +26,43 @@
             left:10px;
             top:13px;
           }
+          ul li{
+            background-color: #fff;
+            line-height: 50px;
+            padding:0 10px;
+            border-bottom:1px solid #eee;
+            font-size:16px;
+          }
+
+
+          ul li:active{
+            background: #eee
+          }
+
+          ul li:before{
+        content:"";
+        display: inline-block;
+        background:url('../../../../image/ar.png') no-repeat;
+        background-size: contain;
+        width:7px;
+        height:12px;
+        float: right;
+        margin-top:20px;
+      }
       </style>
   </head>
   <body>
         <div class="top"></div>
         <header>
             <div id="cloud" class="topbar  activebar">
-              <img class="return" onclick="api.closeWin()" src="../../../image/return.png" alt="">
-                        吕氏商贸
+              <img class="return" onclick="api.closeWin()" src="../../../../image/return.png" alt="">
+                        添加需求
             </div>
         </header>
+
   </body>
-  <script type="text/javascript" src="../../../script/api.js"></script>
-  <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../../script/jquery-3.2.1.min.js"></script>
   <script type="text/javascript">
       apiready = function(){
         var u = navigator.userAgent;
@@ -52,25 +72,24 @@
         if(isiOS){
           $('.top').css({'background':'white',"height":"20px"})
         }
-          api.openFrame({
-              name: 'lvMarket',
-              url: '../../../html/Home/market/lvMarketFrame.html',
-              rect: {
+        api.openFrame({
+            name: 'addDemanFrame',
+            url: '../../../../html/user/com/mycom/addDemanFrame.html',
+            rect: {
                 x: 0,
                 y: 50+  $('.top').height(),
                 w: 'auto',
                 h: api.frameHeight-(50+  $('.top').height())
-              },
-              pageParam:{
-                title:$('#cloud').text()
-              },
-              bounces: true,
-              bgColor: '#eee',
-              vScrollBarEnabled: true,
-              customRefreshHeader: 'UIPullRefreshFlash',
+            },
+            pageParam: {
+                id: api.pageParam.id
+            },
+            bounces: false,
+            bgColor: 'rgba(255,255,255,255)',
+            vScrollBarEnabled: true,
+            hScrollBarEnabled: true
+        });
 
-              hScrollBarEnabled: true
-          });
 
       };
   </script>

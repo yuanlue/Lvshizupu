@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../../css/api.css"/>
+      <style>
+          .demandPopup {
+            font-size:16px;
+          }
+           .demandPopup ul .logo span{
+      	color:#ccc;
+        text-overflow:ellipsis;
+      	position: absolute;
+      	right:10px;
+      	z-index:1;
+        max-width:175px;
+        overflow: hidden;
+        white-space:nowrap;
+        overflow: hidden;
+      }
+       .demandPopup h1 img{
+       max-width:100%;
+     }
+         .demandPopup ul .content{
+          padding:10px;
+        }
+         .demandPopup h1{
+           padding:10px;
+          text-align: center;
+        }
+         .demandPopup ul li{
+          border-bottom:1px solid #eee;
+        }
+         .demandPopup ul li textarea{
+          padding:10px;
+          box-sizing:border-box;
+          width:75%;
+          border:1px solid #eee;
+          vertical-align: middle;
+          font-size:16px;
+
+        }
+       .demandPopup ul li input[type='file']{
+
+        line-height: 50px;
+      }
+       .demandPopup{
+        position: relative;
+        width:100vw;
+        font-size:16px;
+        min-height:98vh;
+      }
+      .demandPopup ul li input[type='file']{
+    	position: absolute;
+    	right:0;
+    	z-index:9;
+    	line-height: 50px;
+    }
+        ul li {
+            padding:10px;
+            background-color: white;
+            margin-bottom:10px;
+          }
+
+        .demandPopup ul li>div{
+          display: inline-block;
+        }
+    .opera{
+    font-size:14px;
+    line-height:40px;
+    text-align: center;
+    position: fixed;
+    bottom:0;
+    background-color: #9e2831;
+    color:white;
+    width: 100%;
+  }
+  [v-cloak]{
+    display: none
+  }
+      </style>
+  </head>
+  <body>
+    <div class="demandPopup" v-cloak>
+  <h1 v-if="pic!=''"><img v-bind:src="pic" alt=""></h1>
+  <ul>
+    <li  class="logo">企业Logo
+          <input style="opacity:0" ref="file" @change="logoChange()" id="file" type="file" placeholder="上传企业Logo">
+          <span>{{imgTitle}}</span>
+        </li>
+
+    <li class="content">
+      需求描述：
+        <textarea v-model="content"  placeholder="请输入需求描述" name="name" rows="8" cols="40"></textarea>
+    </li>
+  </ul>
+  <div class="opera" @click="add()">确认添加需求</div>
+
+</div>
+
+  </body>
+  <script type="text/javascript" src="../../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../../script/vue.js"></script>
+  <script type="text/javascript" src="../../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../../script/service.js"></script>
+  <script type="text/javascript">
+
+        apiready = function(){
+
+          var app=new Vue({
+            el: '.demandPopup',
+            data: {
+              data:"",
+              imgTitle:"请上传需求的描述图片",
+              pic:"",
+              content:""
+            },
+          created:function(){
+            this.init()
+            },
+          methods:{
+            add(){
+              var para={
+              'company_requirement': {
+                'pic':this.pic,
+                'content':this.content
+              }
+
+              }
+              api.showProgress({
+              title: '努力提交中...',
+              text: '先喝杯茶...',
+              modal: false
+          });
+              postData("/users/companies/"+api.pageParam.id+"/company_requirements",function(data){
+                if(data.code==200){
+                  api.toast({
+                          msg: '添加成功',
+                          duration:2000,
+                          location: 'bottom'
+                  });
+                  api.hideProgress();
+
+                  api.execScript({
+                      name: 'demand',
+                      frameName: 'demanFrame',
+                      script: 're();'
+                  });
+                }
+
+
+
+              },para,{'authorization':$api.getStorage('token')})
+
+            	},
+            logoChange(){
+              api.showProgress({
+              title: '努力加载中...',
+              text: '先喝杯茶...',
+              modal: false
+          });
+              var that = this
+               if(this.$refs.file.files.length>0){
+                    var card=new Date().getTime()+Math.floor(Math.random()*100)
+                    var formData = new FormData();
+                    formData.append('file',this.$refs.file.files[0]);
+                    formData.append('path','/Company/'+that.data.name+'/'+card+this.$refs.file.files[0].name);
+                    formData.append('type','image');
+                upimg('/upyun/upload',function(data){
+                  api.hideProgress();
+
+                  if(data.code==200){
+                    api.toast({
+                            msg: '上传成功',
+                            duration:2000,
+                            location: 'bottom'
+                        });
+                  that.pic=data.data.url.split('!')[0]
+                  that.imgTitle=data.data.url
+                }else{
+                  api.toast({
+                          msg: '上传失败，请重新上传',
+                          duration:2000,
+                          location: 'bottom'
+                      });
+                }
+
+                },formData,{'authorization':$api.getStorage('token')})
+              }
+              else{
+                api.hideProgress();
+
+              }
+            },
+              init(){
+
+              }
+
+
+          }
+          })
+        };
+
+  </script>
+  </html>

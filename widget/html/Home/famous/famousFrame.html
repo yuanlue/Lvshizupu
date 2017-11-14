@@ -6,122 +6,283 @@
       <title>title</title>
       <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
       <style>
-      img{
-        width:100%;
+      .cultureList{
+        font-size:0;
       }
+      body{
+        overflow: hidden;
+         min-height: 100vh;
+         box-sizing: border-box;
+      }
+      .tab{
+        box-sizing: border-box;
+        display:inline-block;
+        overflow: auto;
+        width:20vw;
+        height: 100vh;
+        background: #9e2931;
+        text-align: center;
+      }
+      .tab ul li{
+        height:66px;
 
-          ul{
-            font-size:0;
-            padding:0 10px;
-            box-sizing:border-box;
-          }
-          li{
+        padding:15px 0;
+        box-sizing: border-box;
+        font-size:15px;
+        border-bottom:1px solid rgba(0,0,0,0.2);
+        color:white;
+        text-align:center;
+      }
+      .tab ul li span::before{
+        content:"";
+        display: inline-block;
+        vertical-align: middle;
+        background: url('../../../image/useractive.png') no-repeat;
+        width:10px;
+        height:10px;
+        color:#9e2931;
+        background-size: cover;
+      }
+      .tab ul .active{
+        background: white;
+        color:black;
+      }
+        .tab ul .active span::before{
+          content:"";
+          display: inline-block;
+          vertical-align: middle;
+          background: url('../../../image/user.png') no-repeat;
+          width:10px;
+          height:10px;
+          margin-left:5px;
+          background-size: cover;
 
-            font-size:12px;
-            display: inline-block;
-            box-sizing: border-box;
-            width: 31%;
-            text-align: center;
-            margin:10px 1% 0;
-            box-shadow: 0 0 2px #ccc;
+        }
+        .tab ul li span{
+          margin-right:2px;
+          vertical-align: middle;
+          font-size:12px;
+        }
+        .container{
+          vertical-align: top;
+          width:80vw;
+          overflow: auto;
+          display: inline-block;
+          height: 100vh;
+        }
+        .container ul li {
+          width:100%;
+          padding:10px;
+          box-sizing: border-box;
+          border-bottom:1px solid #eee;
+        }
+          .container ul li >div{
+            display: table;
           }
-          li span{
-            margin:7px 0;
-            display: block;
-            text-align: center;
-          }
-          ul{
-            width:100%;
-          }
+        .container ul li h1{
+          font-size:15px;
+          font-weight: bold;
+        }
+        .container ul li .info{
+          padding-left:10px;
+          display: table-cell;
+          vertical-align: top;
+        }
+        .container ul li p{
+          margin-top:5px;
+          color:#666666;
+          font-size:12px;
+        }
+        .container ul li img{
+          display: table-cell;
+          width:55px;
+        }
+        .container ul li .info{
+          display: table-cell;
+        }
+        .container ul li .info span{
+          text-align: center;
+          margin-top:7px;
+          width:80px;
+          border-radius: 20px;
+          border:1px solid #9e2931;
+          line-height: 22px;
+          color:#9e2931;
+          font-size:10px;
+        }
       </style>
   </head>
   <body>
     <div class="cultureList">
-      <ul>
+      <div class="tab">
+        <ul>
 
-      </ul>
+        </ul>
+      </div>
+      <div class="container">
+        <header>秦汉（16人）</header>
+        <ul>
+        </ul>
+      </div>
     </div>
   </body>
   <script type="text/javascript" src="../../../script/api.js"></script>
   <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
   <script type="text/javascript" src="../../../script/service.js"></script>
   <script type="text/javascript">
-  var cur=1
   var url="http://116.62.170.181:8081"
+  function inner(id,name){
+       api.openWin({
+          name: 'content',
+          url: '../../../html/Home/content.html',
+          pageParam:{
+            contentId:id,
+            category:'history_celebrities',
+            title:name
+          }
+      });
+  }
+  function navChange(id,obj){
+    api.showProgress({
+    title: '努力加载中...',
+    text: '先喝杯茶...',
+    modal: false
+});
+    $('.tab ul li').removeClass('active')
+    $('.tab ul li').eq(obj).addClass('active')
+    getData('/history_celebrities',function(data){
+      api.hideProgress();
 
-  function errHandle(obj){
-    $('img').bind('error',function(){
-      $(this).attr('src','../../../image/default.png')
-    })
-    if(obj){
-      $(obj).attr('src','../../../image/default.png')
+      $('.container ul').html("") //初始化
+      $('.container header').text(data.data.period)
+      data.data.forEach(function(item){
+        $('.container ul').append('<li><div>'
+            +'<img src="'+url+item.avatar+'" alt="">'
+            +'<div class="info">'
+            +'<h1>'+item.name+'</h1>'
+            +'<p></p>'
+            +'<span onclick="inner('+item.id+',&quot;'+item.name+'&quot;)">查看名人传奇</span>'
+            +'</div>'
+          +'</div></li>')
+      })
+    },{'period':id},{'Authorization':$api.getStorage('token')})
+  }
+
+  apiready=function(){
+    init()
+
+    function init(){
+      api.showProgress({
+      title: '努力加载中...',
+      text: '先喝杯茶...',
+      modal: false
+  });
+      getData('/history_celebrities/category',function(data){
+
+        for(var i=0;i<data.data.length;i++){
+          if(i==0){
+            $('.tab ul').append('<li onclick="navChange('+data.data[i].period+','+i+')" class="active"><p>'+data.data[i].dic_value+'</p><span>'+data.data[i].person_size+'</span></li>')
+            getData('/history_celebrities',function(data){
+                $('.container ul').html("") //初始化
+                $('.container header').text(data.data.period)
+                data.data.forEach(function(item){
+                $('.container ul').append('<li><div>'
+                    +'<img src="'+url+item.avatar+'" alt="">'
+                    +'<div class="info">'
+                    +'<h1>'+item.name+'</h1>'
+                    +'<p></p>'
+                    +'<span onclick="inner('+item.id+',&quot;'+item.name+'&quot;)">查看名人传奇</span>'
+                    +'</div>'
+                  +'</div></li>')
+              })
+              api.hideProgress();
+
+            },{'period':data.data[i].period},{'Authorization':$api.getStorage('token')})
+          }
+          else{
+          $('.tab ul').append('<li onclick="navChange('+data.data[i].period+','+i+')"><p>'+data.data[i].dic_value+'</p><span>'+data.data[i].person_size+'</span></li>')
+      }
+        }
+
+      },{},{'Authorization':$api.getStorage('token')})
     }
   }
-  errHandle()
-  function inner(id){
-    api.openWin({
-        name: 'content',
-        url: '../../../html/Home/content.html',
-        pageParam:{
-          contentId:id,
-          category:'history_celebrities',
-          title:api.pageParam.title
-        }
-    });
-  }
-
-        apiready = function(){
-          api.showProgress({
-          title: '努力加载中...',
-          text: '先喝杯茶...',
-          modal: false
-      });
-          api.setCustomRefreshHeaderInfo({
-          bgColor: '#eee',
-          images: [
-              'widget://image/refresh/dropdown0.png',
-              'widget://image/refresh/dropdown1.png',
-              'widget://image/refresh/dropdown2.png',
-              'widget://image/refresh/dropdown3.png',
-              'widget://image/refresh/dropdown4.png',
-              'widget://image/refresh/dropdown5.png',
-              'widget://image/refresh/dropdown6.png'
-          ],
-          tips: {
-              pull: '下拉刷新',
-              threshold: '松开立即刷新',
-              load: '正在刷新'
-          }
-      }, function() {
-        cur=1
-          //下拉刷新被触发，自动进入加载状态，使用 api.refreshHeaderLoadDone() 手动结束加载中状态
-          //下拉刷新被触发，使用 api.refreshHeaderLoadDone() 结束加载中状态
-          getData('/history_celebrities?page='+cur+'page_size=20',function(data){
-            api.hideProgress();
-            $('.cultureList ul').html(" ")
-            obj=$('.cultureList ul')
-            if(data.data.length>=1){
-              data.data.forEach(function(item){
-                obj.append('<li onclick="inner('+item.id+')"><img src="'+url+item.avatar+'" onerror="errHandle(this)" alt=""><span>'+item.name+'</span></li>')
-              })
-            }
-            else{
-              return false
-            }
-            api.refreshHeaderLoadDone()
-
-          },{"page":cur,"page_size":"20"},{"Authorization":$api.getStorage('token')})
-
-
-      });
-
-        getData('/history_celebrities',function(data){api.hideProgress();
-          obj=$('.cultureList ul')
-          data.data.forEach(function(item){
-              obj.append('<li onclick="inner('+item.id+')"><img src="'+url+item.avatar+'" onerror="errHandle(this)" alt=""><span>'+item.name+'</span></li>')
-          })
-        },{},{"Authorization":$api.getStorage('token')})
-      }
+  // var cur=1
+  // var url="http://116.62.170.181:8081"
+  //
+  // function errHandle(obj){
+  //   $('img').bind('error',function(){
+  //     $(this).attr('src','../../../image/default.png')
+  //   })
+  //   if(obj){
+  //     $(obj).attr('src','../../../image/default.png')
+  //   }
+  // }
+  // errHandle()
+  // function inner(id){
+  //   api.openWin({
+  //       name: 'content',
+  //       url: '../../../html/Home/content.html',
+  //       pageParam:{
+  //         contentId:id,
+  //         category:'history_celebrities',
+  //         title:api.pageParam.title
+  //       }
+  //   });
+  // }
+  //
+  //       apiready = function(){
+  //         api.showProgress({
+  //         title: '努力加载中...',
+  //         text: '先喝杯茶...',
+  //         modal: false
+  //     });
+  //         api.setCustomRefreshHeaderInfo({
+  //         bgColor: '#eee',
+  //         images: [
+  //             'widget://image/refresh/dropdown0.png',
+  //             'widget://image/refresh/dropdown1.png',
+  //             'widget://image/refresh/dropdown2.png',
+  //             'widget://image/refresh/dropdown3.png',
+  //             'widget://image/refresh/dropdown4.png',
+  //             'widget://image/refresh/dropdown5.png',
+  //             'widget://image/refresh/dropdown6.png'
+  //         ],
+  //         tips: {
+  //             pull: '下拉刷新',
+  //             threshold: '松开立即刷新',
+  //             load: '正在刷新'
+  //         }
+  //     }, function() {
+  //       cur=1
+  //         //下拉刷新被触发，自动进入加载状态，使用 api.refreshHeaderLoadDone() 手动结束加载中状态
+  //         //下拉刷新被触发，使用 api.refreshHeaderLoadDone() 结束加载中状态
+  //         getData('/history_celebrities?page='+cur+'page_size=20',function(data){
+  //           api.hideProgress();
+  //           $('.cultureList ul').html(" ")
+  //           obj=$('.cultureList ul')
+  //           if(data.data.length>=1){
+  //             data.data.forEach(function(item){
+  //               obj.append('<li onclick="inner('+item.id+')"><img src="'+url+item.avatar+'" onerror="errHandle(this)" alt=""><span>'+item.name+'</span></li>')
+  //             })
+  //           }
+  //           else{
+  //             return false
+  //           }
+  //           api.refreshHeaderLoadDone()
+  //
+  //         },{"page":cur,"page_size":"20"},{"Authorization":$api.getStorage('token')})
+  //
+  //
+  //     });
+  //
+  //       getData('/history_celebrities',function(data){api.hideProgress();
+  //         obj=$('.cultureList ul')
+  //         data.data.forEach(function(item){
+  //             obj.append('<li onclick="inner('+item.id+')"><img src="'+url+item.avatar+'" onerror="errHandle(this)" alt=""><span>'+item.name+'</span></li>')
+  //         })
+  //       },{},{"Authorization":$api.getStorage('token')})
+  //     }
 
   </script>
   </html>

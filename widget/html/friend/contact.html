@@ -11,6 +11,7 @@
 
       }
           body{
+            position: relative;
             min-height:100vh;
             background: #eee;
             padding-top:10px;
@@ -124,12 +125,42 @@
         width:50px;
         left:35px;
         }
+        .voice span{
+          min-width:100px;
+
+        }
+        .voice span img{
+          vertical-align: middle;
+          width:20px;
+        }
+        .mine b{
+          float: right;
+          vertical-align: middle;
+        }
+        .other .audio span img{
+          transform:rotate(180deg);
+        }
+        .popup{
+          display: none;
+          bottom:calc(70% - 150px);
+          text-align: center;
+          width:100%;
+          position: fixed;
+
+        }
+        .popup img{
+          width:150px;
+        }
       </style>
   </head>
   <body onscroll="scroll()">
 <div class="conversation" id="contact">
   <ul>
-  </ul>
+
+</ul>
+<div class="popup">
+  <img src="../../image/yuyin.gif" alt="">
+</div>
 </div>
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
@@ -137,38 +168,55 @@
   <script type="text/javascript" src="../../script/service.js"></script>
 
   <script type="text/javascript">
-
   var page=1;
   var messageId
   var myavata
   var contactvata
   var  obj=$api.dom('.conversation ul');
 
+  function play(path,obj){
 
-  // function uploadVoice(ret){
-  //   var voice=ret.path
-  //   var card=new Date().getTime()+Math.floor(Math.random()*100)
-  //   var name+card+'.amr'
-  //   var path='/'+$api.getStorage('userInfo').uid+'/'+api.pageParam.id+'/'+name
-  //   upload(path,ret.path,function(data){
-  //     if(data.code==200){
-  //       window.scrollTo(0,$api.offset($api.byId("contact")).h);
-  //       var url=data.data.url
-  //       //上传成功后 发送消息
-  //       postData('/pub/chat/'+api.pageParam.id,function(data){
-  //         $('#'+card).html('<i class="other"><img src="../../image/male.jpeg"><span class="text"><img src="'+img+'"></span></i>')
-  //
-  //     },{'sender':$api.getStorage('userInfo').uid,'receiver':api.pageParam.id,'content':url,'message_type':'image'},{'authorization':$api.getStorage('token'),'Accept':"text/json" })
-  //
-  //     }
-  //     else{
-  //       $('#'+card).html('<i class="male"><img src="../../image/male.jpeg"><span class="text"><i class="error">!</i><img src="'+img+'"></span></i>')
-  //
-  //     }
-  //   },{"Authorization":$api.getStorage('token')},function(err){
-  //     $('#'+card).html('<i class="male"><img src="../../image/male.jpeg"><span class="text"><i class="error">!</i><img src="'+img+'"></span></i>')
-  //   })
-  // }
+    $(obj).find('span img').hide()
+    var audio = api.require('audio');
+    audio.play({
+        path: path
+    }, function(ret, err) {
+      $(obj).find('span img').show()
+
+
+    });
+
+  }
+  function uploadVoice(ret){
+    var voice=ret.path
+    var card=new Date().getTime()+Math.floor(Math.random()*100)
+    var name=card+'.mp3'
+    var path='/'+$api.getStorage('uid')+'/'+api.pageParam.id+'/'+name
+    if(ret.duration>60){
+      api.toast({
+              msg: '发送失败，录音时间过长',
+              duration:2000,
+              location: 'middle'
+          });
+          return false
+    }
+    $api.append(obj,'<li onclick="play(&quot;'+ret.path+'&quot;,this)" class="other voice" id="'+card+'"><i class="male audio"><img src="'+myavata+'"><span>'+ret.duration+'s<img src="../../image/voice_mine.png" alt=""></span></i></li>')
+
+    upload(path,'audio',ret.path,function(data){
+      alert(JSON.stringify(data))
+      if(data.code==200){
+        window.scrollTo(0,$api.offset($api.byId("contact")).h);
+        var url=data.data.url
+        postData('/pub/chat/'+api.pageParam.id,function(data){
+          alert(JSON.stringify(data))
+      },{'sender':$api.getStorage('uid'),'receiver':api.pageParam.id,'content':url,'message_type':'audio','content_length':ret.duration},{'authorization':$api.getStorage('token'),'Accept':"text/json" })
+
+      }
+
+    },{"Authorization":$api.getStorage('token')},function(err){
+      alert(JSON.stringify(err))
+    })
+  }
   function uploadImg(ret){
     var img =ret.imgPath
     var card=new Date().getTime()+Math.floor(Math.random()*100)
@@ -178,7 +226,7 @@
     $api.append(obj,'<li class="other" id="'+card+'" ><i class="male"><img src="'+myavata+'"><span class="text"><i  class="loadding"><img src="../../image/loading_more.gif" alt=""></i><img src="'+ret.imgPath+'"></span></i></li>');
     window.scrollTo(0,$api.offset($api.byId("contact")).h);
 
-    upload(path,ret.imgPath,function(data){
+    upload(path,'image',ret.imgPath,function(data){
       if(data.code==200){
         window.scrollTo(0,$api.offset($api.byId("contact")).h);
         var url=data.data.url
@@ -219,6 +267,10 @@
     if(data.data.length>0){
       data.data.forEach(function(item){
         if(item.sender==api.pageParam.id){
+            if(item.message_type=='audio'){
+              $api.prepend(obj,'<li onclick="play(&quot;'+item.content+'&quot;,this)" class="mine voice" messageId="'+item.id+'"><i class="male audio"><img src="'+contactvata+'"><span><img src="../../image/voice_mine.png" alt=""><b>'+item.content_length+'s</b></span></i></li>')
+
+            }
             if(item.message_type=='image'){
               //图片
               $api.prepend(obj,'<li  class="mine" messageId="'+item.id+'" ><i class="male"><img src="'+contactvata+'"><span class="text"><img onclick=\'detailImge("'+item.content+'")\' src="'+item.content+'"></span></i></li>');
@@ -226,10 +278,13 @@
             }
             else if(item.message_type=='text'){
               $api.prepend(obj,'<li class="mine" messageId="'+item.id+'"><i class="male"><img src="'+contactvata+'"><span class="text">'+item.content+'</span></i></li>');
-
             }
         }
         else {
+          if(item.message_type=='audio'){
+            $api.prepend(obj,'<li onclick="play(&quot;'+item.content+'&quot;,this)" class="other voice" messageId="'+item.id+'"><i class="male audio"><img src="'+myavata+'"><span><img src="../../image/voice_mine.png" alt=""><b>'+item.content_length+'s</b></span></i></li>')
+
+          }
           if(item.message_type=='image'){
             //图片
             $api.prepend(obj,'<li  class="other" messageId="'+item.id+'" ><i class="male"><img src="'+myavata+'"><span class="text"><img onclick=\'detailImge("'+item.content+'")\' src="'+item.content+'"></span></i></li>');
@@ -241,6 +296,10 @@
           }
         }
         if(item.sender==item.receiver){
+          if(item.message_type=='audio'){
+            $api.prepend(obj,'<li onclick="play(&quot;'+item.content+'&quot;,this)" class="other voice" messageId="'+item.id+'"><i class="male audio"><img src="'+myavata+'"><span><img src="../../image/voice_mine.png" alt=""><b>'+item.content_length+'s</b></span></i></li>')
+
+          }
           if(item.message_type=='image'){
             //图片
             $api.prepend(obj,'<li class="other" messageId="'+item.id+'" ><i class="male"><img  src="'+myavata+'"><span class="text"><img onclick=\'detailImge("'+item.content+'")\'  src="'+item.content+'"></span></i></li>');
@@ -290,8 +349,11 @@ function receive(obj){
     var  tar=$api.dom('.conversation ul');
     if(obj.message_type=='text'){
       $api.append(tar,'<li class="mine" messageId="'+obj.id+'"><i class="male"><img src="'+contactvata+'"><span class="text">'+obj.content+'</span></i></li>');
-    }else if(obj.message_type='image'){
+    }else if(obj.message_type=='image'){
       $api.append(tar,'<li  messageId="'+obj.id+'" class="mine" ><i class="male"><img  src="'+contactvata+'"><span class="text"><img onclick=\'detailImge("'+obj.content+'")\' src="'+obj.content+'"></span></i></li>');
+    }
+    else if(obj.message_type=='audio'){
+      $api.append(tar,'<li onclick="play(&quot;'+obj.content+'&quot;,this)" class="mine voice" messageId="'+obj.id+'"><i class="male audio"><img src="'+contactvata+'"><span><b>'+obj.content_length+'s</b><img src="../../image/voice_mine.png" alt=""></span></i></li>')
 
     }
   }
@@ -328,7 +390,7 @@ function receive(obj){
         else{
            myavata=$api.getStorage('avata')
         }
-        if(api.pageParam.avatar==null){
+        if(api.pageParam.avatar==null||api.pageParam.avatar=="widget://image/male.png"){
             contactvata="../../image/male.png"
         }
         else{
@@ -366,12 +428,12 @@ function receive(obj){
                 extrasBtn: {
                     normalImg: 'widget://image/add1.png'
                 },
-                // keyboardBtn: {
-                //     normalImg: 'widget://image/key1.png'
-                // },
-                // speechBtn: {
-                //     normalImg: 'widget://image/key2.png'
-                // },
+                keyboardBtn: {
+                    normalImg: 'widget://image/key1.png'
+                },
+                speechBtn: {
+                    normalImg: 'widget://image/key2.png'
+                },
                 recordBtn: {
                     normalBg: '#c4c4c4',
                     activeBg: '#999999',
@@ -497,10 +559,8 @@ function receive(obj){
         name : 'press'
       }, function(ret, err) {
               api.startRecord();
-              if(ret.path){
-              alert(JSON.stringify(ret))
+              $('.popup').show()
 
-              }
 
       });
       UIChatBox.addEventListener({
@@ -508,7 +568,7 @@ function receive(obj){
       name : 'move_out'
     }, function(ret, err) {
       api.stopRecord(function(ret, err) {
-              alert('stop')
+        $('.popup').hide()
 
       });
     });
@@ -519,7 +579,6 @@ var frameht = api.frameHeight;//获取全局窗口高度
                     target: 'inputBar',
                     name: 'move'
                 }, function(ret,err){
-
                     if(ret.panelHeight>0){
                             api.setFrameAttr({
     name: 'contact',
@@ -548,9 +607,9 @@ UIChatBox.addEventListener({
 }, function(ret, err) {
         if (ret) {
                 api.stopRecord(function(ret, err) {
+                  $('.popup').hide()
                         if (ret) {
-                            alert(JSON.stringify(ret))
-
+                        uploadVoice(ret)
                         }
                 });
         } else {

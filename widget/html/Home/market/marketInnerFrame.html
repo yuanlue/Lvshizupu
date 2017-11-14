@@ -19,6 +19,7 @@
           }
           .Marketinner .tab ul {
             font-size: 0;
+            text-align: center;
           }
           .Marketinner .tab ul li{
             border-collapse: collapse;
@@ -38,6 +39,8 @@
             margin-top:20px;
           }
           .intro img{
+            max-width: 100%;
+
             display: block;
             margin:0 auto;
           }
@@ -111,23 +114,25 @@
             font-size:12px;
 
           }
+          [v-cloak]{
+            display: none;
+          }
       </style>
   </head>
   <body>
-  <div class="Marketinner">
+    <div class="Marketinner" v-cloak>
     <div class="tab">
       <ul>
-        <li onclick="navchange('intro',0)" class="active">公司简介</li>
-        <li onclick="navchange('product',1)" >主营产品</li>
-        <li onclick="navchange('need',2)" >供需产品</li>
+        <li  v-bind:class="{active:index==0}" @click="navChange(0)">公司简介</li>
+        <li style="display:none;" v-bind:class="{active:index==1}" @click="navChange(1)">主营产品</li>
+        <li v-bind:class="{active:index==2}" @click="navChange(2)">供需信息</li>
       </ul>
     </div>
-    <div class="intro frame">
-      <img src="../../../image/demo1.png" alt="">
-      <p>吕氏集团下辖辽宁吕氏化工（集团）有限公司、营口辽河化工研究所股份有限公司、营口中天实业有限公司、吕氏物流、吕氏农场等多家企业。</p>
-      <p>辽宁吕氏化工（集团）有限公司，是吕氏集团的核心企业，成立于1994年，是一家致力于环保胶粘剂研发、生产与销售的高新技术企业。公司引进最先进的科研、检测设备；拥有一支化工专家、教授领衔的技术研发队伍。同时与国内多所高等院校合作，在民用粘合剂、工业粘合剂、军用粘合剂领域中做出了杰出贡献，产品质量水平和环保水平始终处于国内领先地位。</p>
+    <div v-if="index==0" class="intro frame">
+      <img v-bind:src="pic" alt="">
+      <p v-html="content"></p>
     </div>
-    <div class="product frame">
+    <div v-if="index==1" class="product frame">
       <ul>
         <li><img src="../../../image/product1.png" alt="">
           <p>产品名称</p>
@@ -151,14 +156,15 @@
         </li>
       </ul>
     </div>
-    <div class="need frame">
+    <div class="need frame" v-if="index==2">
       <ul>
-        <li>
-          <img src="../../../image/product1.png" alt="">
+        <li v-for="item in rqList">
+          <img v-if="item.pic!=null" v-bind:src="item.pic" alt="">
+          <img v-if="item.pic==null" src="../../../image/default.png" alt="">
 
         <div>
-          <h1>本公司急需一批体育器材</h1>
-          <p class="time">发布时间：2017年10月22日</p>
+          <h1>{{item.content}}</h1>
+          <p class="time">发布时间：{{item.created_at}}</p>
           <p class="status">
             <img src="../../../image/renzheng.png" alt="">
             <span>已经认证</span>
@@ -170,18 +176,51 @@
   </div>
   </body>
   <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../script/vue.js"></script>
   <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../script/service.js"></script>
 
   <script type="text/javascript">
-  function navchange(obj,num){
-    $('.frame').hide()
-    $('.tab ul li').removeClass('active')
-      $('.tab ul li').eq(num).addClass('active')
-    $('.'+obj).show()
+  apiready = function(){
+    var app=new Vue({
+      el: '.Marketinner',
+      data: {
+        index:0,
+          name:"",
+          id:"",
+          pic:"",
+          content:"",
+          rqList:[]
+      },
+      created:function(){
+          this.init()
+      },
+    methods:{
+      init(){
+        api.showProgress({
+        title: '正在加载中...',
+        text: '先喝杯茶...',
+        modal: false
+    });
+        var that = this
+        that.id=api.pageParam.id
+        getData('/companies/'+that.id,function(data){
+          api.hideProgress();
+          
+          that.pic=data.data.pic
+          that.content=data.data.intro
+          that.rqList=data.data.company_requirements
+        },{},{'Authorization':$api.getStorage('token')})
 
-  }
-      apiready = function(){
 
-      };
+      },
+      navChange(index){
+      this.index=index;
+
+    }
+
+    }
+    })
+  };
   </script>
   </html>

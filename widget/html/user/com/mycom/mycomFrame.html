@@ -8,7 +8,7 @@
       <style>
           body{
             min-height:100vh;
-            background: #eee;
+            background: #fff;
             box-sizing: border-box;
           }
           ul li{
@@ -27,15 +27,22 @@
           ul li:active{
             background: #eee
           }
-          ul li span{
-            float: right;
-          }
+
+          ul li:before{
+        content:"";
+        display: inline-block;
+        background:url('../../../../image/ar.png') no-repeat;
+        background-size: contain;
+        width:7px;
+        height:12px;
+        float: right;
+        margin-top:20px;
+      }
           .product{
             margin-top:10px;
           }
           .product span{
             line-height: 1.5;
-            text-align: right;
           }
           .product span i{
             text-decoration: none;
@@ -55,9 +62,7 @@
             border:2px solid #ccc;
           }
         .mycom{
-          padding:10px 0;
           background: white;
-          margin-top:10px;
         }
         .none{
           padding-top:60px;
@@ -67,7 +72,13 @@
       </style>
   </head>
   <body>
+    <div class="myCompany">
+  		<div class="mycom" v-for="item in comList">
+              <ul>
+              </ul>
+          </div>
 
+    </div>
 
   </body>
   <script type="text/javascript" src="../../../../script/api.js"></script>
@@ -76,38 +87,42 @@
   <script type="text/javascript" src="../../../../script/service.js"></script>
 
   <script type="text/javascript">
+function init(){
+    api.showProgress({
+    title: '努力加载中...',
+    text: '先喝杯茶...',
+    modal: false
+});
+  getData('/users/companies',function(data){
+    api.hideProgress();
+    if(data.code==200){
+if(data.data.length>=1){
+  data.data.forEach(function(item){
+    $('.myCompany ul').append('<li onclick="inner('+item.id+')">'
+        +'<img src="'+item.logo+'">'
+        +'<span>'+item.name+'</span>'
+      +'</li>'  )
+  })
+}
+else{
+    $('body').append('<div class="none">暂无数据</div>')
+}
+
+    }
+  },{},{'authorization':$api.getStorage('token')})
+}
+function inner(id){
+  api.openWin({
+      name: 'comopera',
+      url: '../../../../html/user/com/mycom/comopera.html',
+      pageParam: {
+          id: id
+      }
+  });
+
+}
       apiready = function(){
-        api.showProgress({
-        title: '努力加载中...',
-        text: '先喝杯茶...',
-        modal: false
-    });
-      getData('/companies',function(data){
-        api.hideProgress();
-
-        if(data.code==200){
-    if(data.data.length>1){
-      data.data.forEach(function(item){
-        $('body').append(
-          +'<div class="mycom">'
-            +'<h1></h1>'
-            +'<ul>'
-              +'<li>企业名称<span>'+item.name+'</span></li>'
-              +'<li class="product">营业执照<span>'+item.uscc_code+'<i>纳税人识别号</i></span></li>'
-              +'<li>行业分类<span>'+item.sen_industry+'</span></li>'
-              +'<li>主营产品<span>'+item.product+'</span></li>'
-            +'</ul>'
-        +'</div>'
-        )
-
-      })
-    }
-    else{
-        $('body').append('<div class="none">暂无数据</div>')
-    }
-
-        }
-      },{},{'authorization':$api.getStorage('token')})
+      init()
       };
   </script>
   </html>

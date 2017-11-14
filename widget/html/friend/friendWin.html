@@ -97,6 +97,7 @@
 <script type="text/javascript" src="../../script/service.js"></script>
 
 <script type="text/javascript">
+
 function receive(obj){
   if($api.getStorage('messageList')){
      messageList=$api.getStorage('messageList')
@@ -106,6 +107,9 @@ function receive(obj){
   $('.tab ul li').eq(1).addClass('recent')
 
   getData('/recent_contacts',function(data){
+    if(data.data.length<1){
+      return false
+    }
     data.data.forEach(function(item){
       item.title=item.name
       item.subTitle=item.nationality+item.province+item.city
@@ -113,7 +117,7 @@ function receive(obj){
         item.imgPath="widget://image/male.png"
       }
       else{
-        item.imgPath=item.avatar
+        item.imgPath=item.avatar.split('!')[0]
       }
             messageList.forEach(function(p){
 
@@ -173,7 +177,7 @@ function contact(obj){
             item.imgPath="widget://image/male.png"
           }
           else{
-            item.imgPath=item.avatar
+            item.imgPath=item.avatar.split('!')[0]
           }
 
         })
@@ -184,6 +188,7 @@ function contact(obj){
       UIListView.getDataByIndex({
       index:ret.index
       }, function(ret, err) {
+
           if (ret) {
             api.openWin({
                 name: 'friendDetail',
@@ -197,7 +202,7 @@ function contact(obj){
                 pageParam:{
                   'id':ret.data.uid,
                   'title':ret.data.title,
-                  'avatar':ret.data.avatar
+                  'avatar':ret.data.imgPath
                 },
                 bounces: true,
                 bgColor: 'rgba(0,0,0,0)',
@@ -230,6 +235,7 @@ function contact(obj){
     //请求常用联系人api
   getData('/recent_contacts',function(data){
     api.hideProgress();
+    if(data.data.length>1){
     data.data.forEach(function(item){
       item.title=item.name
       item.mesNum=0;
@@ -244,10 +250,10 @@ function contact(obj){
         item.imgPath="widget://image/male.png"
       }
       else{
-      item.imgPath=item.avatar
+      item.imgPath=item.avatar.split('!')[0]
       }
 
-    })
+    })}
 
     UIListView.reloadData({
   data: data.data
@@ -277,6 +283,8 @@ function contact(obj){
 }
 
     apiready = function(){
+
+
       var u = navigator.userAgent;
       var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
       var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
@@ -304,7 +312,7 @@ function contact(obj){
         item.imgPath="widget://image/male.png"
       }
       else{
-      item.imgPath=item.avatar
+      item.imgPath=item.avatar.split('!')[0]
       }
     })
     UIListView.open({
@@ -432,7 +440,7 @@ function contact(obj){
                     pageParam:{
                       'id':ret.data.uid,
                       'title':ret.data.title,
-                      'avatar':ret.data.avatar
+                      'avatar':ret.data.imgPath
                     },
                     bounces: true,
                     bgColor: 'rgba(0,0,0,0)',

@@ -54,7 +54,9 @@
       api.openWin({
           name: 'search',
           url: '../../../html/Home/zupu/search.html',
-
+          pageParam:{
+            id:api.pageParam.id
+          }
       });
 
   }
@@ -73,9 +75,10 @@
               y: 50+  $('.top').height(),
               w: 'auto',
               h: api.frameHeight-(50+  $('.top').height())
-
             },
-
+            pageParam:{
+              id:api.pageParam.id
+            },
             bounces: false,
             bgColor: 'rgba(0,0,0,0)',
             vScrollBarEnabled: true,

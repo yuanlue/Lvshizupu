@@ -81,8 +81,8 @@
         }
         ::-webkit-scrollbar{width:0px}
           .lvMarket .newCom ul{
+            background: white;
             width:100%;
-            height:170px;
             box-sizing: border-box;
             padding:0 15px;
             overflow: auto;
@@ -93,9 +93,9 @@
         .lvMarket .newCom ul li{
           padding:10px;
           display: inline-block;
+          vertical-align: bottom;
           background:white;
           width:130px;
-          height:160px;
           padding:10px;
           box-sizing: border-box;
         }
@@ -131,91 +131,122 @@
             height:37px;
             color:#9e2931;
           }
+          [v-cloak]{
+            display: none;
+          }
       </style>
   </head>
   <body>
-<div class="lvMarket">
-  <div class="rank">
-    <header><img src="../../../image/rank.png" alt="">关注排行榜</header>
-    <ul>
-      <li onclick="cominner()">
-        <div>
-        <i>NO.1</i>
-        <img src="../../../image/demo1.png" alt="">
-      <div>
-        <p>吕氏集团</p>
-        <span><img src="../../../image/zan.png" alt="">79689</span>
-      </div>
-      </div>
-    </li>
-    <li onclick="cominner()">
-      <div>
-      <i>NO.1</i>
-      <img src="../../../image/demo2.png" alt="">
-    <div>
-      <p>雅丽洁（国际）集团有限公司</p>
-      <span><img src="../../../image/zan.png" alt="">9689</span>
-    </div>
-    </div>
-  </li>
-  <li onclick="cominner()">
-    <div>
-    <i>NO.2</i>
-    <img src="../../../image/demo3.png" alt="">
-  <div>
-    <p>广东卓粤集团</p>
-    <span><img src="../../../image/zan.png" alt="">689</span>
-  </div>
-  </div>
-</li>
-    </ul>
-  </div>
-  <div class="newCom">
-    <header><img src="../../../image/build.png" alt="">新入驻企业</header>
-    <div class="newCom">
-      <ul>
-        <li onclick="cominner()">
-          <img src="../../../image/demo1.png" alt="">
-          <p>吕氏集团</p>
-          <span>入驻时间2017-09-12</span>
-        </li>
-        <li onclick="cominner()">
-          <img src="../../../image/demo2.png" alt="">
-          <p>雅丽洁（国际）集团有限公司</p>
-          <span>入驻时间2017-09-12</span>
-        </li>
-        <li onclick="cominner()">
-          <img src="../../../image/demo3.png" alt="">
-          <p>广东卓粤集团</p>
-          <span>入驻时间2017-09-12</span>
-        </li>
-      </ul>
-    <div class="opera"  onclick="allcom()">
-      <button>查看所有企业</button>
-    </div>
-    </div>
-  </div>
-</div>
+    <div class="lvMarket" v-cloak>
+     <div class="rank">
+       <header><img src="../../../image/rank.png" alt="">关注排行榜</header>
+       <ul>
+         <li @click="cominner(item.id)" v-for="(item,index) in merchineList">
+           <div>
+           <i>NO.{{index+1}}</i>
+                   <img v-if="item.logo==null" src="../../../image/default.png" alt="">
+                   <img v-if="item.logo!=null" v-bind:src="item.logo" alt="">
+         <div>
+           <p>{{item.name}}</p>
+           <span style="display:none"><img src="./images/zan.png" alt="">79689</span>
+         </div>
+         </div>
+       </li>
+
+       </ul>
+     </div>
+     <div class="newCom">
+       <header><img src="../../../image/build.png" alt="">新入驻企业</header>
+       <div class="newCom">
+         <ul>
+           <li v-for="item in merchineList" @click="cominner(item.id)">
+             <img v-if="item.logo!=null" v-bind:src="item.logo" alt="">
+
+             <img v-if="item.logo==null" src="../../../image/default.png" alt="">
+             <p>{{item.name}}</p>
+             <span>入驻时间:{{item.created_at}}</span>
+           </li>
+
+         </ul>
+       <div class="opera"  @click="allcom()">
+         <button>查看所有企业</button>
+       </div>
+       </div>
+     </div>
+   </div>
   </body>
   <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../script/vue.js"></script>
+  <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../script/service.js"></script>
+
   <script type="text/javascript">
-  function cominner(){
-    api.openWin({
-        name: 'marketInnerWin',
-        url: '../../../html/Home/market/markectInnerWin.html',
-    });
 
-  }
-  function allcom(){
-    api.openWin({
-        name: 'comListWin',
-        url: '../../../html/Home/market/comListWin.html',
+  apiready = function(){
 
-    });
+    var app=new Vue({
+      el: '.lvMarket',
+      data: {
+         merchineList:[]
+      },
+    created:function(){
+      var that = this
+      api.setCustomRefreshHeaderInfo({
+      bgColor: '#eee',
+      images: [
+          'widget://image/refresh/dropdown0.png',
+          'widget://image/refresh/dropdown1.png',
+          'widget://image/refresh/dropdown2.png',
+          'widget://image/refresh/dropdown3.png',
+          'widget://image/refresh/dropdown4.png',
+          'widget://image/refresh/dropdown5.png',
+          'widget://image/refresh/dropdown6.png'
+      ],
+      tips: {
+          pull: '下拉刷新',
+          threshold: '松开立即刷新',
+          load: '正在刷新'
+      }
+  }, function() {
 
-  }
-      apiready = function(){
+  that.init()
+  api.refreshHeaderLoadDone()
+  });
+      that.init()
+      },
+    methods:{
+        init(){
+          var that = this
+          getData('/companies',function(data){
+            if(data.code==200){
+              that.merchineList=data.data
 
-      };
+            }
+          },{},{"Authorization":$api.getStorage('token')})
+        },
+        cominner(id){
+          api.openWin({
+              name: 'marketInnerWin',
+              url: '../../../html/Home/market/markectInnerWin.html',
+              pageParam: {
+                  id: id
+              }
+          });
+
+
+  	},
+  	allcom(){
+      api.openWin({
+          name: 'comListWin',
+          url: '../../../html/Home/market/comListWin.html',
+
+      });
+
+  	}
+
+
+    }
+    })
+  };
   </script>
   </html>

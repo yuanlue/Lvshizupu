@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../../css/api.css"/>
+      <style>
+
+    .demand{
+        background: #eee;
+        box-sizing: border-box;
+      }
+    .demand ul li {
+        padding:10px;
+        background-color: white;
+        border-bottom:10px solid #eee;
+      }
+
+    .demand ul li>div{
+      display: inline-block;
+    }
+    .demand ul li>img{
+        margin-right:10px;
+        width:37px;
+        vertical-align: middle;
+      }
+    .demand ul li .info{
+      font-size:16px;
+      vertical-align: middle;
+      line-height: 25px;
+      }
+     .demand  ul li .info img{
+        vertical-align: middle;
+        margin-right:5px;
+        width:20px;
+      }
+      .demand ul li .info p{
+          	max-width: 100%;
+          	word-break:break-all;
+      }
+     .demand ul li .info span{
+      vertical-align: middle;
+      }
+     .demand ul li .info .heart{
+        margin-left:10px;
+      }
+
+          .demand  .opera{
+        font-size:14px;
+        line-height: 40px;
+        text-align: center;
+        position: fixed;
+        bottom:0;
+        background-color: #9e2831;
+        color:white;
+        width: 100%;
+      }
+      </style>
+  </head>
+  <body>
+    <div class="demand">
+      <ul>
+
+
+      </ul>
+
+  	        <div class="opera" onclick="addDemand()">添加需求</div>
+
+    </div>
+  </body>
+  <script type="text/javascript" src="../../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../../script/service.js"></script>
+  <script type="text/javascript">
+  function re(){
+    window.location.reload()
+  }
+  function addDemand(){
+    api.openWin({
+        name: 'addDemand',
+        url: '../../../../html/user/com/mycom/addDemand.html',
+        pageParam: {
+            id: api.pageParam.id
+        }
+    });
+
+  }
+  function errHandle(obj){
+    $('img').bind('error',function(){
+      $(this).attr('src','../../../../image/default.png')
+    })
+    if(obj){
+      $(obj).attr('src','../../../../image/default.png')
+    }
+  }
+  function init(){
+    getData("/users/companies/"+api.pageParam.id+"/company_requirements",function(data){
+      data.data.forEach(function(item){
+        $('.demand ul').append('<li class="need">'
+          +'<img src="'+item.pic+'" alt="">'
+          +'<div class="info">'
+            +'<p>'+item.content+'</p>'
+          +'</div>'
+        +'</li>')
+      })
+
+    },{},{'authorization':$api.getStorage('token')})
+
+  }
+      apiready = function(){
+        api.setCustomRefreshHeaderInfo({
+        bgColor: '#eee',
+        images: [
+            'widget://image/refresh/dropdown0.png',
+            'widget://image/refresh/dropdown1.png',
+            'widget://image/refresh/dropdown2.png',
+            'widget://image/refresh/dropdown3.png',
+            'widget://image/refresh/dropdown4.png',
+            'widget://image/refresh/dropdown5.png',
+            'widget://image/refresh/dropdown6.png'
+        ],
+        tips: {
+            pull: '下拉刷新',
+            threshold: '松开立即刷新',
+            load: '正在刷新'
+        }
+    }, function() {
+      $('.demand ul').html("")
+
+    init()
+    api.refreshHeaderLoadDone()
+    });
+        init()
+        errHandle()
+
+      };
+  </script>
+  </html>

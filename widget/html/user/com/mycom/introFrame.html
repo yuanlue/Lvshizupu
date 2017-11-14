@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../../css/api.css"/>
+      <style>
+      .myCompany{
+        min-height:100vh;
+        background: #eee;
+        box-sizing: border-box;
+      }
+     .myCompany ul li{
+        background-color: #fff;
+        line-height: 50px;
+        padding:0 10px;
+        border-bottom:1px solid #eee;
+        font-size:16px;
+      }
+
+    .myCompany  ul li img{
+        width:100%;
+        margin-right:10px;
+        vertical-align: middle;
+      }
+    .myCompany  ul li:active{
+        background: #eee
+      }
+      .myCompany  ul li>span{
+        float: right;
+      }
+  .myCompany  ul li textarea{
+    font-size:16px;
+    border:1px solid #eee;
+    width:80%;
+    padding:10px;
+    box-sizing:border-box;
+    vertical-align: top
+  }
+   .myCompany  ul  .intro{
+    padding:10px;
+
+   }
+    .myCompany  .product{
+        margin-top:10px;
+      }
+     .myCompany .product span{
+        line-height: 1.5;
+        text-align: right;
+      }
+    .myCompany  .product span i{
+        text-decoration: none;
+        font-style: normal;
+        display: block;
+        color:#ccc;
+
+      }
+    .myCompany  h1{
+        text-align: center;
+    }
+    .myCompany h1 img{
+        border-radius: 50%;
+        width:70px;
+        height:70px;
+        border:2px solid #ccc;
+      }
+    .myCompany .mycom{
+      padding-top:10px;
+      background: white;
+      margin-bottom:10px;
+    }
+    .myCompany .none{
+      font-size:16px;
+      padding-top:60px;
+      color:#000;
+      text-align: center;
+    }
+     .myCompany ul .logo span{
+    color:#ccc;
+    position: absolute;
+    right:10px;
+    text-overflow:ellipsis;
+    z-index:1;
+    max-width:175px;
+    white-space:nowrap;
+    overflow: hidden;
+  }
+.myCompany ul li input[type='file']{
+  position: absolute;
+  right:0;
+  z-index:9;
+  line-height: 50px;
+}
+  .myCompany  .opera{
+    z-index:9;
+    font-size:14px;
+    line-height: 40px;
+    text-align: center;
+    position: fixed;
+    bottom:0;
+    background-color: #9e2831;
+    color:white;
+    width: 100%;
+  }
+  [v-cloak]{
+    display: none;
+  }
+      </style>
+  </head>
+  <body>
+    <div class="myCompany" v-cloak>
+ 		<div class="mycom" >
+             <h1>
+             	<img v-bind:src="data.logo">
+             </h1>
+             <ul>
+               <li>企业名称<span>{{data.name}}</span></li>
+               <li class="product">营业执照<span>{{data.uscc_code}}<i>纳税人识别号</i></span></li>
+               <li>行业分类<span>{{data.sen_industry}}</span></li>
+               <li>主营产品<span>{{data.product}}</span></li>
+              <li>地址<span>{{data.nationality}}{{data.province}}{{data.city}}</span></li>
+              <li class="intro">
+              	简介：
+              	<textarea placeholder="请输入企业简介" v-model="data.intro" rows="8" cols="40"></textarea>
+              </li>
+               <li class="logo">上传图片
+ 		      	<input style="opacity:0" ref="file" @change="logoChange()" id="file" type="file" placeholder="上传企业Logo">
+ 		      	<span>{{imgTitle}}</span>
+ 		      	<div class="img">
+ 		      		<img v-bind:src="pic" alt="">
+ 		      	</div>
+ 		      </li>
+             </ul>
+         </div>
+         <div class="opera" @click="modify()">确定修改</div>
+
+   </div>
+  </body>
+  <script type="text/javascript" src="../../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../../script/vue.js"></script>
+  <script type="text/javascript" src="../../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../../script/service.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+        var app=new Vue({
+          el: '.myCompany',
+          data: {
+            data:"",
+            imgTitle:"请上传简介图片",
+            pic:""
+          },
+        created:function(){
+          this.init()
+          },
+        methods:{
+          modify(){
+        var para={
+  				'company':{
+	  				'pic':this.pic,
+	  				'intro':this.data.intro,
+	  				'log':this.data.logo
+  			}}
+            putData('/users/companies/'+this.id,function(data){
+              if(data.code==200){
+                api.toast({
+                        msg: '修改成功',
+                        duration:2000,
+                        location: 'bottom'
+                    });
+                api.closeToWin({
+                    name: 'mycom'
+                });
+
+              }
+            },para,{'authorization':$api.getStorage('token')})
+
+  },
+          logoChange(){
+            var that = this
+             if(this.$refs.file.files.length>0){
+               api.showProgress({
+               title: '努力提交中...',
+               text: '先喝杯茶...',
+               modal: false
+           });
+                  var card=new Date().getTime()+Math.floor(Math.random()*100)
+                var formData = new FormData();
+                  formData.append('file',this.$refs.file.files[0]);
+                  formData.append('path','/Company/'+that.data.name+'/'+card+this.$refs.file.files[0].name);
+                  formData.append('type','image');
+              upimg('/upyun/upload',function(data){
+                if(data.code==200){
+                  api.hideProgress();
+
+                  api.toast({
+                          msg: '图片已上传',
+                          duration:2000,
+                          location: 'bottom'
+                      });
+                that.imgTitle=data.data.url
+                that.pic=data.data.url.split('!')[0]
+                }
+
+              },formData,{'authorization':$api.getStorage('token')})
+            }
+            else{
+              api.hideProgress();
+
+            }
+          },
+            init(){
+              var that = this
+              that.id=api.pageParam.id
+              api.showProgress({
+              title: '努力加载中...',
+              text: '先喝杯茶...',
+              modal: false
+          });
+              getData('/companies/'+that.id,function(data){
+                api.hideProgress();
+
+                if(data.code==200){
+                  that.data=data.data
+                  that.pic=data.data.pic
+
+                }
+              },{},{'authorization':$api.getStorage('token')})
+            }
+
+
+        }
+        })
+      };
+  </script>
+  </html>

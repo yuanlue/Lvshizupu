@@ -24,6 +24,18 @@
         position: absolute;
         opacity:0
       }
+       ul .logo span{
+      	color:#ccc;
+      	position: absolute;
+      	right:10px;
+      	z-index:1;
+      }
+    ul li input[type='file']{
+    	position: absolute;
+    	right:0;
+    	z-index:9;
+    	line-height: 50px;
+    }
       ul li  label .icon{
         margin:0 7px;
         vertical-align: middle;
@@ -42,6 +54,13 @@
         height:50px;
         background:white;
         text-align: right;
+      }
+      ul li input[type='date']{
+      	position: absolute;
+    	right:0;
+    	opacity:0;
+    	z-index:9;
+    	line-height: 50px;
       }
       *:focus {
            outline: none;
@@ -65,10 +84,17 @@
   <body>
     <ul>
       <li>企业名称<input id="name" type="text" placeholder="请输入企业名称"></li>
+      <li class="logo">企业Logo
+        <span class="logotext" onclick="logoChange()">请上传企业LOGO</span>
+      </li>
       <li>企业代码<input id="card" type="number" placeholder="请输入企业号码"></li>
       <li>手机号码<input id="mobile" type="text" placeholder="请输入本人手机号"></li>
       <li>所属行业<input id="indust" type="text" placeholder="请输入细分行业"></li>
-      <li>成立时间<input id="time"  type="date" placeholder="请选择成立日期" ></li>
+      <li class="logo">成立时间
+        <input id="time"  type="date" onchange="timeChange()" placeholder="请选择成立日期" >
+        <span class="timeText">请选择企业成立时间</span>
+
+      </li>
       <li>行业细分<input id="classify" type="text" placeholder="请输入细分行业"></li>
       <li>产品方向<input id="product" type="text" placeholder="请输入企业的主营产品"></li>
       <li>所属地<span id="address" class="address" onclick="selectAdd()">点击选择所在地</span></li>
@@ -85,7 +111,7 @@
   <script type="text/javascript" src="../../../../script/service.js"></script>
 
   <script type="text/javascript">
-
+var url=""
   function sure(){
     if($('#address').text()!="点击选择所在地"){
     if($('#address').text().split('/')[2].length==0){
@@ -95,12 +121,13 @@
               "industry": 1,
               "product": $('#product').val(),
               "nationality":"中国",
-               "province":$('.address').text().split('/')[0],
-                "city":$('.address').text().split('/')[0],
-               "sen_industry":$('#classify').val(),
+              "province":$('.address').text().split('/')[0],
+              "city":$('.address').text().split('/')[0],
+              "sen_industry":$('#classify').val(),
               "uscc_code": $('#card').val(),
               "shop_id": "",
-              "creation_at":$('#time').val()
+              "creation_at":$('#time').val(),
+              "logo":url
 
 
               }
@@ -113,21 +140,21 @@
               "industry": 1,
               "product": $('#product').val(),
               "nationality":"中国",
-               "province":$('.address').text().split('/')[0],
-                "city":$('.address').text().split('/')[1],
-               "sen_industry":$('#classify').val(),
+              "province":$('.address').text().split('/')[0],
+              "city":$('.address').text().split('/')[1],
+              "sen_industry":$('#classify').val(),
               "uscc_code": $('#card').val(),
               "shop_id": "",
-              "creation_at":$('#time').val()
+              "creation_at":$('#time').val(),
+              "logo":url
 
               }
               }
     }
-    postData('/companies',function(data){
-      alert(JSON.stringify(data))
+    postData('/users/companies',function(data){
       if(data.code==200){
         api.toast({
-                msg: '申请成功',
+                msg: '企业入驻申请成功',
                 duration:2000,
                 location: 'bottom'
             });
@@ -136,7 +163,7 @@
       }
       else{
         api.toast({
-                msg: '填写信息有误，请重试',
+                msg: data.message,
                 duration:2000,
                 location: 'bottom'
             });
@@ -151,12 +178,41 @@ else{
       });
 }
   }
+  function logoChange(){
+    var imageTool = api.require('imageTool');
+    imageTool.openImage(function(ret, err) {
+    if (ret) {
+      var card=new Date().getTime()+Math.floor(Math.random()*100)
+      var path='/company'+$api.getStorage('mobile')+'/'+card+ret.imgName
+      upload(path,'image',ret.imgPath,function(data){
+        if(data.code==200){
+          api.toast({
+                  msg: '上传成功',
+                  duration:2000,
+                  location: 'bottom'
+            });
+            url=data.data.url
+            $('.logotext').text('上传成功')
+        }
+        else{
+
+        }
+      },{"Authorization":$api.getStorage('token')},function(err){ })
+
+    }
+});
+  }
+  function timeChange(){
+    $('.timeText').text($('#time').val())
+  }
   function selectAdd(){
     var citySelector = api.require('citySelector');
 
     citySelector.open({
-      y: api.frameHeight / 1.6,
-      fixedOn: api.frameName
+      fixedOn: api.frameName,
+      titleImg:"widget://image/status.png",
+      cancelImg:'#fff',
+      enterImg:'#fff'
   }, function(ret, err) {
       if (ret) {
       $('.address').text(ret.province+'/'+ret.city+'/'+ret.county)

@@ -63,55 +63,80 @@
       </style>
   </head>
   <body>
-  <div class="conListFrame" v-cloak>
-    <div class="search" >
-      <input v-model="searchText" type="text" placeholder="输入关键词查询">
-      <button>搜索</button>
-     </div>
-     <div class="list">
-       <ul>
-         <li @click="inner()" v-for="item in list "><img v-bind:src="item.imgpath" alt="">{{item.name}}</li>
+    <div class="conListFrame" v-cloak>
+      <div class="search" >
+        <input v-model="searchText" type="text" placeholder="输入关键词查询">
+        <button @click="search()">搜索</button>
+       </div>
+       <div class="list">
+         <ul>
+           <li @click="inner(item.id)" v-for="item in list ">
+           	<img v-if="item.logo!=null" v-bind:src="item.logo" alt="">
+           	<img v-if="item.logo==null" src="../../../image/default.png" alt="">
+           	{{item.name}}
+           </li>
 
-       </ul>
-     </div>
-     <div class="remark">
-      共三家企业入驻
-     </div>
-  </div>
+         </ul>
+       </div>
+       <div class="remark">
+        共{{list.length}}家企业入驻
+       </div>
+    </div>
   </body>
   <script type="text/javascript" src="../../../script/api.js"></script>
   <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
   <script type="text/javascript" src="../../../script/vue.js"></script>
+  <script type="text/javascript" src="../../../script/service.js"></script>
 
   <script type="text/javascript">
       apiready = function(){
         var app=new Vue({
           el: '.conListFrame',
           data: {
-            list:[
-              {
-                "name":"吕氏集团",
-                "imgpath":"../../../image/demo1.png"
-              },
-              {
-                "name":"雅丽洁（国际）集团有限公司",
-                "imgpath":"../../../image/demo2.png"
-              },{
-                "name":"广东卓粤集团",
-                "imgpath":"../../../image/demo3.png"
-              }
-            ],
-            searchText:""
+            searchText:"",
+             list:[]
           },
           created:function(){
-
+              this.init()
 
           },
         methods:{
-          inner:function(){
+          search(){
+            var that = this
+            api.showProgress({
+            title: '正在查询中...',
+            text: '先喝杯茶...',
+            modal: false
+        });
+        getData('/companies',function(data){
+          api.hideProgress();
+
+          if(data.code==200){
+            that.list=data.data
+          }
+        },{'name':that.searchText},{'Authorization':$api.getStorage('token')})
+  },
+          init(){
+            var that = this
+            api.showProgress({
+            title: '努力加载中...',
+            text: '先喝杯茶...',
+            modal: false
+        });
+            getData('/companies',function(data){
+              api.hideProgress();
+              if(data.code==200){
+                that.list=data.data
+              }
+            },{},{'Authorization':$api.getStorage('token')})
+          },
+          inner:function(id){
             api.openWin({
                 name: 'marketInnerWin',
                 url: '../../../html/Home/market/markectInnerWin.html',
+                pageParam:{
+                  id:id
+                }
             });
 
           }

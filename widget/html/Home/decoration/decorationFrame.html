@@ -123,34 +123,37 @@
 
   function timeRank(starttime,endtime,item){
     var date=new Date()
-    if(parseInt(date.getMonth()+1)<10){
-      var nowTime=date.getFullYear().toString()+"0"+(date.getMonth()+1).toString()+date.getDate().toString()
+    		var nowTime
+    		var month=date.getMonth()+1
+    		var day=date.getDate()
 
-    }
-    else{
-      var nowTime=date.getFullYear().toString()+(date.getMonth()+1).toString()+date.getDate().toString()
+    		if(parseInt(day)<10){
+    			day="0"+date.getDate().toString()
+    		}
+    		if(parseInt(month<10)){
+    			month="0"+(date.getMonth()+1).toString()
+    		}
+  		nowTime=date.getFullYear().toString()+month+day
+  		    console.log(nowTime)
+  		      var startT=starttime.split(" ")[0];
+  		      var endT=endtime.split(" ")[0];
+  		      item.startTime=startT.split('-')[0]+startT.split('-')[1]+startT.split('-')[2];
+  		      item.endTime=endT.split('-')[0]+endT.split('-')[1]+endT.split('-')[2];
 
-    }
-      startT=starttime.split(" ")[0];
-      endT=endtime.split(" ")[0];
-      item.startTime=startT.split('-')[0]+startT.split('-')[1]+startT.split('-')[2];
-      item.endTime=endT.split('-')[0]+endT.split('-')[1]+endT.split('-')[2];
-
-      if(parseFloat(nowTime) < parseFloat(item.startTime)){
-        item.ac=2
-      }
-      else if(parseInt(nowTime)>parseInt(item.endTime)){
-        item.ac=0
-      }
-      else if(parseInt(nowTime)<=parseInt(item.endTime)&&parseInt(nowTime)>=parseInt(item.startTime)){
-        item.ac=1
-      }
-
+  		      if(parseFloat(nowTime) < parseFloat(item.startTime)){
+  		        item.ac=2
+  		      }
+  		      else if(parseInt(nowTime)>parseInt(item.endTime)){
+  		        item.ac=0
+  		      }
+  		  else if(parseInt(nowTime)<=parseInt(item.endTime)&&parseInt(nowTime)>=parseInt(item.startTime)){
+  		        item.ac=1
+  		      }
   }
 
 
       apiready = function(){
-      
+
         var app=new Vue({
           el: '.decoration',
           data: {

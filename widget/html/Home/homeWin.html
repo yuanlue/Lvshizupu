@@ -206,7 +206,7 @@ function message(){
       var time=new Date()
       var sysNum=0;
       var sysInfoMessage=[]
-      if($api.getStorage('uid')!='null'&&$api.getStorage('uid')!='undefined'&&$api.getStorage('joined_family')=='false'){
+      if($api.getStorage('uid')!=null&&$api.getStorage('uid')!='undefined'&&$api.getStorage('joined_family')=='false'){
         ws = new WebSocket("wss://wx2.kuaiyunma.com/sub/sys/"+$api.getStorage('uid'));
         ws.onmessage = function(evt){
           alert(evt.data)

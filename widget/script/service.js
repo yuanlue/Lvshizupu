@@ -6,7 +6,6 @@ function postData(para,callback,parama,header){
               url: url+para,
               dataType: "json",
               headers: header,
-
               success: function(data){
                         callback(data)
             },
@@ -72,6 +71,56 @@ function deleteData(para,callback,parama,header){
 
 
 }
+function putData(para,callback,parama,header){
+  var url="https://wx2.kuaiyunma.com"
+    $.ajax({
+              type: "put",
+              data:parama,
+              url: url+para,
+              async:false,
+               cache:false,
+              dataType: "json",
+              headers: header,
+              success: function(data){
+                        callback(data)
+            },
+            error:function(err){
+              alert(JSON.stringify(err))
+              api.toast({
+                      msg: '服务器异常',
+                      duration:2000,
+                      location: 'bottom'
+                  });
+            }
+          });
+
+
+}
+function upimg(para,callback,parama,header){
+  var url="https://wx2.kuaiyunma.com"
+
+    $.ajax({
+              type: "post",
+              data:parama,
+              url: url+para,
+              async:false,
+              cache:false,
+              processData:false,
+              contentType : false,
+              headers: header,
+              success: function(data){
+                        callback(data)
+            },
+            error:function(err){
+              alert(JSON.stringify(err))
+              api.toast({
+                      msg: '服务器异常',
+                      duration:2000,
+                      location: 'bottom'
+                  });
+            }
+          });
+}
 function changeAvata(path,headers,callback,callbackerr){
   api.ajax({
       url: 'https://wx2.kuaiyunma.com/users/avatar',
@@ -90,14 +139,15 @@ function changeAvata(path,headers,callback,callbackerr){
       }
   });
 }
-function upload(path,file,callback,header,callbackerr){
+function upload(path,type,file,callback,header,callbackerr){
   api.ajax({
       url: 'https://wx2.kuaiyunma.com/upyun/upload',
       method: 'POST',
       headers:header,
       data: {
           values: {
-              path: path
+              path: path,
+              type:type
           },
           files: {
               file: file

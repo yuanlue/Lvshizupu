@@ -57,7 +57,7 @@
   <script type="text/javascript">
   function navchange(url){
     if(url=='auth'){
-      getData('/companies/approval',function(data){
+      getData('/users/companies/approval',function(data){
         if(data.data.exists==false){
           //没有申请
           return false

@@ -140,10 +140,10 @@
     </div>
     <p class="register">还未注册，点击<span onclick="regis()">立即注册</span></p>
   </div>
-  <div class="other" style="display:none">
+  <div class="other" >
       <p>第三方登录</p>
       <ul>
-        <li><img src="../../image/wechat.png" alt=""></li>
+        <li><img onclick="wechatLogin()" src="../../image/wechat.png" alt=""></li>
       </ul>
   </div>
 
@@ -155,6 +155,81 @@
 
 
   <script type="text/javascript">
+  function wechatLogin(){
+      var wx = api.require('wx');
+    wx.isInstalled(function(ret, err) {
+        if (ret.installed) {
+          wx.auth({
+            apiKey: ''
+          }, function(ret, err) {
+            if (ret.status) {
+                getData('/weixin/oauth2_callback',function(data){
+                  if(data.code==200){
+                    if(data.data.exist==true){
+                      api.toast({
+                              msg: '登录成功',
+                              duration:2000,
+                              location: 'bottom'
+                          });
+
+                          $api.setStorage('avata',data.data.avatar);
+                          $api.setStorage('token',data.data.token)
+                          $api.setStorage('mobile',data.data.mobile);
+                          $api.setStorage('uid',data.data.uid);
+                          $api.setStorage('joined_family',data.data.joined_family);
+
+                          api.execScript({
+                              name: 'home',
+                              frameName: 'userCenter',
+                              script: 're();'
+                          });
+                          api.execScript({
+                              name: 'home',
+                              frameName: 'home',
+                              script: 're();'
+                          });
+
+
+                          api.openWin({
+                              name: 'home',
+                              url: '../../html/Home/homeWin.html',
+                              cache:false,
+                              useWKWebView:false,
+                              reload:true,
+                              pageParam:{
+                                token:data.data.token
+                              },
+                              historyGestureEnabled:false,
+                              slidBackEnabled:false
+                          });
+                    }
+                    else{
+                    api.openWin({
+                        name: 'wechat',
+                        url: '../../html/login/wechatBind.html',
+                        pageParam:{
+                          avatar:data.data.avatar,
+                          userName:data.data.username,
+                          sex:data.data.sex,
+                          unionid:data.data.unionid
+                        },
+                        bgColor: 'rgba(0,0,0,0)',
+                        vScrollBarEnabled: true,
+                        hScrollBarEnabled: true
+                    });
+                  }
+
+                  }
+                },{'code':ret.code},{'Authorization':$api.getStorage('token')})
+            } else {
+                alert(err.code);
+            }
+          });
+        } else {
+            alert('当前设备未安装微信客户端');
+        }
+    });
+  }
   tar=$api.dom('body')
   var num=0
   $api.css(tar,'height:'+window.screen.height+'px');

@@ -12,10 +12,9 @@
        }
       body{
           background: url("../../image/background.png");
-          background-position: bottom center;;
+          background-position: bottom center;
           background-size: cover;
           height:100vh;
-          padding-top:108px;
           box-sizing: border-box;
           overflow: hidden;
       }
@@ -23,7 +22,10 @@
             text-align: center;
           }
         .logo img{
-          width:87px;
+          width:67px;
+          height:67px;
+          border:1px solid #ccad73;
+          border-radius: 50%;
         }
         .loginInfo{
           width:80vw;
@@ -43,7 +45,7 @@
           width:45vw;
         }
         .info{
-          margin-top:70px;
+          margin-top:30px;
         }
         @media screen and (max-width: 320px) {
           .info{
@@ -126,6 +128,9 @@
           padding:0 15px;
           margin-left:5px;
         }
+        .logo{
+          margin-top:40px;
+        }
         .logo >span{
           background: url('../../image/status.png');
 
@@ -163,12 +168,48 @@
           bottom:10px;
           right:0;
         }
+        .logo .welcome{
+          font-size:15px;
+          margin:15px 0;
+          color:#9e2931;
+        }
+        .logo p{
+          font-size:15px;
+        }
+        .top{
+          height:25px;
+          background: black;
+        }
+        .topbar {
+          background-image: url("../../image/status.png");
+          background-size: cover;
+          height: 50px;
+          border-bottom: 1px solid #DDDFE3;
+          line-height: 50px;
+          text-align: center;
+          font-size:17px;
+          color:white;
+        }
+        #cloud .return{
+          width:12px;
+          position: absolute;
+          left:10px;
+          top:13px;
+        }
       </style>
   </head>
   <body>
+    <div class="top"></div>
+    <header>
+        <div id="cloud" class="topbar  activebar">
+          <img class="return" onclick="api.closeWin()" src="../../image/return.png" alt="">
+                    绑定账号
+        </div>
+    </header>
   <div class="logo">
-    <span onclick="messageLogin()">返回登录</span>
-    <img src="../../image/logo.png" alt="">
+    <img src="../../image/default.png" alt="">
+    <p class="welcome">亲爱的<span>“微信昵称”</span></p>
+    <p>为了您的账户安全，请关联您的手机号</p>
   </div>
   <div class="info">
     <div class="loginInfo"><input type="number" id="tel" placeholder="已输入手机号"><span onclick="verification()">获取验证码</span></div>
@@ -176,16 +217,10 @@
     <div class="loginInfo"> <input type="password" id="password" placeholder="6-16位登录密码"><i onclick="eye()"></i></div>
 
     <div class="opera">
-      <button onclick="login()">注册</button>
+      <button onclick="login()">立即登录绑定</button>
     </div>
-    <p class="register">点击注册，即表示您同意<span onclick="agreement()">《天下吕氏 服务协议》</span></p>
   </div>
-  <div class="other"  >
-      <p>第三方登录</p>
-      <ul>
-        <li onclick="wechatLogin()"><img src="../../image/wechat.png" alt=""></li>
-      </ul>
-  </div>
+
 
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
@@ -195,81 +230,6 @@
   <script type="text/javascript" src="../../script/service.js"></script>
 
   <script type="text/javascript">
-  function wechatLogin(){
-      var wx = api.require('wx');
-    wx.isInstalled(function(ret, err) {
-        if (ret.installed) {
-          wx.auth({
-            apiKey: ''
-          }, function(ret, err) {
-            if (ret.status) {
-                getData('/weixin/oauth2_callback',function(data){
-                  if(data.code==200){
-                    if(data.data.exist==true){
-                      api.toast({
-                              msg: '登录成功',
-                              duration:2000,
-                              location: 'bottom'
-                          });
-
-                          $api.setStorage('avata',data.data.avatar);
-                          $api.setStorage('token',data.data.token)
-                          $api.setStorage('mobile',data.data.mobile);
-                          $api.setStorage('uid',data.data.uid);
-                          $api.setStorage('joined_family',data.data.joined_family);
-
-                          api.execScript({
-                              name: 'home',
-                              frameName: 'userCenter',
-                              script: 're();'
-                          });
-                          api.execScript({
-                              name: 'home',
-                              frameName: 'home',
-                              script: 're();'
-                          });
-
-
-                          api.openWin({
-                              name: 'home',
-                              url: '../../html/Home/homeWin.html',
-                              cache:false,
-                              useWKWebView:false,
-                              reload:true,
-                              pageParam:{
-                                token:data.data.token
-                              },
-                              historyGestureEnabled:false,
-                              slidBackEnabled:false
-                          });
-                    }
-                    else{
-                    api.openWin({
-                        name: 'wechat',
-                        url: '../../html/login/wechatBind.html',
-                        pageParam:{
-                          avatar:data.data.avatar,
-                          userName:data.data.username,
-                          sex:data.data.sex,
-                          unionid:data.data.unionid
-                        },
-                        bgColor: 'rgba(0,0,0,0)',
-                        vScrollBarEnabled: true,
-                        hScrollBarEnabled: true
-                    });
-                  }
-
-                  }
-                },{'code':ret.code},{'Authorization':$api.getStorage('token')})
-            } else {
-                alert(err.code);
-            }
-          });
-        } else {
-            alert('当前设备未安装微信客户端');
-        }
-    });
-  }
   var num=0
 
   tar=$api.dom('body')
@@ -368,76 +328,77 @@ function agreement(){
   }
   function login(){
     //验证是否已经注册
-    postData('/users/is_registered',function(data){
-        if(data.code!='-1'){
-          api.toast({
-                  msg: '该用户已经注册',
-                  duration:2000,
-                  location: 'bottom'
-              });
-        }
-        else{
-          //该用户未注册 验证手机
-          postData('/sms/'+$('#tel').val()+'/validate',function(res){
-            if(res.code==200){
-              //验证成功
-              //进行注册
-              postData('/users',function(sta){
-                if(sta.code==200){
-                  api.toast({
-                          msg: '注册成功',
-                          duration:2000,
-                          location: 'bottom'
-                      });
-                      $api.setStorage('token',sta.data.token)
-                      $api.setStorage('mobile',sta.data.mobile);
-                      $api.setStorage('uid',sta.data.uid);
-                      $api.setStorage('joined_family',sta.data.joined_family);
-                      $api.setStorage('avata',sta.data.avatar);
+    var user={
+      "user":
+    {
+      "mobile":$('#tel').val(),
+      "password":$('#password').val(),
+      "avatar":api.pageParam.avatar,
+      "user_name":api.pageParam.userName,
+      "sex":api.pageParam.sex,
+      "unionid":api.pageParam.unionid
+    }
+  }
+    postData('/sms/'+$('#tel').val()+'/validate',function(res){
+      if(res.code==200){
+        //验证成功
+        //进行注册
+        postData('/weixin/oauth2_bind',function(sta){
+          if(sta.code==200){
+          alert(JSON.stringify(sta))
 
-                      api.openWin({
-                          name: 'home',
-                          url: '../../html/Home/homeWin.html',
-                          pageParam:{
-                            token:sta.data.token
-                          },
-                          useWKWebView:false,
-                          historyGestureEnabled:false,
-                          slidBackEnabled:false
-                      });
-                }
-                else{
-                  api.toast({
-                          msg: '注册失败',
-                          duration:2000,
-                          location: 'bottom'
-                      });
-                }
-              },{
-                'user':
-              {
-                'mobile':$('#tel').val(),
-                'password':$('#password').val()
-              }
-            }
-          )
+            api.toast({
+                    msg: '恭喜您，绑定成功',
+                    duration:2000,
+                    location: 'bottom'
+                });
+                $api.setStorage('token',sta.data.token)
+                $api.setStorage('mobile',sta.data.mobile);
+                $api.setStorage('uid',sta.data.uid);
+                $api.setStorage('joined_family',sta.data.joined_family);
+                $api.setStorage('avata',sta.data.avatar);
 
-            }
-            else{
-              api.toast({
-                      msg: '验证码输入有误',
-                      duration:2000,
-                      location: 'bottom'
-                  });
-            }
-          },{'code':$('#message').val()})
-        }
+                api.openWin({
+                    name: 'home',
+                    url: '../../html/Home/homeWin.html',
+                    pageParam:{
+                      token:sta.data.token
+                    },
+                    useWKWebView:false,
+                    historyGestureEnabled:false,
+                    slidBackEnabled:false
+                });
+          }
+          else{
+            api.toast({
+                    msg: sta.message.message,
+                    duration:2000,
+                    location: 'bottom'
+                });
+          }
+        },JSON.stringify(user),{'Content-Type':'application/json'}
+    )
 
-
-    })
+      }
+      else{
+        api.toast({
+                msg: '验证码输入有误',
+                duration:2000,
+                location: 'bottom'
+            });
+      }
+    },{'code':$('#message').val()})
   }
       apiready = function(){
+        var u = navigator.userAgent;
 
+        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+        var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+        if(isiOS){
+          $('.top').css({'background':'white',"height":"20px"})
+        }
+      $('.welcome span').text(api.pageParam.userName)
+      $('.logo img').attr('src',api.pageParam.avatar)
       };
   </script>
   </html>

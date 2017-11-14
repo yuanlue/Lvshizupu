@@ -5,18 +5,24 @@
       <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
       <title>title</title>
       <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../../css/swiper-3.4.2.min.css"/>
+
       <style>
           .zupuBook .banner{
             text-align: center;
             background:url('../../../image/zupubanner.png') no-repeat;
             background-size: cover;
             background-position: bottom;
-            width:100%;
-            height:302px;
+            -webkit-overflow-scrolling:touch;
+            height:305px;
+          }
+          .zupuBook .banner .booksurface{
+            width:130px;
           }
           .zupuBook .banner img{
-            margin-top:80px;
-            width:175px;
+            margin-top:60px;
+            margin-bottom:10px;
+            width:100%;
           }
           .zupuBook .middle{
             height:25px;
@@ -45,13 +51,15 @@
   </head>
   <body>
     <div class="zupuBook">
-        <div class="banner">
-          <img onclick="Bookinner()" src="../../../image/zupubook.png" alt="">
+      <div class="swiper-container banner">
+        <div class="swiper-wrapper">
+
+
+          </div>
         </div>
-        <div class="middle">
-        </div>
+
         <div class="content">
-          <h1>《吕氏族谱》</h1>
+          <h1></h1>
           <p class="author"></p>
           <p class="inner">
 
@@ -62,14 +70,21 @@
   <script type="text/javascript" src="../../../script/api.js"></script>
   <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
   <script type="text/javascript" src="../../../script/service.js"></script>
+  <script type="text/javascript" src="../../../script/swiper-3.4.2.min.js"></script>
+<script>
+
+</script>
 
 
   <script type="text/javascript">
-  function Bookinner(){
+  function Bookinner(id){
     api.openWin({
         name: 'Bookinner',
         url: '../../../html/Home/zupu/Bookinner.html',
-        slidBackEnabled:false
+        slidBackEnabled:false,
+        pageParam:{
+          id:id
+        }
     });
 
   }
@@ -79,18 +94,39 @@
         text: '先喝杯茶...',
         modal: false
     });
-        getData('/genealogies/profile',function(data){
+        getData('/genealogies',function(data){
           api.hideProgress();
-
-        $('.content h1').text(data.data.name)
-        $('.content .author').text(data.data.admin_user)
-        $('.content .inner').html(data.data.preface)
+          data.data.forEach(function(item){
+            $('.swiper-wrapper').append('<div id="'+item.id+'" class="swiper-slide booksurface">'
+                +'<img onclick="Bookinner('+item.id+')" src="../../../image/zupubook.png" alt="">'
+                +'</div>')
+          })
+          $('.content h1').text(data.data[0].name)
+          $('.content .author').text(data.data[0].admin_user)
+          $('.content .inner').html(data.data[0].preface)
+          var mySwiper = new Swiper('.swiper-container',{
+          effect : 'slip',
+          slidesPerView: 2,
+          centeredSlides: true,
+          onSlideChangeEnd:function(swiper){
+          var id=$('.swiper-wrapper').children('.swiper-slide').eq(swiper.activeIndex).attr('id')
+          getData('/genealogies/'+id+'/profile',function(data){
+            $('.content h1').text(data.data.name)
+            $('.content .author').text(data.data.admin_user)
+            $('.content .inner').html(data.data.preface)
+          },{},{'Authorization':$api.getStorage('token')})
+          },
+          coverflow: {
+                      rotate: 30,
+                      stretch: 10,
+                      depth: 60,
+                      modifier: 2,
+                      slideShadows : true
+                  }
+          }
+          )
         },{  },{'Authorization':$api.getStorage('token')})
 
         }
-
-
-
-
   </script>
   </html>

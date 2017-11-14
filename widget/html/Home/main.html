@@ -392,7 +392,6 @@ function init(){
     if(data.data.length<=0){
       $('.activity').hide()
       return false;
-
     }
     var startTime=new Date(data.data[0].start_at.split(' ')[0]).getTime()
     var endTime=new Date(data.data[0].end_at.split(' ')[0]).getTime()
@@ -473,7 +472,7 @@ function navchange(obj){
 
 function friend(){
 
-      if($api.getStorage('uid')!='null'&&$api.getStorage('uid')!='undefined'&&$api.getStorage('joined_family')!='false'){
+      if($api.getStorage('uid')!=null&&$api.getStorage('uid')!='undefined'&&$api.getStorage('joined_family')!='false'){
         api.openWin({
             name: 'friend',
             url: '../../html/friend/friendWin.html',
@@ -495,7 +494,7 @@ function friend(){
       var contactManList=[];
       var messageList=[];//接收消息列表
 
-      if($api.getStorage('uid')!='null'&&$api.getStorage('uid')!='undefined'&&$api.getStorage('joined_family')!='false'){
+      if($api.getStorage('uid')!=null&&$api.getStorage('uid')!='undefined'&&$api.getStorage('joined_family')!='false'){
         ws = new WebSocket("wss://wx2.kuaiyunma.com/sub/chat/"+$api.getStorage('uid'));
         ws.onmessage = function(evt){
           if($api.getStorage('messageList')){
@@ -582,7 +581,6 @@ function friend(){
              messageList.push(evt.data)
              $('.quanzi i').text(messageList.length)
 
-             messageList.push(evt.data)
              if(messageList.length<1){
                $('.quanzi i').css('opacity',0)
              }
@@ -609,6 +607,12 @@ function friend(){
 
 
         }
+        ws.onclose = function () {
+        reconnect();
+    };
+    ws.onerror = function () {
+        reconnect();
+    };
       }
 
 

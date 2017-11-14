@@ -97,7 +97,7 @@
     male=0
     }
     else{
-      male=0
+      male=1
     }
 
     if($('#name').val().length>0&&$('.address').text().length>0&&$('#cardNum').val().length>0&&$('#telNum').val().length>0){
@@ -181,6 +181,9 @@
     var citySelector = api.require('citySelector');
 
     citySelector.open({
+      titleImg:"widget://image/status.png",
+      cancelImg:'#fff',
+      enterImg:'#fff'
   }, function(ret, err) {
       if (ret) {
       $('.address').text(ret.province+'/'+ret.city+'/'+ret.county)
