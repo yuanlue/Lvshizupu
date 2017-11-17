@@ -7,19 +7,404 @@
     <title>Hello APP</title>
     <link rel="stylesheet" type="text/css" href="../../css/api.css" />
 	<style>
-  img{
-    margin-top:100px;
-    width:100%;
+  .market{
+  	padding-bottom:50px;
+  	min-height: 100vh;
+  	overflow: hidden;
+  	background-color: #f5f4f4;
+  }
+  .market>.banner{
+  	position: relative;
+  	height:145px;
+  }
+  .market>.banner img{
+  	width:100%;
+  }
+  .market .search {
+    box-sizing: border-box;
+  	line-height:45px;
+  	padding:0 10px;
+  	position: absolute;
+  	width:100%;
+  	bottom:-10px;
+  }
+  .market .search input{
+    background: white;
+  	text-align: center;
+  	font-size:14px;
+  	border-radius: .53333333rem;
+  	box-shadow: 1px 1px 5px #ccc;
+  	width:100%;
+  	line-height: 45px;
+  }
+  .market .menu{
+  	background-color: white;
+  	margin-top:10px;
+  	padding:20px 10px;
+  }
+  .market .menu ul {
+  	font-size:0;
+  }
+  .market .menu ul li img{
+  	width:50px;
+  }
+  .market .menu ul li{
+  	margin-top:10px;
+  	text-align: center;
+  	display: inline-block;
+  	width:25%;
+  }
+  .market .menu ul li p{
+  	margin-top:10px;
+  	font-size:14px;
+  	text-align: center;
+  }
+  .market header{
+  	height:42px;
+  	color:white;
+  	line-height: 42px;
+  	width:100%;
+  	text-align: center;
+  		margin-bottom:10px;
+
+  }
+  .market header span{
+  	font-size:15px;
+  }
+
+  .market .visit header{
+  	background: url("../../image/guangshangchang.png") no-repeat;
+  	background-size: cover;
+  }
+  .market .recom{
+  	margin-top:10px;
+  }
+  .market .recom header{
+  		background: url("../../image/tuijian.png") no-repeat;
+  	background-size: cover;
+  }
+  .market .limTime header{
+  		background: url("../../image/xianshi.jpg") no-repeat;
+  	background-size: cover;
+  }
+  .market .like header{
+  	margin-top:.26666667rem/* 20px */;
+  		background: url("../../image/cainixihuan.png") no-repeat;
+  	background-size: cover;
+  }
+  .market .visit ul{
+  	border-bottom:1px solid #ccc;
+  	font-size:0;
+  }
+  .market .visit ul>li{
+  	padding:10px;
+  	overflow: hidden;
+  	background:white;
+  	border-right:1px solid #ccc;
+  	height: 110px;
+  	display: inline-block;
+  	box-sizing: border-box;
+  	width:50%;
+  	  border-collapse:collapse;
+
+  	font-weight: bold;
+  	font-size:16px;
+  }
+  .market .visit ol{
+  	border-bottom:1px solid #ccc;
+  	font-size:0;
+  }
+  .market .visit ol>li{
+
+  	padding:15px 10px;
+  	overflow: hidden;
+  	background:white;
+  	  border-collapse:collapse;
+  	border-right:1px solid #ccc;
+  	height: 150px;
+  	display: inline-block;
+  	box-sizing: border-box;
+  	width:25%;
+  	font-weight: bold;
+  	font-size:16px;
+  }
+  .market .visit ul>li img{
+  	width:70px;
+  }
+  .market .recom ul{
+  	width:100%;
+  	white-space:nowrap;
+  	height:180px;
+  	overflow: auto;
+  }
+  .market .recom ul li{
+  	line-height: 1.5;
+  	vertical-align: top;
+  		  border-collapse:collapse;
+  	display: inline-block;
+  	background-color: white;
+  	width:115px;
+  	padding:10px;
+  	height:160px;
+  }
+  .market .recom ul li p{
+  	font-size:12px;
+  	white-space: normal;
+  }
+  .market .recom ul li span{
+  	font-size:15px;
+  	color:#ef5737;
+  }
+  .market .recom ul li i {
+  	font-size:12px;
+  }
+  .market .recom ul li img{
+  	width:100%;
+  }
+  .market .limTime>div {
+  	padding:0 10px;
+  	margin-bottom:15px;
+  }
+  .market .limTime>div img{
+  	width:15px;
+  	vertical-align: middle;
+  }
+  .market .limTime>div span{
+  	height: 16px;
+  	line-height: 16px;
+  	border-radius: 10px;
+  	background-color: #ef5836;
+  	display: inline-block;
+  	width:22px;
+  	text-align: center;
+  	color:white;
+  }
+  .market .like>ul{
+  	padding:0 10px;
+  	font-size:0;
+  }
+  .market .like img{
+  	width:100%;
+  }
+  .market .like>ul li{
+  	display: inline-block;
+  	width:48%;
+  	margin:10px 1% 0;
+  	color:#333333;
+  	height:250px;
+  	background-color: white;
+  	box-sizing:border-box;
+  	border-collapse: collapse;
+  	font-size:13px;
+  }
+  .market .like>ul li>div{
+  	min-height:145px;
+  }
+  .market .like>ul li p{
+  	font-weight: bold;
+  	padding:0 10px;
+  	line-height: 1.5;
+  }
+  .market .like>ul li span{
+  	color:#ef5737;
+  	font-size:15px;
   }
 	</style>
 </head>
 <body>
-  <img src="../../image/qidai.jpeg" alt="">
+  <div class="market">
+  <div class="banner">
+    <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1510742238117&di=fd30037daa4161d250f7591174127565&imgtype=0&src=http%3A%2F%2Fpic2.ooopic.com%2F11%2F86%2F80%2F51bOOOPIC6a_1024.jpg">
+
+  <div class="search">
+    <input type="text" placeholder="请输入商品／店铺名">
+  </div>
+  </div>
+  <div class="menu">
+    <ul>
+    <li>
+      <img src="../../image/Mclassify.png" alt="">
+        <p>全部分类</p>
+      </li>
+
+      <li>
+        <img src="../../image/cart.png" alt="">
+        <p>购物车</p>
+      </li>
+      <li>
+        <img src="../../image/order.png" alt="">
+        <p>我的订单</p>
+      </li>
+      <li>
+        <img src="../../image/Mfoot.png" alt="">
+        <p>浏览足迹</p>
+      </li>
+      <li>
+        <img src="../../image/order.png" alt="">
+        <p>我的收藏</p>
+      </li>
+      <li>
+        <img src="../../image/Mgoods.png" alt="">
+        <p>推荐商品</p>
+      </li>
+      <li>
+        <img src="../../image/Mdiscount.png" alt="">
+        <p>折扣专区</p>
+      </li>
+      <li>
+        <img src="../../image/Mtime.png" alt="">
+        <p>限时秒杀</p>
+      </li>
+
+    </ul>
+  </div>
+  <div class="visit">
+    <header><span>逛商场</span></header>
+    <ul>
+      <li>
+        <span>食品饮料</span>
+      </li>
+      <li>
+        <span>厨电特惠</span>
+      </li>
+    </ul>
+    <ol>
+      <li>
+        <span>美妆特惠</span>
+      </li>
+      <li>
+        <span>母婴玩具</span>
+      </li>
+      <li>
+        <span>智能数码</span>
+      </li>
+      <li>
+        <span>家居家装</span>
+      </li>
+    </ol>
+  </div>
+      <div class="recom">
+    <header><span>推荐商品</span></header>
+    <ul>
+      <li>
+        <img src="../../image/default.png" alt="">
+        <p>德拉克Durlacher整箱装  500ml*24</p>
+        <span><i>￥</i>58.00</span>
+      </li>
+      <li>
+        <img src="../../image/default.png" alt="">
+        <p>德拉克Durlacher整箱装  500ml*24</p>
+        <span><i>￥</i>58.00</span>
+      </li>
+      <li>
+        <img src="../../image/default.png" alt="">
+        <p>德拉克Durlacher整箱装  500ml*24</p>
+        <span><i>￥</i>58.00</span>
+      </li>
+      <li>
+        <img src="../../image/default.png" alt="">
+        <p>德拉克Durlacher整箱装  500ml*24</p>
+        <span><i>￥</i>58.00</span>
+      </li>
+      <li>
+        <img src="../../image/default.png" alt="">
+        <p>德拉克Durlacher整箱装  500ml*24</p>
+        <span><i>￥</i>58.00</span>
+      </li>
+    </ul>
+
+  </div>
+    <div class="limTime recom">
+    <header><span>推荐商品</span></header>
+    <div>
+      <p>
+        <img src="../../image/default.png" alt="">
+        16点场
+        <span>26</span>:<span>00</span>:<span>00</span>
+      </p>
+
+    </div>
+    <ul>
+      <li>
+        <img src="../../image/default.png" alt="">
+        <p>德拉克Durlacher整箱装  500ml*24</p>
+        <span><i>￥</i>58.00</span>
+      </li>
+      <li>
+        <img src="../../image/default.png" alt="">
+        <p>德拉克Durlacher整箱装  500ml*24</p>
+        <span><i>￥</i>58.00</span>
+      </li>
+      <li>
+        <img src="../../image/default.png" alt="">
+        <p>德拉克Durlacher整箱装  500ml*24</p>
+        <span><i>￥</i>58.00</span>
+      </li>
+      <li>
+        <img src="../../image/default.png" alt="">
+        <p>德拉克Durlacher整箱装  500ml*24</p>
+        <span><i>￥</i>58.00</span>
+      </li>
+      <li>
+        <img src="../../image/default.png" alt="">
+        <p>德拉克Durlacher整箱装  500ml*24</p>
+        <span><i>￥</i>58.00</span>
+      </li>
+    </ul>
+
+  </div>
+    <div class="like">
+    <header><span>猜你喜欢</span></header>
+
+    <ul>
+      <li>
+          <div>
+            <img src="../../image/default.png" alt="">
+        </div>
+        <p>德拉克Durlacher整箱装  500ml*24</p>
+        <span><i>￥</i>58.00</span>
+      </li>
+      <li>
+        <div>
+          <img src="../../image/default.png" alt="">
+        </div>
+        <p>德拉克Durlacher整箱装  500ml*24</p>
+        <span><i>￥</i>58.00</span>
+      </li>
+      <li>
+          <div>
+            <img src="../../image/default.png" alt="">
+        </div>
+        <p>德拉克Durlacher整箱装  500ml*24</p>
+        <span><i>￥</i>58.00</span>
+      </li>
+      <li>
+          <div>
+            <img src="../../image/default.png" alt="">
+        </div>
+        <p>德拉克Durlacher整箱装  500ml*24</p>
+        <span><i>￥</i>58.00</span>
+      </li>
+      <li>
+<div>
+        <img src="../../image/default.png" alt="">
+        </div>  				<p>德拉克Durlacher整箱装  500ml*24</p>
+        <span><i>￥</i>58.00</span>
+      </li>
+    </ul>
+
+  </div>
+
+<footer-bar></footer-bar>
+
+</div>
 </body>
 <script type="text/javascript" src="../../script/api.js"></script>
 <script type="text/javascript">
     apiready = function(){
       // 融云模块
+
+
 }
 
 </script>

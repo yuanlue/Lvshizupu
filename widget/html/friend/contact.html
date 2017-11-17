@@ -23,6 +23,7 @@
           i>img{
             border-radius: 50%;
             width:50px;
+            height:50px;
           }
           i span>img{
             max-width:100px;
@@ -396,7 +397,6 @@ function receive(obj){
         else{
           contactvata=api.pageParam.avatar
         }
-        ws = new WebSocket("wss://wx2.kuaiyunma.com/sub/chat/"+$api.getStorage('uid'));
 
         var UIChatBox = api.require('UIChatBox');
         var  obj=$api.dom('.conversation ul');

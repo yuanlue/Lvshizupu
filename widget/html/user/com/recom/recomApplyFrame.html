@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../../css/api.css"/>
+      <style>
+      .body{
+        min-height:100vh;
+        background: #fff;
+        box-sizing: border-box;
+      }
+     .recomApply ul li{
+        background-color: #fff;
+        line-height: 50px;
+        padding:0 10px;
+        border-bottom:1px solid #eee;
+        font-size:16px;
+      }
+
+    .recomApply  ul li>img{
+        width:23px;
+        margin-right:10px;
+        vertical-align: middle;
+      }
+    .recomApply  ul li span:active{
+        background: #eee
+      }
+       .recomApply ul .logo span{
+
+          max-width:18px;
+          overflow: hidden;
+          text-overflow:ellipsis;
+          white-space:nowrap;
+          overflow:hidden;
+          color:#ccc;
+          position: absolute;
+          right:10px;
+          z-index:1;
+  }
+   .recomApply ul li>input{
+    font-size:16px;
+     line-height: 50px;
+     float: right;
+     text-align: right;
+
+   }
+   .recomApply ul li #telNum{
+     width:100px;
+   }
+    .recomApply ul li>span{
+      float: right;
+      color:#ccc;
+    }
+.recomApply ul .file>div>span{
+  overflow: hidden;
+    position: relative;
+    text-align: center;
+    border:1px dashed #ccc;
+    display: inline-block;
+    width:48%;
+    height:150px;
+    margin:10px 0;
+    line-height: 100px;
+}
+.recomApply ul .file>div>span>img{
+  width:100%;
+  position: absolute;
+  height:100%;
+  left:0;
+}
+ .recomApply ul .file>div>span>input{
+  width:100%;
+  height:150px;
+  position: absolute;
+  left:0;
+  opacity:0;
+ }
+.recomApply  ul li button{
+        float:right;
+        margin-left:5px;
+        background:#9e2931;
+        color:white;
+        padding:10px;
+        margin-top:7px;
+       }
+   .recomApply .opera{
+      font-size:16px;
+         background: #9e2931;
+         color:white;
+         position: fixed;
+         width: 100%;
+         bottom:0;
+         line-height:40px;
+         text-align: center;
+       }
+
+      </style>
+  </head>
+  <body>
+    <div class="recomApply">
+  		<ul>
+  			<li>姓名：<input type="text" placeholder="请输入姓名"></li>
+  			<li>身份证号码：<input type="text" placeholder="身份证号码"></li>
+  			  <li>手机号码<input v-model="tel"  type="text" placeholder="请输入本人手机号" required></li>
+  		      <li>验证码
+  		      			<button @click="getauth()">发送验证码</button>
+
+  		      	<input v-model="auth" id="telNum" type="text" placeholder="验证码" required>
+  		      </li>
+  			 <li class="file">
+  			 	请上传身份证
+  			 	<div>
+  			 		<span>
+  			 			身份证正面
+  			 		<img v-bind:src="positiveI" v-if="positiveI!=''">
+  					<input type="file" @change="imageUp('imFile')" ref="imFile">
+  			 		</span>
+  		      		<span>
+  		      			身份证反面
+  		      		<img  v-bind:src="backI" v-if="backI!=''">
+
+  					<input type="file" @change="imageUp('backFile')" ref="backFile">
+  		      		</span>
+  			 	</div>
+  		      </li>
+  		</ul>
+  		  <div class="opera" @click="sure()">
+  	      确认认领
+  	    </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../../script/vue.js"></script>
+  <script type="text/javascript" src="../../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../../script/service.js"></script>  <script type="text/javascript">
+  apiready = function(){
+    var app=new Vue({
+      el: '.recomApply',
+      data: {
+        com:[],
+       imgTitle:"点击上传身份证正面",
+       positiveI:"",
+       backI:"",
+       tel:"",
+       auth:""
+      },
+    created:function(){
+      this.init()
+      },
+      methods:{
+       	imageUp(type){
+       		var that = this
+       		console.log('上传照片')
+       		console.log(this.$refs)
+       		if(type=="imFile"){
+       			var file=this.$refs.imFile.files
+       		}
+       		else{
+       			var file=this.$refs.backFile.files
+       		}
+       		if(file.length>0){
+           	    var card=new Date().getTime()+Math.floor(Math.random()*100)
+           		var formData = new FormData();
+                 formData.append('file',file[0]);
+                 formData.append('path','/IdCard/'+this.name+'/'+card+file[0].name);
+                 formData.append('type','image');
+           	upload('/upyun/upload',function(data){
+           		console.log(data)
+           		if(data.code==200){
+           			if(type=="imFile"){
+           				that.positiveI=data.data.url.split('!')[0]
+     		  		}
+     		  		else{
+           				that.backI=data.data.url.split('!')[0]
+       				}
+
+
+           		}
+
+           	},formData)
+           }
+       	},
+       	getauth(){
+       		var that=this
+       	var partten = /^1[34578]\d{9}$/;
+         if(partten.test(that.tel))
+         {
+           //电话号码格式正确
+           	fetch({
+       			url:"/sms/"+that.tel+"/send",
+       			params:{
+       				'mobile':that.tel
+       			},
+       			method:"post"
+       		})
+       		.then(res=>{
+       			 Toast('发送成功')
+       		})
+
+         }
+         else
+         {
+           //电话号码格式错误
+           Toast('手机号码格式不正确')
+         }
+
+       	},
+       	inner(obj){
+       	},
+       	init(){
+
+       	}
+       }
+    })
+  };
+  </script>
+  </html>

@@ -524,12 +524,18 @@ function friend(){
                   else{
                       $('.quanzi i').css('opacity',1)
                   }
-                  audio.play({
-                      path: 'http://dx.sc.chinaz.com/Files/DownLoad/sound1/201511/6571.mp3'
+                
+                  api.notification({
+                    sound:'default',
+                      notify: {
+                          title:'天下吕氏',
+                          content: '有一条新消息',
+                          updateCurrent: true
+                      }
                   }, function(ret, err) {
-
+                      var id = ret.id;
                   });
-                          var str="receive('"+evt.data+"')";
+                    var str="receive('"+evt.data+"')";
                           api.execScript({
                               name: 'friendDetail',
                               frameName: 'contact',
@@ -588,10 +594,16 @@ function friend(){
                  $('.quanzi i').css('opacity',1)
              }
             $api.setStorage('messageList', messageList);//未读消息
-            audio.play({
-                path: 'http://dx.sc.chinaz.com/Files/DownLoad/sound1/201511/6571.mp3'
-            }, function(ret, err) {
 
+            api.notification({
+              sound:'default',
+                notify: {
+                    title:'天下吕氏',
+                    content: '有一条新消息',
+                    updateCurrent: true
+                }
+            }, function(ret, err) {
+                var id = ret.id;
             });
                     var str="receive('"+evt.data+"')";
                     api.execScript({
@@ -608,9 +620,12 @@ function friend(){
 
         }
         ws.onclose = function () {
+          alert('close')
         reconnect();
     };
     ws.onerror = function () {
+      alert('close')
+
         reconnect();
     };
       }

@@ -178,7 +178,10 @@
       modal: false
   });
       getData('/history_celebrities/category',function(data){
-
+      data.data=data.data.sort(
+        function sortJ(a,b){
+  				return b.sequence-a.sequence;
+  			})
         for(var i=0;i<data.data.length;i++){
           if(i==0){
             $('.tab ul').append('<li onclick="navChange('+data.data[i].period+','+i+')" class="active"><p>'+data.data[i].dic_value+'</p><span>'+data.data[i].person_size+'</span></li>')

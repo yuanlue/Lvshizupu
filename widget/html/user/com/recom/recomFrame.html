@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../../css/api.css"/>
+      <style>
+      [v-cloak]{
+        display: none;
+      }
+      body{
+        min-height:100vh;
+        background-color: #eee;
+      }
+
+      ul li{
+        background-color: #fff;
+        line-height: 50px;
+        padding:0 10px;
+        border-bottom:1px solid #eee;
+        font-size:16px;
+      }
+      ul li:before{
+        content:"";
+        display: inline-block;
+        background:url('../../../../image/ar.png') no-repeat;
+        background-size: contain;
+        width:8px;
+        height:12px;
+        float: right;
+        margin-top:20px;
+      }
+      ul li img{
+        width:23px;
+        margin-right:10px;
+        vertical-align: middle;
+      }
+      ul li:active{
+        background: #eee
+      }
+      .product{
+        margin-top:10px;
+      }
+      </style>
+  </head>
+  <body>
+    <div class="myCompany">
+    		<div class="mycom" v-for="item in comList" v-cloak>
+                <h1></h1>
+                <ul>
+                  <li @click="inner(item.id)"><img v-bind:src="item.logo" v-if="item.logo!=null"><span>{{item.name}}</span></li>
+    			<!--
+                  <li class="product">营业执照<span>{{item.uscc_code}}<i>纳税人识别号</i></span></li>
+                  <li>行业分类<span>{{item.sen_industry}}</span></li>
+                  <li>主营产品<span>{{item.product}}</span></li>
+                 !-->
+                </ul>
+            </div>
+            <p class="none" v-if="comList.length<1">
+            	暂无数据
+            </p>
+      </div>
+  </body>
+  <script type="text/javascript" src="../../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../../script/vue.js"></script>
+  <script type="text/javascript" src="../../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../../script/service.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+        var app=new Vue({
+          el: '.myCompany',
+          data: {
+            comList:[]
+          },
+        created:function(){
+          this.init()
+          },
+        methods:{
+          inner(id){
+            api.openWin({
+                name: 'recomInner',
+                url: '../../../../html/user/com/recom/recomInner.html',
+                pageParam: {
+                    id: id
+                }
+            });
+
+          },
+            init(){
+              var that = this
+
+              api.showProgress({
+              title: '努力加载中...',
+              text: '先喝杯茶...',
+              modal: false
+          });
+              getData('/companies/',function(data){
+                api.hideProgress();
+                if(data.code==200){
+                  that.comList=data.data
+                }
+              },{},{'authorization':$api.getStorage('token')})
+            }
+
+
+        }
+        })
+      };
+  </script>
+  </html>
