@@ -389,7 +389,7 @@ function receive(obj){
            myavata="../../image/male.png"
         }
         else{
-           myavata=$api.getStorage('avata')
+           myavata=$api.getStorage('avata').split('!')[0]
         }
         if(api.pageParam.avatar==null||api.pageParam.avatar=="widget://image/male.png"){
             contactvata="../../image/male.png"
@@ -446,8 +446,8 @@ function receive(obj){
                     activeColor: '#9e9e9e'
                 },
                 sendBtn: {
-                    titleColor: '#4cc518',
-                    bg: '#999999',
+                    titleColor: '#fff',
+                    bg: '#9e2831',
                     activeBg: '#46a91e',
                     titleSize: 14
                 }

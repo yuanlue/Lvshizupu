@@ -223,6 +223,13 @@
     .mujuan .thumb{
       position: relative;
     }
+    .mujuan .haicha:before{
+      content:"还差"
+    }
+    .mujuan .goule:before{
+      content:"超过"
+
+    }
 	</style>
 </head>
 <body>
@@ -248,7 +255,7 @@
   </div>
 
   <div class="activity">
-    <div class="header"><img src="../../image/huodong.jpg" alt="">宗亲活动</div>
+    <div class="header" onclick="navchange('activity')"><img src="../../image/huodong.jpg" alt="">宗亲活动</div>
         <div class="content">
           <div class="acThumb">
             <span class="label"></span>
@@ -260,20 +267,12 @@
 
   </div>
 
-    <div class="mujuan" onclick="navchange('decoration')">
-      <div class="header"><img src="../../image/mujuan.jpg" alt="">爱心募捐</div>
-      <div class="thumb">
-        <span class="label"></span>
-        <img src="../../image/default.png" alt="">
-      </div>
-      <div class="splide">
-        <h1></h1>
-        <div class="process"><span></span></div>
-        <p class="text"><span class="gap">还差<i></i></span><span class="person"><i></i>人已捐</span></p>
-      </div>
+    <div class="mujuan" >
+      <div class="header" onclick="navchange('decoration')"><img src="../../image/mujuan.jpg" alt="">爱心募捐</div>
+
     </div>
     <div class="start">
-      <div class="header"><img src="../../image/mingxing.jpg" alt="">明星活动</div>
+      <div class="header" onclick="navchange('start')"><img src="../../image/mingxing.jpg" alt="">明星活动</div>
       <div class="startList swiper-container">
         <div class="swiper-wrapper">
 
@@ -290,12 +289,13 @@
 <script type="text/javascript" src="../../script/api.js"></script>
 <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="../../script/service.js"></script>
+<script type="text/javascript" src="../../script/websocket.js"></script>
+
 <script type="text/javascript" src="../../script/swiper-3.4.2.min.js"></script>
 
 
 <script type="text/javascript">
 function re(){
-  alert('shuaxin')
   window.location.reload()
 }
 //去重复
@@ -354,6 +354,16 @@ function inner(id,title,url){
       }
   });
 }
+function decorationInner(id,ac){
+  api.openWin({
+                name: 'decorationDetail',
+                url: '../../html/Home/decoration/decorationDetail.html',
+                pageParam:{
+                  id:id,
+                  ac:ac
+                }
+            });
+}
 function mujuan(){
 
   api.openWin({
@@ -363,30 +373,48 @@ function mujuan(){
   });
 }
 function init(){
-
+  $('.mujuan').html('<div class="header" onclick="navchange(&quot;decoration&quot;)">'
+  +'<img src="../../image/mujuan.jpg" alt="">爱心募捐</div>'
+)
   getData('/donations',function(data){
-    $('.mujuan .thumb img').attr('src',url+data.data[0].pictures[0])
-    $('.mujuan h1').text(data.data[0].name)
-    $('.mujuan .gap i').text(data.data[0].rest_captial)
-    $('.mujuan .person i').text(data.data[0].donation_count)
-    var rate=parseFloat((data.data[0].capital-data.data[0].rest_captial)/data.data[0].capital)
-      $('.mujuan .process>span').width(53 * rate +'vw')
-      var startTime=new Date(data.data[0].start_at.split(' ')[0]).getTime()
-      var endTime=new Date(data.data[0].end_at.split(' ')[0]).getTime()
-      var nowTime=new Date().getTime()
-      if(nowTime<=endTime&&nowTime>=nowTime){
-          $('.mujuan .label').addClass('being')
-        $('.mujuan .label').text('进行中')
-      }
-      else if(nowTime>endTime){
-          $('.mujuan .label').addClass('over')
-        $('.mujuan .label').text('已结束')
-      }
-      else if(nowTime<startTime){
-          $('.mujuan .label').addClass('over')
-        $('.mujuan .label').text('未开始')
+    var startTime=new Date(data.data[0].start_at.split(' ')[0]).getTime()
+    var endTime=new Date(data.data[0].end_at.split(' ')[0]).getTime()
+    var nowTime=new Date().getTime()
+    if(nowTime<=endTime&&nowTime>=nowTime){
+        $('.mujuan .label').addClass('being')
+      $('.mujuan .label').text('进行中')
+      data.data[0].ac=1
+    }
+    else if(nowTime>endTime){
+        $('.mujuan .label').addClass('over')
+      $('.mujuan .label').text('已结束')
+      data.data[0].ac=0
 
-      }
+    }
+    else if(nowTime<startTime){
+        $('.mujuan .label').addClass('over')
+      $('.mujuan .label').text('未开始')
+      data.data[0].ac=2
+    }
+    var rate=parseFloat((data.data[0].capital-data.data[0].rest_captial)/data.data[0].capital)
+    $('.mujuan').append('<div class="thumb" onclick="decorationInner('+data.data[0].id+','+data.data[0].ac+')">'
+          +'<span class="label"></span>'
+          +'<img src="'+url+data.data[0].pictures[0]+'" alt="">'
+        +'</div>'
+        +'<div class="splide" onclick="decorationInner('+data.data[0].id+','+data.data[0].ac+')">'
+          +'<h1>'+data.data[0].name+'</h1>'
+          +'<div class="process"><span style="width:'+(53 * rate)+'vw"></span></div>'
+          +'<p class="text"><span class="gap"><i>'+data.data[0].rest_captial+'元</i></span><span class="person"><i>'+data.data[0].donation_count+'</i>人已捐</span></p>'
+        +'</div>')
+    if(data.data[0].rest_captial<0){
+      $('.gap').addClass('goule')
+      $('.gap i').text(data.data[0].rest_captial*-1+"元")
+    }
+    else{
+      $('.gap').addClass('haicha')
+
+    }
+
   },{"page":"1","page_size":"1"},{'Authorization':$api.getStorage('token')})
   getData('/actives',function(data){
     if(data.data.length<=0){
@@ -409,7 +437,7 @@ function init(){
       $('.content .label').text('活动尚未开始')
 
     }
-    $('.activity').click(function(){
+    $('.activity .content').click(function(){
       inner(data.data[0].id,'活动详情','actives')
     })
     $('.content img').attr('src',url+data.data[0].pic)
@@ -489,111 +517,41 @@ function friend(){
       }
 
 }
-    apiready = function(){
-      //culture
-      var contactManList=[];
-      var messageList=[];//接收消息列表
+function chatInit(){
 
-      if($api.getStorage('uid')!=null&&$api.getStorage('uid')!='undefined'&&$api.getStorage('joined_family')!='false'){
-        ws = new WebSocket("wss://wx2.kuaiyunma.com/sub/chat/"+$api.getStorage('uid'));
-        ws.onmessage = function(evt){
-          if($api.getStorage('messageList')){
-            messageList=$api.getStorage('messageList')
-          }
-          else{
-            messageList=[];
-          }
+  ws = new ReconnectingWebSocket("wss://wx2.kuaiyunma.com/sub/chat/"+$api.getStorage('uid'));
+    ws.onmessage = function(evt){
 
-          var audio = api.require('audio');
+      if(evt.data=="pong"){
+        return false
+      }
+    if($api.getStorage('messageList')){
+      messageList=$api.getStorage('messageList')
+    }
+    else{
+      messageList=[];
+    }
 
-          var time=new Date(JSON.parse(evt.data).created_at).getTime()
+    var audio = api.require('audio');
 
-          if($api.getStorage('readRecord')){
+    var time=new Date(JSON.parse(evt.data).created_at).getTime()
+
+    if($api.getStorage('readRecord')){
 
 
-            $api.getStorage('readRecord').forEach(function(item){
+      $api.getStorage('readRecord').forEach(function(item){
 
-              if(item.uid==JSON.parse(evt.data).sender){
+        if(item.uid==JSON.parse(evt.data).sender){
 
-                if(parseInt(item.readTime)<parseInt(time)){
-                  messageList.push(evt.data)
+          if(parseInt(item.readTime)<parseInt(time)){
+            messageList.push(evt.data)
 
-                  if(messageList.length<1){
-                    $('.quanzi i').css('opacity',0)
-                  }
-                  else{
-                      $('.quanzi i').css('opacity',1)
-                  }
-                
-                  api.notification({
-                    sound:'default',
-                      notify: {
-                          title:'天下吕氏',
-                          content: '有一条新消息',
-                          updateCurrent: true
-                      }
-                  }, function(ret, err) {
-                      var id = ret.id;
-                  });
-                    var str="receive('"+evt.data+"')";
-                          api.execScript({
-                              name: 'friendDetail',
-                              frameName: 'contact',
-                              script: str
-                          });
-                          api.execScript({
-                              name: 'friend',
-                              script: str
-                          });
-
-                }
-                else{
-                  return false;
-                }
-              }
-              else{
-               //  alert(item.uid)
-               //  alert(JSON.parse(evt.data).sender)
-               //  messageList.push(evt.data)
-               //  alert(messageList+"weidu")
-               //  $('.quanzi i').text(messageList.length)
-               //  $api.setStorage('messageList', messageList);//未读消息
-               //  audio.play({
-               //      path: 'http://dx.sc.chinaz.com/Files/DownLoad/sound1/201511/6571.mp3'
-               //  }, function(ret, err) {
-                //
-               //  });
-               //          var str="receive('"+evt.data+"')";
-               //          api.execScript({
-               //              name: 'friendDetail',
-               //              frameName: 'contact',
-               //              script: str
-               //          });
-               //          api.execScript({
-               //              name: 'friend',
-               //              script: str
-               //          });
-              }
-            })
-            if(messageList.length>=1){
-                 messageList=messageList.unique()
+            if(messageList.length<1){
+              $('.quanzi i').css('opacity',0)
             }
-            $('.quanzi i').text(messageList.length)
-
-            $api.setStorage('messageList', messageList);//未读消息
-
-          }
-          else{
-             messageList.push(evt.data)
-             $('.quanzi i').text(messageList.length)
-
-             if(messageList.length<1){
-               $('.quanzi i').css('opacity',0)
-             }
-             else{
-                 $('.quanzi i').css('opacity',1)
-             }
-            $api.setStorage('messageList', messageList);//未读消息
+            else{
+                $('.quanzi i').css('opacity',1)
+            }
 
             api.notification({
               sound:'default',
@@ -605,7 +563,7 @@ function friend(){
             }, function(ret, err) {
                 var id = ret.id;
             });
-                    var str="receive('"+evt.data+"')";
+              var str="receive('"+evt.data+"')";
                     api.execScript({
                         name: 'friendDetail',
                         frameName: 'contact',
@@ -615,19 +573,109 @@ function friend(){
                         name: 'friend',
                         script: str
                     });
+
           }
-
-
+          else{
+            return false;
+          }
         }
-        ws.onclose = function () {
-          alert('close')
-        reconnect();
-    };
-    ws.onerror = function () {
-      alert('close')
+        else{
+         //  alert(item.uid)
+         //  alert(JSON.parse(evt.data).sender)
+         //  messageList.push(evt.data)
+         //  alert(messageList+"weidu")
+         //  $('.quanzi i').text(messageList.length)
+         //  $api.setStorage('messageList', messageList);//未读消息
+         //  audio.play({
+         //      path: 'http://dx.sc.chinaz.com/Files/DownLoad/sound1/201511/6571.mp3'
+         //  }, function(ret, err) {
+          //
+         //  });
+         //          var str="receive('"+evt.data+"')";
+         //          api.execScript({
+         //              name: 'friendDetail',
+         //              frameName: 'contact',
+         //              script: str
+         //          });
+         //          api.execScript({
+         //              name: 'friend',
+         //              script: str
+         //          });
+        }
+      })
+      if(messageList.length>=1){
+           messageList=messageList.unique()
+      }
+      $('.quanzi i').text(messageList.length)
 
-        reconnect();
-    };
+      $api.setStorage('messageList', messageList);//未读消息
+
+    }
+    else{
+       messageList.push(evt.data)
+       $('.quanzi i').text(messageList.length)
+
+       if(messageList.length<1){
+         $('.quanzi i').css('opacity',0)
+       }
+       else{
+           $('.quanzi i').css('opacity',1)
+       }
+      $api.setStorage('messageList', messageList);//未读消息
+
+      api.notification({
+        sound:'default',
+          notify: {
+              title:'天下吕氏',
+              content: '有一条新消息',
+              updateCurrent: true
+          }
+      }, function(ret, err) {
+          var id = ret.id;
+      });
+              var str="receive('"+evt.data+"')";
+              api.execScript({
+                  name: 'friendDetail',
+                  frameName: 'contact',
+                  script: str
+              });
+              api.execScript({
+                  name: 'friend',
+                  script: str
+              });
+    }
+
+
+  }
+  ws.onclose = function () {
+    ws = new ReconnectingWebSocket("wss://wx2.kuaiyunma.com/sub/chat/"+$api.getStorage('uid'));
+};
+  ws.onerror = function () {
+    ws = new ReconnectingWebSocket("wss://wx2.kuaiyunma.com/sub/chat/"+$api.getStorage('uid'));
+
+  };
+}
+    apiready = function(){
+      //culture
+      var wss = new ReconnectingWebSocket("wss://wx2.kuaiyunma.com/ping");
+      wss.onmessage=function(data){
+        console.log(data)
+      }
+      var contactManList=[];
+      var messageList=[];//接收消息列表
+       setInterval(function(){
+         wss.send("ping");
+        ws.send('ping')
+      },10000);
+
+      if($api.getStorage('uid')!=null&&$api.getStorage('uid')!='undefined'&&$api.getStorage('joined_family')!='false'){
+      chatInit()
+        api.addEventListener({
+          name:'resume'
+      }, function(ret, err){
+        wss.send("ping");
+
+      });
       }
 
 

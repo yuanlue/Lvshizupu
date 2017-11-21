@@ -64,7 +64,6 @@
           }
           .inner p{
             line-height: 30px;
-            text-indent: 2em;
           }
           h1{
             text-indent: 0;
@@ -145,10 +144,12 @@
         }
         $('.neirong').append('<p class="act">开始时间：'+data.data.start_at+'</p>')
         $('.neirong').append('<p class="act">截止时间：'+data.data.end_at+'</p>')
-        $('.neirong').append('<p class="act">截止时间：'+data.data.organization+'</p>')
+        if(data.data.organization!=null){
+          $('.neirong').append('<p class="act">组织机构：'+data.data.organization+'</p>')
+        }
         $('.neirong').append('<p class="act">联系人：'+data.data.contact+'</p>')
         $('.neirong').append('<p class="contacttel act">联系电话：'+data.data.contact_tel+'</p>')
-        $('.neirong').append('<p class="act">地址：'+data.address+'</p>')
+        $('.neirong').append('<p class="act">地址：'+data.data.address+'</p>')
 
       }
       else if(api.pageParam.category=='stars'){

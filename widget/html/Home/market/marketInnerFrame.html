@@ -61,14 +61,16 @@
           }
           .need ul li>img{
             vertical-align: top;
-            display: table-cell;;
+            display: inline-block;
             width:110px;
             border:1px solid #eee;
           }
           .need ul li>div{
-            vertical-align: top;
+            width:180px;
 
-            display: table-cell;;
+            vertical-align: top;
+            margin-left:10px;
+            display: inline-block;;
           }
           .need ul li>div h1{
             font-size:16px;
@@ -206,7 +208,7 @@
         that.id=api.pageParam.id
         getData('/companies/'+that.id,function(data){
           api.hideProgress();
-          
+
           that.pic=data.data.pic
           that.content=data.data.intro
           that.rqList=data.data.company_requirements

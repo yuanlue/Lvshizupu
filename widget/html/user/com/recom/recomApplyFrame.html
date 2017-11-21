@@ -101,8 +101,8 @@
   <body>
     <div class="recomApply">
   		<ul>
-  			<li>姓名：<input type="text" placeholder="请输入姓名"></li>
-  			<li>身份证号码：<input type="text" placeholder="身份证号码"></li>
+  			<li>姓名：<input type="text" v-model="name" placeholder="请输入姓名"></li>
+  			<li>身份证号码：<input v-model="idcard" type="text" placeholder="身份证号码"></li>
   			  <li>手机号码<input v-model="tel"  type="text" placeholder="请输入本人手机号" required></li>
   		      <li>验证码
   		      			<button @click="getauth()">发送验证码</button>
@@ -140,11 +140,13 @@
       el: '.recomApply',
       data: {
         com:[],
-       imgTitle:"点击上传身份证正面",
-       positiveI:"",
-       backI:"",
-       tel:"",
-       auth:""
+          imgTitle:"点击上传身份证正面",
+          positiveI:"",
+          backI:"",
+          tel:"",
+          auth:"",
+          name:"",
+          idcard:""
       },
     created:function(){
       this.init()
@@ -166,7 +168,7 @@
                  formData.append('file',file[0]);
                  formData.append('path','/IdCard/'+this.name+'/'+card+file[0].name);
                  formData.append('type','image');
-           	upload('/upyun/upload',function(data){
+           	upimg('/upyun/upload',function(data){
            		console.log(data)
            		if(data.code==200){
            			if(type=="imFile"){
@@ -179,7 +181,7 @@
 
            		}
 
-           	},formData)
+           	},formData,{'Authorization':$api.getStorage('token')})
            }
        	},
        	getauth(){
@@ -188,22 +190,31 @@
          if(partten.test(that.tel))
          {
            //电话号码格式正确
-           	fetch({
-       			url:"/sms/"+that.tel+"/send",
-       			params:{
-       				'mobile':that.tel
-       			},
-       			method:"post"
-       		})
-       		.then(res=>{
-       			 Toast('发送成功')
-       		})
+          postData('/sms/'+that.tel+'/send',function(data){
+            if(data.code==200){
+              api.toast({
+                      msg: '短信发送成功',
+                      duration:2000,
+                      location: 'bottom'
+                  });
+            }else{
+              api.toast({
+                      msg: '短信发送失败',
+                      duration:2000,
+                      location: 'bottom'
+                  });
+            }
+          })
 
          }
          else
          {
            //电话号码格式错误
-           Toast('手机号码格式不正确')
+           api.toast({
+                   msg: '手机号码格式不正确',
+                   duration:2000,
+                   location: 'bottom'
+               });
          }
 
        	},
@@ -211,7 +222,58 @@
        	},
        	init(){
 
-       	}
+       	},
+        sure(){
+          var that =this
+          postData('/sms/'+that.tel+'/validate',function(data){
+            if(data.code==200){
+              postData('/sms/'+that.tel+'/validate',function(data){
+      if(data.code==200){
+        postData('/companies/'+api.pageParam.id+'/company_claims',function(data){
+          if(data.code==200){
+            api.toast({
+                    msg: '企业认领申请成功',
+                    duration:2000,
+                    location: 'bottom'
+                });
+            api.closeWin();
+
+          }
+          else{
+            api.toast({
+                    msg: '企业认领申请失败'+data.message,
+                    duration:2000,
+                    location: 'bottom'
+                });
+
+          }
+        },{
+      "company_claim": {
+      "user_name":that.name,
+      "mobile": that.tel,
+      "id_number": that.idcard,
+      "id_number_front": that.positiveI,
+      "id_number_back": that.backI
+      }
+
+    },{"Authorization":$api.getStorage('token')})
+      }
+      else{
+        api.toast({
+                msg: data.message,
+                duration:2000,
+                location: 'bottom'
+            });
+
+      }
+    },{'code':that.auth},{"Authorization":$api.getStorage('token')})
+            }
+            else{
+
+
+            }
+          },{"code":that.auth})
+        }
        }
     })
   };

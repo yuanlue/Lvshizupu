@@ -107,7 +107,11 @@
               <div class="splide">
                 <h1>{{item.name}}</h1>
                 <div class="process"><span style="max-width:53vw" v-bind:style="{'width':item.width*53+'vw'}"></span></div>
-                <p class="text"><span class="gap">还差<i>{{item.rest_captial}}元</i></span><span class="person"><i>{{item.donation_count}}</i>人已捐</span></p>
+                <p class="text">
+                  <span class="gap" v-if="item.rest_captial>=0">还差<i>{{item.rest_captial}}元</i></span>
+                  <span class="gap" v-if="item.rest_captial<0">超过<i>{{item.rest_captial * -1}}元</i></span>
+
+                  <span class="person"><i>{{item.donation_count}}</i>人已捐</span></p>
               </div>
           </li>
 

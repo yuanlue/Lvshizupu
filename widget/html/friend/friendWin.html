@@ -235,7 +235,7 @@ function contact(obj){
     //请求常用联系人api
   getData('/recent_contacts',function(data){
     api.hideProgress();
-    if(data.data.length>1){
+    if(data.data.length>=1){
     data.data.forEach(function(item){
       item.title=item.name
       item.mesNum=0;
@@ -253,8 +253,7 @@ function contact(obj){
       item.imgPath=item.avatar.split('!')[0]
       }
 
-    })}
-
+    })
     UIListView.reloadData({
   data: data.data
 }, function(ret) {
@@ -276,6 +275,9 @@ function contact(obj){
   }
 
 });
+
+  }
+
   },{},{'authorization':$api.getStorage('token')})
 
 
@@ -283,8 +285,6 @@ function contact(obj){
 }
 
     apiready = function(){
-
-
       var u = navigator.userAgent;
       var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
       var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
