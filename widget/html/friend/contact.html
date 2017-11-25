@@ -385,6 +385,26 @@ function receive(obj){
     },{'authorization':$api.getStorage('token')})
   }
       apiready = function(){
+        api.addEventListener({
+          name:'online'
+      }, function(ret, err){
+        api.closeToWin({
+          name: 'home'
+      });
+      });
+        api.addEventListener({
+            name:'offline'
+        }, function(ret, err){
+          api.toast({
+                  msg: '断网啦',
+                  duration:2000,
+                  location: 'bottom'
+              });
+              api.closeToWin({
+                name: 'home'
+            });
+
+        });
         if($api.getStorage('avata')=="null"||$api.getStorage('avata')==null){
            myavata="../../image/male.png"
         }

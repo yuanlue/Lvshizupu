@@ -81,7 +81,8 @@
   <div class="info" v-cloak>
     <div class="tab">
       <ul>
-        <li  class="info" ><span><img src="../../image/iconInform.png" alt=""></span><p>通知消息</p></li>
+        <li  class="info" >
+          <span><img src="../../image/iconInform.png" alt="">
       </ul>
     </div>
     <div class="infoM" >
@@ -91,7 +92,7 @@
 
     <div v-if="info" class="frienInfo infoList">
       <ol v-for="item in chatList">
-        <li>{{item}}<span></span></li>
+        <li>{{item.split(',')[0]}}<span>{{item.split(',')[1]}}</span></li>
       </ol>
     </div>
   </div>
@@ -125,10 +126,16 @@
 
           },
           clear:function(){
+            var time = new Date()
             this.chatList=[];
             $api.rmStorage('sysInfo');
+            $api.setStorage('sysCTime', time.getTime());
+
             var str="re()";
-            api.execScript({
+            api.cancelNotification({
+                  id: -1
+              });
+                api.execScript({
                 name: 'home',
                 script: str
             });

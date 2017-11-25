@@ -65,6 +65,10 @@
           .inner p{
             line-height: 30px;
           }
+          .inner img{
+            max-width:100%;
+            height:auto !important;
+          }
           h1{
             text-indent: 0;
             margin:10px ;
@@ -136,20 +140,19 @@
         $('.content .from').html(data.data.assess)
         $('.thumb img').attr('src',url+data.data.pic)
         $('.inner').html(data.data.detail)
-        if(data.data.active_status==1){
-            $('.neirong').append('<p class="sta">活动进行中</p>')
-        }else{
-          $('.neirong').append('<p class="sta">活动已结束</p>')
 
-        }
         $('.neirong').append('<p class="act">开始时间：'+data.data.start_at+'</p>')
         $('.neirong').append('<p class="act">截止时间：'+data.data.end_at+'</p>')
         if(data.data.organization!=null){
           $('.neirong').append('<p class="act">组织机构：'+data.data.organization+'</p>')
         }
-        $('.neirong').append('<p class="act">联系人：'+data.data.contact+'</p>')
-        $('.neirong').append('<p class="contacttel act">联系电话：'+data.data.contact_tel+'</p>')
-        $('.neirong').append('<p class="act">地址：'+data.data.address+'</p>')
+        if(data.data.contact!=null){
+          $('.neirong').append('<p class="act">联系人：'+data.data.contact+'</p>')
+        }
+        if(data.data.contact_tel!=null){
+          $('.neirong').append('<p class="act">地址：'+data.data.address+'</p>')
+
+        }
 
       }
       else if(api.pageParam.category=='stars'){

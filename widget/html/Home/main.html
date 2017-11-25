@@ -248,7 +248,7 @@
             <img src="../../image/quanzi.png" alt="">
             <span>圈子<i></i></span>
           </li>
-          <li onclick="navchange('decoration')"><img src="../../image/mujuan.png" alt=""><span>募捐</span></li>
+          <li style="display:none" onclick="navchange('decoration')"><img src="../../image/mujuan.png" alt=""><span>募捐</span></li>
           <li onclick="navchange('market')"><img src="../../image/shangmao.png" alt=""><span>商贸</span></li>
       </ul>
     </div>
@@ -508,29 +508,53 @@ function friend(){
         });
 
       }else{
-        api.toast({
-                msg: '您还尚未加入宗亲，请先加入宗亲',
-                duration:2000,
-                location: 'bottom'
-            });
-            return false
+        getData('/users/profile',function(data){
+          if(data.code==200){
+            if(data.data.uid==false){
+              api.toast({
+                      msg: '您还尚未加入宗亲，请先加入宗亲',
+                      duration:2000,
+                      location: 'bottom'
+                  });
+            }
+            else{
+              $api.setStorage('uid', data.data.uid);
+              $api.setStorage('joined_family',"true");
+
+              api.openWin({
+                  name: 'friend',
+                  url: '../../html/friend/friendWin.html',
+
+              });
+
+            }
+          }
+          else{
+            api.toast({
+                    msg: '您还尚未加入宗亲，请先加入宗亲',
+                    duration:2000,
+                    location: 'bottom'
+                });
+          }
+        },{},{'Authorization':$api.getStorage('token')})
+
+
       }
 
 }
 function chatInit(){
-
   ws = new ReconnectingWebSocket("wss://wx2.kuaiyunma.com/sub/chat/"+$api.getStorage('uid'));
     ws.onmessage = function(evt){
 
       if(evt.data=="pong"){
         return false
       }
-    if($api.getStorage('messageList')){
-      messageList=$api.getStorage('messageList')
-    }
-    else{
-      messageList=[];
-    }
+      if($api.getStorage('messageList')){
+        messageList=$api.getStorage('messageList')
+				}
+        else{
+          messageList=[]
+        }
 
     var audio = api.require('audio');
 
@@ -557,7 +581,7 @@ function chatInit(){
               sound:'default',
                 notify: {
                     title:'天下吕氏',
-                    content: '有一条新消息',
+                    content: '有新消息啦',
                     updateCurrent: true
                 }
             }, function(ret, err) {
@@ -580,30 +604,11 @@ function chatInit(){
           }
         }
         else{
-         //  alert(item.uid)
-         //  alert(JSON.parse(evt.data).sender)
-         //  messageList.push(evt.data)
-         //  alert(messageList+"weidu")
-         //  $('.quanzi i').text(messageList.length)
-         //  $api.setStorage('messageList', messageList);//未读消息
-         //  audio.play({
-         //      path: 'http://dx.sc.chinaz.com/Files/DownLoad/sound1/201511/6571.mp3'
-         //  }, function(ret, err) {
-          //
-         //  });
-         //          var str="receive('"+evt.data+"')";
-         //          api.execScript({
-         //              name: 'friendDetail',
-         //              frameName: 'contact',
-         //              script: str
-         //          });
-         //          api.execScript({
-         //              name: 'friend',
-         //              script: str
-         //          });
+
         }
       })
       if(messageList.length>=1){
+
            messageList=messageList.unique()
       }
       $('.quanzi i').text(messageList.length)
@@ -614,7 +619,10 @@ function chatInit(){
     else{
        messageList.push(evt.data)
        $('.quanzi i').text(messageList.length)
+       if(messageList.length>=1){
 
+            messageList=messageList.unique()
+       }
        if(messageList.length<1){
          $('.quanzi i').css('opacity',0)
        }
@@ -647,35 +655,32 @@ function chatInit(){
 
 
   }
-  ws.onclose = function () {
-    ws = new ReconnectingWebSocket("wss://wx2.kuaiyunma.com/sub/chat/"+$api.getStorage('uid'));
-};
-  ws.onerror = function () {
-    ws = new ReconnectingWebSocket("wss://wx2.kuaiyunma.com/sub/chat/"+$api.getStorage('uid'));
 
-  };
 }
     apiready = function(){
       //culture
-      var wss = new ReconnectingWebSocket("wss://wx2.kuaiyunma.com/ping");
-      wss.onmessage=function(data){
-        console.log(data)
-      }
+      api.addEventListener({
+          name:'offline'
+      }, function(ret, err){
+        api.toast({
+                msg: '断网啦',
+                duration:2000,
+                location: 'bottom'
+            });
+
+
+      });
       var contactManList=[];
       var messageList=[];//接收消息列表
        setInterval(function(){
-         wss.send("ping");
-        ws.send('ping')
+         if($api.getStorage('uid')!=null&&$api.getStorage('uid')!='undefined'&&$api.getStorage('joined_family')!='false'){
+           ws.send('ping')
+         }
       },10000);
 
       if($api.getStorage('uid')!=null&&$api.getStorage('uid')!='undefined'&&$api.getStorage('joined_family')!='false'){
       chatInit()
-        api.addEventListener({
-          name:'resume'
-      }, function(ret, err){
-        wss.send("ping");
 
-      });
       }
 
 

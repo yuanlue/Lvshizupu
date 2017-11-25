@@ -117,7 +117,7 @@
     <div class="myCompany" v-cloak>
       <div class="mycom" >
               <h1>
-              	<img v-bind:src="data.logo">
+              	<img v-bind:src="data.logo" :onerror="errorImg">
               </h1>
               <ul>
                 <li>企业名称<span>{{data.name}}</span></li>
@@ -147,7 +147,9 @@
           data: {
             data:"",
             imgTitle:"请上传简介图片",
-            pic:""
+            pic:"",
+            errorImg: 'this.src="../../../../image/default.png"'
+
           },
         created:function(){
           this.init()

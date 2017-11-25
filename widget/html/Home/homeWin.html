@@ -207,30 +207,73 @@ function message(){
       var time=new Date()
       var sysNum=0;
       var sysInfoMessage=[]
-      if($api.getStorage('uid')!=null&&$api.getStorage('uid')!='undefined'&&$api.getStorage('joined_family')=='false'){
-        ws = new ReconnectingWebSocket("wss://wx2.kuaiyunma.com/sub/sys/"+$api.getStorage('uid'));
+      setInterval(function(){
+        if($api.getStorage('user_id')){
+          ws.send('ping')
+
+        }
+
+     },10000);
+
+      var ws = new ReconnectingWebSocket("wss://wx2.kuaiyunma.com/sub/sys/"+$api.getStorage('user_id'));
         ws.onmessage = function(evt){
-          alert(evt.data)
+          if(evt.data=="pong"){
+            return false
+          }
+          if(JSON.parse(evt.data).message_type=="clan_user.approval.success"){
+              //审核通过
+              var jsfun = 'chatInit();';
+              getData('/users/profile',function(data){
+                if(data.code==200){
+                  if(data.data.uid==false){
+
+                  }
+                  else{
+                    $api.setStorage('uid', data.data.uid);
+                    $api.setStorage('joined_family',"true");
+                    api.execScript({
+                    frameName: 'home',
+                    script: jsfun
+                });
+                  }
+                }
+                else{
+
+                }
+              },{},{'Authorization':$api.getStorage('token')})
+
+
+          }
           if($api.getStorage('sysInfo')){
             sysInfoMessage=$api.getStorage('sysInfo')
           }
           sysNum++;
+          var time = parseInt($api.getStorage('sysCTime'));
+          var messagetime=new Date(JSON.parse(evt.data).created_at).getTime()
+
+          if(time>parseInt(messagetime)){
+            return false
+          }
           if(sysNum>0){
+
+            sysInfoMessage.push(JSON.parse(evt.data).content+','+JSON.parse(evt.data).created_at)
             $('header>div>span i').show()
-            $('header>div>span i').text(sysNum)
-            sysInfoMessage.push(evt.data)
+            $('header>div>span i').text(sysInfoMessage.length)
+            api.notification({
+              sound:'default',
+                notify: {
+                    title:'天下吕氏',
+                    content: '您有新的系统消息',
+                    updateCurrent: true
+                }
+            }, function(ret, err) {
+                var id = ret.id;
+            });
             $api.setStorage('sysInfo', sysInfoMessage);
           }
 
         };
-        ws.onclose = function () {
-          ws = new ReconnectingWebSocket("wss://wx2.kuaiyunma.com/sub/sys/"+$api.getStorage('uid'));
-    };
-        ws.onerror = function () {
-          ws = new ReconnectingWebSocket("wss://wx2.kuaiyunma.com/sub/sys/"+$api.getStorage('uid'));
 
-        };
-      }
 
 
             api.addEventListener({

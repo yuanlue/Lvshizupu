@@ -98,6 +98,9 @@ function init(){
     if(data.code==200){
 if(data.data.length>=1){
   data.data.forEach(function(item){
+    if(item.logo==""){
+      item.logo="../../../../image/default.png"
+    }
     $('.myCompany ul').append('<li onclick="inner('+item.id+')">'
         +'<img src="'+item.logo+'">'
         +'<span>'+item.name+'</span>'

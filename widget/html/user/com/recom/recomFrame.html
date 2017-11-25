@@ -9,6 +9,30 @@
       [v-cloak]{
         display: none;
       }
+      .myCompany .search{
+        border:1px solid #eee;
+          padding:15px;
+          background: white;
+        }
+        .myCompany .search input{
+          border-radius: 20px;
+          padding:0 10px;
+          box-sizing: border-box;
+          border:1px solid #881b22;
+          width:75%;
+          font-size:15px;
+          line-height: 35px;
+          text-align: cetner;
+        }
+        .myCompany .search button{
+          float: right;
+          background:#881b22;
+          color:white;
+          font-size: 15px;
+          line-height: 35px;
+          border-radius: 20px;
+          width:70px;
+        }
       body{
         min-height:100vh;
         background-color: #eee;
@@ -46,10 +70,14 @@
   </head>
   <body>
     <div class="myCompany">
+      <div class="search" >
+          <input v-model="searchText" type="text" placeholder="输入关键词查询">
+          <button @click="search()">搜索</button>
+        </div>
     		<div class="mycom" v-for="item in comList" v-cloak>
                 <h1></h1>
                 <ul>
-                  <li @click="inner(item.id)"><img v-bind:src="item.logo" v-if="item.logo!=null"><span>{{item.name}}</span></li>
+                  <li @click="inner(item.id)"><img v-bind:src="item.logo" :onerror="errorImg"  v-if="item.logo!=null"><span>{{item.name}}</span></li>
     			<!--
                   <li class="product">营业执照<span>{{item.uscc_code}}<i>纳税人识别号</i></span></li>
                   <li>行业分类<span>{{item.sen_industry}}</span></li>
@@ -71,7 +99,10 @@
         var app=new Vue({
           el: '.myCompany',
           data: {
-            comList:[]
+            comList:[],
+            searchText:"",
+            errorImg: 'this.src="../../../../image/default.png"'
+
           },
         created:function(){
           this.init()
@@ -95,12 +126,27 @@
               text: '先喝杯茶...',
               modal: false
           });
-              getData('/companies/',function(data){
+              getData('/companies/not_claimed',function(data){
                 api.hideProgress();
                 if(data.code==200){
                   that.comList=data.data
                 }
               },{},{'authorization':$api.getStorage('token')})
+            },
+            search(){
+              var that = this
+
+              api.showProgress({
+              title: '努力加载中...',
+              text: '先喝杯茶...',
+              modal: false
+          });
+          getData('/companies/not_claimed',function(data){
+            api.hideProgress();
+            if(data.code==200){
+              that.comList=data.data
+            }
+          },{name:that.searchText},{'authorization':$api.getStorage('token')})
             }
 
 
