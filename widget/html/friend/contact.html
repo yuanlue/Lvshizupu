@@ -204,12 +204,10 @@
     $api.append(obj,'<li onclick="play(&quot;'+ret.path+'&quot;,this)" class="other voice" id="'+card+'"><i class="male audio"><img src="'+myavata+'"><span>'+ret.duration+'s<img src="../../image/voice_mine.png" alt=""></span></i></li>')
 
     upload(path,'audio',ret.path,function(data){
-      alert(JSON.stringify(data))
       if(data.code==200){
         window.scrollTo(0,$api.offset($api.byId("contact")).h);
         var url=data.data.url
         postData('/pub/chat/'+api.pageParam.id,function(data){
-          alert(JSON.stringify(data))
       },{'sender':$api.getStorage('uid'),'receiver':api.pageParam.id,'content':url,'message_type':'audio','content_length':ret.duration},{'authorization':$api.getStorage('token'),'Accept':"text/json" })
 
       }
@@ -248,19 +246,16 @@
 
   }
   function detailImge(data){
-    var photoBrowser = api.require('photoBrowser');
-    photoBrowser.open({
-        images: [data.split('!')[0]],
-        placeholderImg: 'widget://image/default.png',
-        bgColor: '#000'
-    }, function(ret, err) {
-        if (ret) {
-            if(ret.eventType=="click"&&ret.index==0){
-              photoBrowser.close();
-            }
-        } else {
-        }
+    api.openWin({
+        name: 'imgWin',
+        url: '../../html/Home/imgWin.html',
+        pageParam: {
+            imgarr:[data.split('!')[0]],
+            index:0
+        },
+        bgColor:"#000"
     });
+
   }
   //处理类型
   function typeDetail(data){
@@ -569,7 +564,6 @@ function receive(obj){
                   },{'sender':$api.getStorage('uid'),'receiver':api.pageParam.id,'content':res.msg,'message_type':'text'},{'authorization':$api.getStorage('token'),'Accept':"text/json" })
                 }
             } else {
-                alert(JSON.stringify(err));
             }
         });
         //加载更多

@@ -101,8 +101,8 @@
                 +'<img onclick="Bookinner('+item.id+')" src="../../../image/zupubook.png" alt="">'
                 +'</div>')
           })
-          $('.content h1').text(data.data[0].name)
-          $('.content .author').text(data.data[0].admin_user)
+          $('.content h1').text("<<"+data.data[0].name+">>")
+          $('.content .author').text('主编:'+data.data[0].admin_user)
           $('.content .inner').html(data.data[0].preface)
           var mySwiper = new Swiper('.swiper-container',{
           effect : 'slip',
@@ -111,8 +111,8 @@
           onSlideChangeEnd:function(swiper){
           var id=$('.swiper-wrapper').children('.swiper-slide').eq(swiper.activeIndex).attr('id')
           getData('/genealogies/'+id+'/profile',function(data){
-            $('.content h1').text(data.data.name)
-            $('.content .author').text(data.data.admin_user)
+            $('.content h1').text("<<"+data.data.name+">>")
+            $('.content .author').text('主编:'+data.data.admin_user)
             $('.content .inner').html(data.data.preface)
           },{},{'Authorization':$api.getStorage('token')})
           },

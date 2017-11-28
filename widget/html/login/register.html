@@ -204,6 +204,7 @@
           }, function(ret, err) {
             if (ret.status) {
                 getData('/weixin/oauth2_callback',function(data){
+
                   if(data.code==200){
                     if(data.data.exist==true){
                       api.toast({
@@ -217,6 +218,8 @@
                           $api.setStorage('mobile',data.data.mobile);
                           $api.setStorage('uid',data.data.uid);
                           $api.setStorage('joined_family',data.data.joined_family);
+                          $api.setStorage('user_id',data.data.user_id);
+
 
                           api.execScript({
                               name: 'home',
@@ -262,7 +265,6 @@
                   }
                 },{'code':ret.code},{'Authorization':$api.getStorage('token')})
             } else {
-                alert(err.code);
             }
           });
         } else {
@@ -394,6 +396,7 @@ function agreement(){
                       $api.setStorage('uid',sta.data.uid);
                       $api.setStorage('joined_family',sta.data.joined_family);
                       $api.setStorage('avata',sta.data.avatar);
+                      $api.setStorage('user_id',data.data.user_id);
 
                       api.openWin({
                           name: 'home',

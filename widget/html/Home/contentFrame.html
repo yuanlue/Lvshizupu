@@ -37,15 +37,15 @@
           .thumb{
             text-align: center;
             margin-bottom:10px;
+            padding:0 10px;
           }
           .thumb img {
-            width:80%;
+            width:100%;
             display: block;
             margin:0 auto;
           }
           .content .inner{
             max-width:100%;
-            padding:0 10px;
             font-size:14px;
             line-height: 30px;
           }
@@ -79,7 +79,9 @@
           .sta{
             font-size:14px;
           }
-
+          .thumb {
+            display: none;
+          }
       </style>
   </head>
   <body>
@@ -126,6 +128,7 @@
         $('.content h1').html(data.data.title)
         $('.content .from').html(data.data.branch)
         $('.thumb img').attr('src',url+data.data.pic)
+
         $('.inner').html(data.data.detail)
         $('.time').html(data.data.created_at)
       }
@@ -134,6 +137,8 @@
         $('.content .from').text(data.data.assess)
         $('.thumb img').attr('src',url+data.data.avatar)
         $('.inner').html(data.data.intro)
+        $('.thumb').show()
+
       }
       else if(api.pageParam.category=='actives'){
         $('.content h1').text(data.data.title)
@@ -160,6 +165,8 @@
         $('.content .from').text(data.data.tag)
         $('.thumb img').attr('src',url+data.data.avatar)
         $('.inner').html(data.data.intro)
+        $('.thumb').show()
+
       }
       else if(api.pageParam.category=='star_actives'){
         $('.neirong').append('<p class="act">活动地址：'+data.data.address+'</p>')
@@ -170,6 +177,29 @@
       }
         },{},{"Authorization":$api.getStorage('token')})
       }
+      var imgarr=[]
+        $('img').each(function(index){
+          imgarr.push($(this).attr('src'))
+        })
+      $('img').each(function(index){
+          var index=index
+          $(this).click(function(){
+            var url=$(this).attr('src')
+            api.openWin({
+                name: 'imgWin',
+                url: '../../html/Home/imgWin.html',
+                pageParam: {
+                    imgarr: imgarr,
+                    index:index
+                },
+                bgColor:"#000"
+            });
+
+
+          })
+      })
+
+
       };
   </script>
   </html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+
+      </style>
+  </head>
+  <body>
+
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+        var photoBrowser = api.require('photoBrowser');
+        var u = navigator.userAgent;
+        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+        var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+        if(isiOS){
+        $('.top').css({'background':'white',"height":"20px"})
+         }
+        photoBrowser.open({
+            images: api.pageParam.imgarr,
+            activeIndex:api.pageParam.index,
+            placeholderImg: 'widget://image/default.png',
+            bgColor: '#000'
+        }, function(ret, err) {
+            if (ret) {
+              api.openFrame({
+                  name: 'imgframe',
+                  url: '../../html/Home/imgframe.html',
+                  rect: {
+                      x: 0,
+                      y: 0,
+                      w: 'auto',
+                      h: 75
+                  },
+                  pageParam: {
+                      imgnum: api.pageParam.imgarr,
+                      index:ret.index
+                  },
+                  bounces: true,
+                  reload:true,
+                  bgColor: 'rgba(0,0,0,0)',
+                  vScrollBarEnabled: true,
+                  hScrollBarEnabled: true
+              });
+
+            } else {
+            }
+        });
+      };
+  </script>
+  </html>

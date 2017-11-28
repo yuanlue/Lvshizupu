@@ -179,6 +179,7 @@
                           $api.setStorage('mobile',data.data.mobile);
                           $api.setStorage('uid',data.data.uid);
                           $api.setStorage('joined_family',data.data.joined_family);
+                          $api.setStorage('user_id',data.data.user_id);
 
                           api.execScript({
                               name: 'home',
@@ -190,8 +191,6 @@
                               frameName: 'home',
                               script: 're();'
                           });
-
-
                           api.openWin({
                               name: 'home',
                               url: '../../html/Home/homeWin.html',
@@ -204,6 +203,8 @@
                               historyGestureEnabled:false,
                               slidBackEnabled:false
                           });
+
+
                     }
                     else{
                     api.openWin({
@@ -224,7 +225,6 @@
                   }
                 },{'code':ret.code},{'Authorization':$api.getStorage('token')})
             } else {
-                alert(err.code);
             }
           });
         } else {
@@ -300,7 +300,7 @@
             $api.setStorage('mobile',data.data.mobile);
             $api.setStorage('uid',data.data.uid);
             $api.setStorage('avata',data.data.avatar);
-
+            $api.setStorage('user_id',data.data.user_id);
             $api.setStorage('joined_family',data.data.joined_family);
 
             api.execScript({

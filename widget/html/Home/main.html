@@ -444,6 +444,7 @@ function init(){
     $('.content h1').text(data.data[0].title)
     $('.content p').text(data.data[0].created_at)
   },{ 'page': '1', 'page_size': '1' },{'Authorization':$api.getStorage('token')})
+  $('.start .swiper-wrapper').html("")
   getData('/star_actives',function(data){
     if(data.data.length<=0){
       $('.start').hide()
@@ -477,11 +478,17 @@ function init(){
     obj.html('')
     if(data.data.length>3){
       for(var i=0;i<3;i++){
+        if(data.data[i].title.length>=12){
+          data.data[i].title=data.data[i].title.substring(0,12)+'...'
+        }
       obj.append("<li onclick='inner("+data.data[i].id+",&quot;文化&quot;,&quot;cultures&quot;)'><img src='"+url+data.data[i].pic+"' onerror='errHandle(this)'  ><p>"+data.data[i].title+"</p></li>")
       }
     }
       else{
         for(var i=0;i<data.data.length;i++){
+          if(data.data[i].title.length>=12){
+            data.data[i].title=data.data[i].title.substring(0,12)+'...'
+          }
         obj.append("<li onclick='inner("+data.data[i].id+",&quot;文化&quot;,&quot;cultures&quot;)'><img src='"+url+data.data[i].pic+"' onerror='errHandle(this)'  ><p>"+data.data[i].title+"</p></li>")
         }
       }

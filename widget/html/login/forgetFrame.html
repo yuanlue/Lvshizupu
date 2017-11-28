@@ -179,38 +179,50 @@ function backNum(){
           return false
 
     }
-    postData('/sms/'+$('#tel').val()+'/validate',function(data){
-      if(data.code==200){
-        //验证成功
-        postData('/users/reset_password',function(res){
-          if(res.code==200){
-            api.toast({
-                    msg: '密码修改成功',
-                    duration:2000,
-                    location: 'bottom'
-                });
-          }
-          else{
-            api.toast({
-                    msg: '密码修改失败，请重试',
-                    duration:2000,
-                    location: 'bottom'
-                });
-          }
-        },
-        {
-          "password":$("#password").val(),
-          "mobile":$("#tel").val()
-        })
-      }
-      else{
+    postData('/users/is_registered',function(data){
+      if(data.code!=200){
         api.toast({
-                msg: '验证码错误，请重试',
+                msg: '该用户还未注册过',
                 duration:2000,
                 location: 'bottom'
             });
       }
-    },{"code":$('#auth').val()})
+      else{
+        postData('/sms/'+$('#tel').val()+'/validate',function(data){
+          if(data.code==200){
+            //验证成功
+            postData('/users/reset_password',function(res){
+              if(res.code==200){
+                api.toast({
+                        msg: '密码修改成功',
+                        duration:2000,
+                        location: 'bottom'
+                    });
+              }
+              else{
+                api.toast({
+                        msg: '密码修改失败，请重试',
+                        duration:2000,
+                        location: 'bottom'
+                    });
+              }
+            },
+            {
+              "password":$("#password").val(),
+              "mobile":$("#tel").val()
+            })
+          }
+          else{
+            api.toast({
+                    msg: '验证码错误，请重试',
+                    duration:2000,
+                    location: 'bottom'
+                });
+          }
+        },{"code":$('#auth').val()})
+      }
+    },{'mobile':$("#tel").val()})
+
   }
   function verification(){
     if(num!=0){

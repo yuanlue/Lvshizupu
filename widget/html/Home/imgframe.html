@@ -12,8 +12,7 @@
       }
 
       .topbar {
-        background-image: url("../../image/status.png");
-        background-size: cover;
+        background: black;
         height: 50px;
         border-bottom: 1px solid #DDDFE3;
         line-height: 50px;
@@ -31,6 +30,7 @@
   </head>
   <body>
     <div class="top"></div>
+
     <header>
         <div id="cloud" class="topbar  activebar">
           <img class="return" onclick="api.closeWin()" src="../../image/return.png" alt="">
@@ -39,40 +39,18 @@
     </header>
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
-    <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+
   <script type="text/javascript">
       apiready = function(){
-              $('#cloud span').text(api.pageParam.title)
-
-
+        var num=parseInt(api.pageParam.index)+1
         var u = navigator.userAgent;
         var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
         var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
         if(isiOS){
         $('.top').css({'background':'white',"height":"20px"})
          }
-          api.openFrame({
-              name: 'contentFrame',
-              url: '../../html/Home/contentFrame.html',
-              rect: {
-                  x: 0,
-                  y: 50+  $('.top').height(),
-                  w: 'auto',
-                  h: api.frameHeight-(50+  $('.top').height())
-              },
-              pageParam: {
-                  target: api.pageParam.target,
-                  id:api.pageParam.contentId,
-                  category:api.pageParam.category
-
-              },
-              bounces: false,
-              bgColor: 'rgba(0,0,0,0)',
-              vScrollBarEnabled: true,
-              hScrollBarEnabled: true,
-              scaleEnabled:true
-          });
-
+         $('header span').text(num+'/'+api.pageParam.imgnum.length)
       };
   </script>
   </html>
