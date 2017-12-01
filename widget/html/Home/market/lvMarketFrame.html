@@ -164,7 +164,7 @@
 
              <img v-if="item.logo==null" src="../../../image/default.png" alt="">
              <p>{{item.name}}</p>
-             <span>入驻时间:{{item.created_at}}</span>
+             <span>入驻时间:{{item.created_at | formatDate}}</span>
            </li>
 
          </ul>
@@ -217,8 +217,15 @@
     methods:{
         init(){
           var that = this
+          api.showProgress({
+          title: '努力加载中...',
+          text: '先喝杯茶...',
+          modal: false
+      });
           getData('/companies',function(data){
             if(data.code==200){
+              api.hideProgress();
+
               that.merchineList=data.data
 
             }
@@ -245,7 +252,18 @@
   	}
 
 
-    }
+  },
+  filters: {
+           formatDate: function (value) {
+              console.log(value)
+              var date=new Date(value)
+              var year=date.getFullYear().toString()
+              var month=(date.getMonth()+1).toString()
+              var day=date.getDate()
+
+              return  year+"-"+month+"-"+day
+           },
+       }
     })
   };
   </script>

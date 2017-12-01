@@ -131,7 +131,7 @@
       </ul>
     </div>
     <div v-if="index==0" class="intro frame">
-      <img v-bind:src="pic" alt="">
+      <img v-bind:src="url+pic" alt="">
       <p v-html="content"></p>
     </div>
     <div v-if="index==1" class="product frame">
@@ -192,10 +192,19 @@
           id:"",
           pic:"",
           content:"",
-          rqList:[]
+          rqList:[],
+          url:"http://116.62.170.181:8081"
       },
       created:function(){
+        var that = this
           this.init()
+           	this.$nextTick(function(){
+              $('.intro img').each(function(){
+                var src=$(this).attr('src')
+                $(this).attr('src',that.url+src)
+              })
+            })
+
       },
     methods:{
       init(){

@@ -188,6 +188,7 @@ api.addEventListener({
   name: 'scrolltobottom'
 }, function(ret, err){
       cur++
+    
       api.showProgress({
       title: '努力加载中...',
       text: '先喝杯茶...',
@@ -210,7 +211,7 @@ api.addEventListener({
         return false
       }
 
-    },{"page":cur+1,"page_size":"10"},{"Authorization":$api.getStorage('token')})
+    },{"page":cur,"page_size":"10"},{"Authorization":$api.getStorage('token')})
     api.hideProgress();
 
   });
