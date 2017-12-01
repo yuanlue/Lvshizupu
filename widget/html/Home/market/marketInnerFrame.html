@@ -61,7 +61,7 @@
           }
           .need ul li>img{
             vertical-align: top;
-            display: inline-block;
+            display: table-cell;;
             width:110px;
             border:1px solid #eee;
           }
@@ -69,8 +69,8 @@
             width:180px;
 
             vertical-align: top;
-            margin-left:10px;
-            display: inline-block;;
+            padding-left:10px;
+            display: table-cell;
           }
           .need ul li>div h1{
             font-size:16px;
@@ -166,7 +166,7 @@
 
         <div>
           <h1>{{item.content}}</h1>
-          <p class="time">发布时间：{{item.created_at}}</p>
+          <p class="time">发布时间：{{item.created_at | formatDate}}</p>
           <p class="status">
             <img src="../../../image/renzheng.png" alt="">
             <span>已经认证</span>
@@ -230,7 +230,18 @@
 
     }
 
-    }
+  },
+  filters: {
+           formatDate: function (value) {
+              console.log(value)
+              var date=new Date(value)
+              var year=date.getFullYear().toString()
+              var month=(date.getMonth()+1).toString()
+              var day=date.getDate()
+
+              return  year+"-"+month+"-"+day
+           },
+       }
     })
   };
   </script>

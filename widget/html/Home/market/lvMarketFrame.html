@@ -159,7 +159,7 @@
        <header><img src="../../../image/build.png" alt="">新入驻企业</header>
        <div class="newCom">
          <ul>
-           <li v-for="item in merchineList" @click="cominner(item.id)">
+           <li v-for="item in TmerchineList" @click="cominner(item.id)">
              <img v-if="item.logo!=null" v-bind:src="item.logo" alt="">
 
              <img v-if="item.logo==null" src="../../../image/default.png" alt="">
@@ -187,7 +187,8 @@
     var app=new Vue({
       el: '.lvMarket',
       data: {
-         merchineList:[]
+         merchineList:[],
+         TmerchineList:[],
       },
     created:function(){
       var that = this
@@ -229,7 +230,15 @@
               that.merchineList=data.data
 
             }
-          },{},{"Authorization":$api.getStorage('token')})
+          },{'order':'sequence'},{"Authorization":$api.getStorage('token')})
+          getData('/companies',function(data){
+            if(data.code==200){
+              api.hideProgress();
+
+              that.TmerchineList=data.data
+
+            }
+          },{'order_by':''},{"Authorization":$api.getStorage('token')})
         },
         cominner(id){
           api.openWin({
