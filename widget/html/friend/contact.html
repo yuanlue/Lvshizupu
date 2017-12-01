@@ -176,7 +176,6 @@
   var  obj=$api.dom('.conversation ul');
 
   function play(path,obj){
-
     $(obj).find('span img').hide()
     var audio = api.require('audio');
     audio.play({
@@ -201,13 +200,14 @@
           });
           return false
     }
-    $api.append(obj,'<li onclick="play(&quot;'+ret.path+'&quot;,this)" class="other voice" id="'+card+'"><i class="male audio"><img src="'+myavata+'"><span>'+ret.duration+'s<img src="../../image/voice_mine.png" alt=""></span></i></li>')
 
     upload(path,'audio',ret.path,function(data){
       if(data.code==200){
         window.scrollTo(0,$api.offset($api.byId("contact")).h);
         var url=data.data.url
         postData('/pub/chat/'+api.pageParam.id,function(data){
+          $api.append(obj,'<li onclick="play(&quot;'+url+'&quot;,this)" class="other voice" id="'+card+'"><i class="male audio"><img src="'+myavata+'"><span>'+ret.duration+'s<img src="../../image/voice_mine.png" alt=""></span></i></li>')
+
       },{'sender':$api.getStorage('uid'),'receiver':api.pageParam.id,'content':url,'message_type':'audio','content_length':ret.duration},{'authorization':$api.getStorage('token'),'Accept':"text/json" })
 
       }

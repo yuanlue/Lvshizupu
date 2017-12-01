@@ -76,6 +76,9 @@
   	background: url("../../image/guangshangchang.png") no-repeat;
   	background-size: cover;
   }
+  .market .visit img{
+    width:100%;
+  }
   .market .recom{
   	margin-top:10px;
   }
@@ -97,7 +100,6 @@
   	font-size:0;
   }
   .market .visit ul>li{
-  	padding:10px;
   	overflow: hidden;
   	background:white;
   	border-right:1px solid #ccc;
@@ -116,7 +118,6 @@
   }
   .market .visit ol>li{
 
-  	padding:15px 10px;
   	overflow: hidden;
   	background:white;
   	  border-collapse:collapse;
@@ -129,7 +130,6 @@
   	font-size:16px;
   }
   .market .visit ul>li img{
-  	width:70px;
   }
   .market .recom ul{
   	width:100%;
@@ -139,6 +139,7 @@
   }
   .market .recom ul li{
   	line-height: 1.5;
+    margin-left:10px;
   	vertical-align: top;
   		  border-collapse:collapse;
   	display: inline-block;
@@ -148,8 +149,11 @@
   	height:160px;
   }
   .market .recom ul li p{
+    margin-top:10px;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    overflow: hidden;
   	font-size:12px;
-  	white-space: normal;
   }
   .market .recom ul li span{
   	font-size:15px;
@@ -160,6 +164,10 @@
   }
   .market .recom ul li img{
   	width:100%;
+  }
+  .market .recom ul li >div{
+    overflow: hidden;
+    height:100px;
   }
   .market .limTime>div {
   	padding:0 10px;
@@ -185,8 +193,15 @@
   }
   .market .like img{
   	width:100%;
+    height:100%;
+  }
+  .market .like header{
+    background:url(../../image/cainixihuan.png) no-repeat;
+    background-size: cover;
+    margin-top:10px;
   }
   .market .like>ul li{
+    vertical-align: middle;
   	display: inline-block;
   	width:48%;
   	margin:10px 1% 0;
@@ -199,15 +214,26 @@
   }
   .market .like>ul li>div{
   	min-height:145px;
+    padding:10px;
   }
   .market .like>ul li p{
+    white-space:nowrap;
+  text-overflow:ellipsis;
+  overflow:hidden;
   	font-weight: bold;
   	padding:0 10px;
   	line-height: 1.5;
   }
   .market .like>ul li span{
   	color:#ef5737;
+    margin-left:10px;
   	font-size:15px;
+  }
+  .qidai {
+    text-align: center;
+  }
+  .qidai img{
+    width:100%;
   }
 	</style>
 </head>
@@ -240,7 +266,7 @@
         <p>浏览足迹</p>
       </li>
       <li>
-        <img src="../../image/order.png" alt="">
+        <img src="../../image/Mshoucang.png" alt="">
         <p>我的收藏</p>
       </li>
       <li>
@@ -262,60 +288,42 @@
     <header><span>逛商场</span></header>
     <ul>
       <li>
-        <span>食品饮料</span>
+        <img src="../../image/market/ad1.jpg" alt="">
       </li>
       <li>
-        <span>厨电特惠</span>
+        <img src="../../image/market/ad2.jpg" alt="">
       </li>
     </ul>
     <ol>
       <li>
-        <span>美妆特惠</span>
+        <img src="../../image/market/ad3.jpg" alt="">
       </li>
       <li>
-        <span>母婴玩具</span>
+        <img src="../../image/market/ad4.jpg" alt="">
       </li>
       <li>
-        <span>智能数码</span>
+        <img src="../../image/market/ad5.jpg" alt="">
       </li>
       <li>
-        <span>家居家装</span>
+        <img src="../../image/market/ad6.jpg" alt="">
       </li>
     </ol>
   </div>
       <div class="recom">
     <header><span>推荐商品</span></header>
     <ul>
-      <li>
-        <img src="../../image/default.png" alt="">
-        <p>德拉克Durlacher整箱装  500ml*24</p>
-        <span><i>￥</i>58.00</span>
-      </li>
-      <li>
-        <img src="../../image/default.png" alt="">
-        <p>德拉克Durlacher整箱装  500ml*24</p>
-        <span><i>￥</i>58.00</span>
-      </li>
-      <li>
-        <img src="../../image/default.png" alt="">
-        <p>德拉克Durlacher整箱装  500ml*24</p>
-        <span><i>￥</i>58.00</span>
-      </li>
-      <li>
-        <img src="../../image/default.png" alt="">
-        <p>德拉克Durlacher整箱装  500ml*24</p>
-        <span><i>￥</i>58.00</span>
-      </li>
-      <li>
-        <img src="../../image/default.png" alt="">
-        <p>德拉克Durlacher整箱装  500ml*24</p>
-        <span><i>￥</i>58.00</span>
-      </li>
+      <li v-for="item in recomGoods">
+  				<div>
+  				<img v-bind:src="url+item.img" alt="">
+  				</div>
+  				<p>{{item.name}}</p>
+  				<span><i>￥</i>{{item.sell_price}}</span>
+  			</li>
     </ul>
 
   </div>
     <div class="limTime recom">
-    <header><span>推荐商品</span></header>
+    <header><span>限时秒杀</span></header>
     <div>
       <p>
         <img src="../../image/default.png" alt="">
@@ -325,31 +333,13 @@
 
     </div>
     <ul>
-      <li>
-        <img src="../../image/default.png" alt="">
-        <p>德拉克Durlacher整箱装  500ml*24</p>
-        <span><i>￥</i>58.00</span>
-      </li>
-      <li>
-        <img src="../../image/default.png" alt="">
-        <p>德拉克Durlacher整箱装  500ml*24</p>
-        <span><i>￥</i>58.00</span>
-      </li>
-      <li>
-        <img src="../../image/default.png" alt="">
-        <p>德拉克Durlacher整箱装  500ml*24</p>
-        <span><i>￥</i>58.00</span>
-      </li>
-      <li>
-        <img src="../../image/default.png" alt="">
-        <p>德拉克Durlacher整箱装  500ml*24</p>
-        <span><i>￥</i>58.00</span>
-      </li>
-      <li>
-        <img src="../../image/default.png" alt="">
-        <p>德拉克Durlacher整箱装  500ml*24</p>
-        <span><i>￥</i>58.00</span>
-      </li>
+      <li v-for="item in timeGoods" >
+    				<div>
+    				<img v-bind:src="url+item.img" alt="">
+    				</div>
+    				<p>{{item.name}}</p>
+    				<span><i>￥</i>{{item.award_value}}</span>
+    			</li>
     </ul>
 
   </div>
@@ -357,52 +347,69 @@
     <header><span>猜你喜欢</span></header>
 
     <ul>
-      <li>
-          <div>
-            <img src="../../image/default.png" alt="">
-        </div>
-        <p>德拉克Durlacher整箱装  500ml*24</p>
-        <span><i>￥</i>58.00</span>
-      </li>
-      <li>
-        <div>
-          <img src="../../image/default.png" alt="">
-        </div>
-        <p>德拉克Durlacher整箱装  500ml*24</p>
-        <span><i>￥</i>58.00</span>
-      </li>
-      <li>
-          <div>
-            <img src="../../image/default.png" alt="">
-        </div>
-        <p>德拉克Durlacher整箱装  500ml*24</p>
-        <span><i>￥</i>58.00</span>
-      </li>
-      <li>
-          <div>
-            <img src="../../image/default.png" alt="">
-        </div>
-        <p>德拉克Durlacher整箱装  500ml*24</p>
-        <span><i>￥</i>58.00</span>
-      </li>
-      <li>
-<div>
-        <img src="../../image/default.png" alt="">
-        </div>  				<p>德拉克Durlacher整箱装  500ml*24</p>
-        <span><i>￥</i>58.00</span>
-      </li>
+      <li v-for="item in timeGoods">
+  					<div>
+  				<img v-bind:src="url+item.img" alt="">
+  				</div>
+  				<p>{{item.name}}</p>
+  				<span><i>￥</i>{{item.award_value}}</span>
+  			</li>
+
     </ul>
 
   </div>
-
-<footer-bar></footer-bar>
+  <div class="qidai">
+    <img src="../../image/qidai.jpeg" alt="">
+  </div>
 
 </div>
 </body>
 <script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../../script/service.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+
 <script type="text/javascript">
     apiready = function(){
       // 融云模块
+      var app=new Vue({
+        el: '.market',
+        data: {
+          url:"http://wx.kuaiyunma.com/",
+          timeGoods:[],
+          recomGoods:[]
+        },
+        created:function(){
+          this.init()
+        },
+      methods:{
+          init(){
+            var that =this
+            getData('/shop/goods/promotions/flash_sale',function(data){
+              if(data.code==200){
+                that.timeGoods=data.data
+              }
+            },{},{'Authorization':$api.getStorage('token')})
+            getData('/shop/goods/promotions/commend_goods?commend_id=4',function(data){
+              if(data.code==200){
+                that.recomGoods=data.data
+              }
+            },{},{'Authorization':$api.getStorage('token')})
+          },
+          inner(id){
+            api.openWin({
+                name: 'goodsInner',
+                url: '../../html/market/goodsInnerWin.html',
+                pageParam: {
+                    id: id
+                }
+            });
+
+          }
+
+
+      }
+      })
 
 
 }
