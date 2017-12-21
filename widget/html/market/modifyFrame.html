@@ -162,6 +162,10 @@
         		this.province=api.pageParam.obj.province_info.area_name
         		this.city=api.pageParam.obj.city_info.area_name
         		this.area=api.pageParam.obj.area_info.area_name
+            that.citycodeList.push(api.pageParam.obj.province_info)
+            that.citycodeList.push(api.pageParam.obj.city_info)
+
+            that.citycodeList.push(api.pageParam.obj.area_info)
 
         		this.code=api.pageParam.obj.zip
         		this.street=""
@@ -169,6 +173,7 @@
         		this.addressList=[]
           getData('/shop/areas',function(data){
             that.cityList=data.data
+
           },{},{'Authorization':$api.getStorage('token')})
         },
         addA(){
@@ -208,7 +213,16 @@
       			       "is_default": 1
       			   }
       			}
+            api.showProgress({
+                style: 'default',
+                animationType: 'fade',
+                title: '正在修改中...',
+                modal: false
+            });
+
 			putData('/shop/addresses/'+that.id,function(data){
+        api.hideProgress();
+
 				if(data.code==200){
           api.toast({
                   msg: '修改成功',

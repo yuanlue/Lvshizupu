@@ -195,7 +195,14 @@
       			       "is_default": 1
       			   }
       			}
+            api.showProgress({
+                title: '正在添加...',
+                modal: false
+            });
+
 			postData('/shop/addresses',function(data){
+        api.hideProgress();
+        
 				if(data.code==200){
           api.toast({
                   msg: '添加成功',
