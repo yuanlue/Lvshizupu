@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <style>
+          body{
+            min-height: 100vh;
+          }
+          .openinfo ul li{
+            padding:0 10px;
+            border-bottom:1px solid #eee;
+            line-height: 50px;
+            font-size:16px;
+          }
+          .openinfo ul li input{
+            font-size:16px;
+            line-height: 50px;
+            text-align: right;
+            float: right;
+          }
+          ul .ar:before{
+            content:"";
+            display: inline-block;
+            background:url('../../../image/ar.png') no-repeat;
+            background-size: contain;
+            width:8px;
+            height:12px;
+            float: right;
+            margin-top:20px;
+          }
+          ul li span{
+            float: right;
+          }
+          .metial span{
+            float: right;
+          }
+         .selArea{
+            position: fixed;
+            left:0;
+            overflow: auto;
+            height: 100vh;
+            width:100vw;
+            background-color: white;
+            }
+         .selArea ul li:before{
+            content:"";
+            display: inline-block;
+            background:url('../../../image/ar.png') no-repeat;
+            background-size: contain;
+            width:8px;
+            height:12px;
+            float: right;
+            margin-top:20px;
+          }
+          .popup{
+            z-index:2001;
+            background: rgba(0,0,0,0.5);
+            position: fixed;;
+            top:0;
+            width:100vw;
+            height:100vh;
+          }
+          .metial span,.addre span{
+            max-width:200px;
+            margin-right:5px;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+          }
+          ul li button{
+            float: right;
+            margin-left:5px;
+            line-height: 50px;
+            background: #9e2831;
+            padding:0 5px;
+            font-size:12px;
+            color:white;
+          }
+          .opera{
+            background: #9e2831;
+            line-height: 48px;
+            text-align: center;
+            position: fixed;
+            width:100%;
+            left:0;
+            bottom:0;
+            color:white;
+          }
+          .binc{
+            position: fixed;
+            top:0;
+            left:0;
+            width:100%;
+            background: white;
+            min-height: 100vh;
+            overflow: auto;
+          }
+        .binc  ul li{
+            vertical-align: middle;
+            border-bottom: 1px solid #eee;
+            line-height: 50px;
+            font-size:16px;
+            padding:0 10px;
+          }
+        .binc  ul li span{
+            vertical-align: top;
+            float: right;
+          }
+        .binc  ul li span img{
+            vertical-align: middle;
+            width:20px;
+          }
+      </style>
+  </head>
+  <body>
+    <div class="openinfo">
+      <ul>
+        <li @click="imgUp()" class="ar metial">商户资质材料<span>{{fileName}}</span></li>
+        <li>手机号码<button @click="send()">发送验证码</button>
+          <input type="text" v-model="mobile" placeholder="请输入11位手机号码">
+        </li>
+        <li>验证码<input type="text" v-model="Mcode" placeholder="请输入验证码"></li>
+
+        <li>邮箱<input type="text" v-model="email" placeholder="请输入电子邮箱"></li>
+        <li @click="addA()" class="ar">所属地
+          <span>
+            {{province}}{{city}}{{area}}
+          </span></li>
+        <li class="addre">地址<input type="text" v-model="address" placeholder="请输入详细地址"></li>
+        <li>企业官网
+          <input type="text" v-model="weburl" placeholder="请输入企业官网网址"></li>
+        <li class="ar" @click="bind()">绑定宗族企业<span>{{comname}}</span></li>
+      </ul>
+      <div class="popup" v-if="isAdd">
+        <div class="selArea">
+
+          <ul>
+            <li v-for="item in cityList" @click="step(item)">
+              {{item.area_name}}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="opera" @click="submit()" >
+        提交申请
+      </div>
+      <div class="binc" v-if="isbind">
+        <ul>
+          <li v-for="item in datalist" @click="selC(item)">
+              {{item.name}}
+              <span v-if="item.active==false">
+                <img src="../../../image/market/circle.png" alt="">
+                未绑定
+              </span>
+              <span v-if="item.active==true">
+                <img src="../../../image/market/accircle.png" alt="">
+                已经绑定
+              </span>
+          </li>
+        </ul>
+        </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../script/vue.js"></script>
+  <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../script/service.js"></script>
+  <script type="text/javascript">
+  apiready = function(){
+    var app=new Vue({
+      el: '.openinfo',
+      data: {
+        addressList:[],
+        isAdd:false,
+        address:"",
+        sCity:[],
+        cityList:[],
+        province:"",
+        city:"",
+        area:"",
+        fileName:"",
+        street:"",
+        datalist:[],
+        code:"",
+        metialUrl:"",
+        email:"",
+        mobile:"",
+        weburl:"",
+        comid:"",
+        comname:"",
+        Mcode:"",
+        isbind:false,
+        citycodeList:[]
+      },
+    created:function(){
+        this.init()
+      },
+    methods:{
+      selC(obj){
+        var that =this
+        obj.active=true
+        that.comid=obj.id
+        that.comname=obj.name
+        this.isbind=false
+
+      },
+      addA(){
+        this.isAdd=true
+      },
+      send(){
+        var that = this
+        var partten = /^1[34578]\d{9}$/;
+        if(partten.test(that.mobile))
+        {
+          //电话号码格式正确
+          postData('/sms/'+that.mobile+'/send',function(res){
+          //发送验证码
+            if(res.code==200){
+              api.toast({
+                      msg: '发送成功',
+                      duration:2000,
+                      location: 'bottom'
+                  });
+
+
+            }
+            else{
+              api.toast({
+                      msg: '发送失败,请稍后重试',
+                      duration:2000,
+                      location: 'bottom'
+                  });
+            }
+          })
+
+        }
+        else
+        {
+          //电话号码格式错误
+          api.toast({
+                  msg: '电话号码格式错误',
+                  duration:2000,
+                  location: 'bottom'
+              });
+        }
+      },
+      bind(){
+      this.isbind=true
+      var that = this
+      getData('/shop/sellers/companies',function(data){
+        if(data.code==200){
+          data.data.forEach(function(item){
+            item.active=false
+          })
+            that.datalist=data.data
+        }
+        else{
+          api.toast({
+                  msg: '参数错误',
+                  duration:5000,
+                  location: 'bottom'
+              })
+        }
+      },{},{'Authorization':$api.getStorage('token')})
+
+      },
+      submit(){
+
+        var that = this
+        if(!this.Mcode){
+          api.toast({
+                  msg: '请输入验证码',
+                  duration:2000,
+                  location: 'bottom'
+              });
+              return false
+        }
+        postData('/sms/'+that.mobile+'/validate',function(data){
+          if(data.code==200){
+            var para=api.pageParam.para
+            para.seller.email=that.email
+            para.seller.mobile=that.mobile
+            para.seller.province=that.citycodeList[0].area_id
+            para.seller.city=that.citycodeList[1].area_id
+            para.seller.area=that.citycodeList[2].area_id
+            para.seller.address=that.address
+            para.seller.home_url=that.weburl
+            para.seller.phone=that.mobile
+            para.seller.paper_img=that.metialUrl
+            para.seller.company_id=that.comid
+            postData('/shop/sellers',function(data){
+              if(data.code==200){
+                api.toast({
+                        msg: '开店申请成功',
+                        duration:2000,
+                        location: 'bottom'
+                    });
+              }
+              else{
+                api.toast({
+                        msg: '系统繁忙',
+                        duration:2000,
+                        location: 'bottom'
+                    });
+              }
+            },JSON.stringify(para),
+            {'Authorization':$api.getStorage('token'),
+            'Content-Type':'application/json'
+          }
+          )
+          }
+          else{
+            api.toast({
+                    msg: '验证码错误',
+                    duration:2000,
+                    location: 'bottom'
+                });
+          }
+        },{'code':that.Mcode},{'Authorization':$api.getStorage('token')})
+      },
+      step(obj){
+        var that = this
+        this.sCity.push(obj)
+        getData('/shop/areas',function(data){
+            if(data.code==200){
+              if(data.data.length<1){
+                that.province=that.sCity[0].area_name
+                that.city=that.sCity[1].area_name
+                that.area=that.sCity[2].area_name
+                that.street=that.sCity[3].area_name
+                that.isAdd=false
+                  getData('/shop/areas',function(data){
+                    if(data.code==200){
+                      that.cityList=data.data
+                      that.citycodeList=that.sCity
+                      that.sCity=[]
+                    }
+                  },{},{'Authorization':$api.getStorage('token')})
+
+              }
+              else{
+                that.cityList=data.data
+
+              }
+
+            }
+            else{
+              api.toast({
+                      msg: '服务器异常',
+                      duration:5000,
+                      location: 'bottom'
+                  })
+            }
+        },{'id':obj.area_id},{'Authorization':$api.getStorage('token')})
+      },
+      uploadImg(ret){
+        var that = this
+        var img =ret.imgPath
+        var card=new Date().getTime()+Math.floor(Math.random()*100)
+        var name=card+ret.imgName
+        var path='/'+$api.getStorage('uid')+'/'+name
+        api.showProgress({
+        title: '努力加载中...',
+        text: '先喝杯茶...',
+        modal: false
+    });
+      upload(path,'image',ret.imgPath,function(data){
+        api.hideProgress();
+          if(data.code==200){
+            that.metialUrl=data.data.url
+            //上传成功后 发送消息
+          }
+        },{"Authorization":$api.getStorage('token')},function(err){
+        })
+
+      },
+
+
+      imgUp(){
+        var that = this
+        api.getPicture({
+          sourceType: 'all',
+          encodingType: 'jpg',
+          mediaValue: 'pic',
+          destinationType: 'url',
+          allowEdit: true,
+          quality: 50,
+          targetWidth: 100,
+          targetHeight: 100,
+          saveToPhotoAlbum: false
+      }, function(ret, err) {
+          if (ret) {
+                  that.fileName=ret.data
+                  ret.imgName="";
+                  var card=new Date().getTime()+Math.floor(Math.random()*100)
+                  var name=card+ret.imgName+'.png'
+                  ret.imgPath=ret.data
+                  that.uploadImg(ret)
+          } else {
+          }
+      });
+      },
+        init(){
+          var that = this
+          getData('/shop/areas',function(data){
+            that.cityList=data.data
+          },{},{'Authorization':$api.getStorage('token')})
+
+        }
+
+
+    }
+    })
+  };
+  </script>
+  </html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      .address{
+        min-height: 100vh;
+            background: #f5f3f3;
+          }.address ul{
+            padding-bottom:50px;
+          }
+          .address ul li{
+            margin-bottom:10px;
+            background: white;
+            padding:15px 10px 0;
+          }
+          .address ul li>.receiveP{
+            font-size:15px;
+            line-height: 40px;
+          }
+          .address ul li>.receiveP span{
+            float: right;
+          }
+          .address ul li>.receiveA{
+            font-size:14px;
+            line-height: 20px;
+
+          }
+          .address ul li .sel{
+            font-size:13px;
+            border-top:1px solid #eee;
+          }
+          .address ul li .sel img{
+            width:21px;
+            vertical-align: middle;
+          }
+          .address ul li .sel>p span{
+            background: url(../../image/market/circle.png);
+            width:18px;
+            height:18px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right:5px;
+            background-repeat: no-repeat;
+            background-size: cover;
+          }
+          .address ul li .sel .def{
+            color:#9e2931;
+          }
+          .address ul li .sel>p .active{
+            background: url(../../image/market/accircle.png) !important;
+            background-repeat: no-repeat !important;
+            background-size: cover !important;
+
+          }
+          .address ul li .sel>span{
+            float: right;
+            margin-right:15px;
+          }
+          .address ul li .sel>p{
+            display: inline-block;
+          }
+          .address ul li>div{
+            margin-top:10px;
+            line-height: 50px;
+          }
+          .address .opera{
+            width:100%;
+            background: #9e2931;
+            position: fixed;
+            line-height:50px;
+            text-align: center;
+            color:white;
+            bottom:0;
+            font-size:15px;
+          }
+          .address .empty img{
+            width:45px;
+          }
+          .address .empty p{
+            margin-top:10px;
+            font-size:15px;
+          }
+          .address .empty{
+            text-align: center;
+            padding-top:125px;
+          }
+          i{
+            font-style: normal;
+          }
+          [v-cloak]{
+            display: none;
+          }
+      </style>
+  </head>
+  <body>
+    <div class="address" v-cloak>
+      		<ul>
+      			<li v-for="(item,index) in addressList" >
+      				<p class="receiveP" @click="set(item.id)">收货人：{{item.accept_name}} <span>{{item.telphone}}</span></p>
+      				<p class="receiveA" @click="set(item.id)">收货地址：{{item.province_info.area_name}}{{item.city_info.area_name}}
+      					{{item.area_info.area_name}}{{item.address}}
+
+   				</p>
+   				<div class="sel">
+   					<p>
+   						<span v-bind:class="{active:item.is_default==true}" @click="setdef(item)"></span>
+   						<i v-if="!item.is_default" @click="setdef(item)">设置为默认地址</i>
+   						<i class="def" v-if="item.is_default==true">默认地址</i>
+   					</p>
+   					<span @click="edit(item)">
+   						<img src="../../image/market/Medit.png">
+   						编辑
+   					</span>
+   					<span @click="del(item,index)">
+   						<img src="../../image/market/Mdel.png">
+   						删除
+   					</span>
+   				</div>
+      			</li>
+      		</ul>
+      		<div class="opera" @click="addA()">
+      			添加收货地址
+      		</div>
+      		<div class="empty" v-if="addressList.length<1">
+      			<img src="../../image/market/MadEmpty.png">
+      			<p>您还没有收货地址</p>
+      		</div>
+       </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
+  <script type="text/javascript">
+  function re(){
+    app.init()
+  }
+
+  apiready = function(){
+    // 融云模块
+
+    app=new Vue({
+      el: '.address',
+      data: {
+        addressList:[]
+      },
+      created:function(){
+        var that = this
+        this.init()
+
+      },
+    methods:{
+        init(){
+          var that = this
+          api.showProgress({
+          title: '努力加载中...',
+          text: '先喝杯茶...',
+          modal: false
+      });
+          getData('/shop/addresses',function(data){
+            api.hideProgress();
+            api.refreshHeaderLoadDone()
+
+            if(data.code==200){
+              that.addressList=data.data
+
+            }
+            else{
+              api.toast({
+                      msg: '参数错误',
+                      duration:5000,
+                      location: 'bottom'
+                  })
+            }
+          },{},{'Authorization':$api.getStorage('token')})
+        },
+      del(obj,index){
+        var that = this
+        if(that.addressList.length==1){
+          api.toast({
+              msg: '请保留一个收货地址',
+              duration: 2000,
+              location: 'bottom'
+          });
+        return false
+        }
+        var dialogBox = api.require('dialogBox');
+
+        dialogBox.alert({
+            texts: {
+                content: '确定要删除该收货地址吗？',
+                leftBtnTitle: '取消',
+                rightBtnTitle: '确认'
+            },
+            styles: {
+                bg: '#fff',
+                w: 300,
+
+                content: {
+                    color: '#000',
+                    size: 14
+                },
+                left: {
+                    marginB: 7,
+                    marginL: 20,
+                    w: 130,
+                    h: 35,
+                    corner: 2,
+                    color:'#fff',
+
+                    bg: '#c2262b',
+                    size: 12
+                },
+                right: {
+                    marginB: 7,
+                    marginL: 10,
+                    w: 130,
+                    h: 35,
+                    corner: 2,
+                    color:'#fff',
+                    bg: '#c2262b',
+                    size: 12
+                }
+            }
+        }, function(ret) {
+            if (ret.eventType == 'left') {
+                dialogBox.close({
+                    dialogName: 'alert'
+                });
+
+            }
+            else{
+              deleteData('/shop/addresses/'+obj.id,function(data){
+                dialogBox.close({
+                    dialogName: 'alert'
+                });
+                if(data.code==200){
+                  api.toast({
+                          msg: '删除成功',
+                          duration:5000,
+                          location: 'bottom'
+                      })
+
+                  that.addressList.splice(index,1)
+                  api.execScript({
+                      name: 'confirmOrderWin',
+                      frameName: 'confirmOrderFrame',
+                      script: 're();'
+                  });
+                }
+                else{
+                  api.toast({
+                          msg:data.message,
+                          duration:5000,
+                          location: 'bottom'
+                      })
+                }
+              },{},{'Authorization':$api.getStorage('token'),
+                'Content-Type':'application/json'
+              })
+            }
+        });
+
+  },
+      setdef(obj){
+  		    var that = this
+        	  	var para= {
+      			    "address": {
+      			       "accept_name": obj.accept_name,
+      			       "telphone": obj.telphone,
+      			       "province": obj.telphone.area_id,
+      			       "city": obj.city_info.area_id,
+      			       "area": obj.area_info.area_id,
+      			       "address": obj.address,
+      			       "mobile": obj.mobile,
+      			       'zip':obj.zip,
+      			       "is_default": 1
+      			   }
+      			}
+			putData('/shop/addresses/'+obj.id,function(data){
+				if(data.code==200){
+          api.toast({
+                  msg: '设置成功',
+                  duration:5000,
+                  location: 'bottom'
+              })
+					obj.is_default=true
+          that.init()
+
+				}
+				else{
+          api.toast({
+                  msg: data.message,
+                  duration:5000,
+                  location: 'bottom'
+              })
+					obj.is_default=false
+				}
+			},JSON.stringify(para),
+      {'Authorization':$api.getStorage('token'),
+        'Content-Type':'application/json'
+      })
+  	},
+    set(id){
+
+      var str="re('"+id+"')";
+
+      api.execScript({
+          name: 'confirmOrderWin',
+          frameName: 'confirmOrderFrame',
+          script: str
+      });
+      api.closeWin();
+
+    },
+    addA(){
+      api.openWin({
+          name: 'addaddress',
+          url: '../../html/market/addaddressWin.html',
+      });
+
+    },
+    edit(obj){
+      api.openWin({
+          name: 'Modifyaddress',
+          url: '../../html/market/Modifyaddress.html',
+          pageParam:{
+            'obj':obj
+          }
+      });
+
+  }
+
+
+
+
+    }
+    })
+
+
+}
+  </script>
+  </html>

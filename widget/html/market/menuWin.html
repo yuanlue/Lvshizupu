@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <style>
+      body{
+        width:100vw;
+        padding:0;
+        margin: 0;
+    }
+    .usercenter{
+        width:80%;
+        display: inline-block;
+        background: white;
+        overflow: auto;
+        height:100vh;
+    }
+    .banner{
+      width:100%;
+      height:155px;
+      background: url('../../image/market/userb.png') no-repeat;
+      background-size: cover;
+    }
+    .usercenter header{
+      padding:0 10px;
+      border-bottom:1px solid #eee;
+      line-height: 90px;
+    }
+    .usercenter header img{
+      border-radius: 50%;
+      width:50px;
+      vertical-align: middle;
+    }
+    ul{
+      margin:0;
+      padding:0 10px;
+      list-style: none;
+    }
+    .usercenter ul>li {
+      font-size:14px;
+      line-height: 50px;
+    }
+    .usercenter ul>li img{
+
+      margin-right:10px;
+      width:24px;
+      vertical-align: middle;
+    }
+    .cancel{
+      height:100vh;
+      display: inline-block;
+      width:18%;
+    }
+    ol{
+      border-top:1px solid #eee;
+      padding-top:10px;
+      border-bottom:1px solid #eee;
+      display: table;
+      margin:0;
+      width:100%;
+      padding-left:0;
+      list-style: none;
+    }
+    ol li{
+      position: relative;
+      vertical-align: bottom;
+      display: table-cell;
+      line-height: 1;
+      text-align: center;
+    }
+      .usercenter ul>li>ol>li p{
+        font-size:11px;
+        color:#666;
+      }
+    .usercenter ul>li>ol>li img{
+      margin-right:0;
+      width:20px;
+    }
+    .usercenter ul>li>ol>li span{
+      position: absolute;
+      right:10px;;
+      top:0;
+      background: #9e2831;
+      border-radius: 50%;
+      padding:2px 3px;
+      color:white;
+      font-size:10px;
+    }
+
+    ul>li:active{
+      background: #eee;
+    }
+      </style>
+  </head>
+  <body >
+    <div class="usercenter" onclick="cancel()">
+      <div class="banner">
+      </div>
+      <header>
+        <img src="../../image/male.png" alt="">
+        <span class="name"></span>
+      </header>
+      <ul>
+        <li onclick="cart()"><img src="../../image/cart.png" alt="">购物车</li>
+        <li onclick="order('myorder')"><img src="../../image/order.png" alt="">我的订单
+          <ol>
+              <li class="paying">
+                <span>1</span>
+                <img src="../../image/market/icon-daifukuan.png" alt="">
+                <p>代付款</p>
+              </li>
+              <li class="shipping">
+                <span>1</span>
+                <img src="../../image/market/icon-daifahuo.png" alt="">
+                <p>待发货</p></li>
+              <li class="incoming">
+                <span>1</span>
+                <img src="../../image/market/icon-daishouhuo.png" alt="">
+                <p>待收货</p></li>
+              <li class="commenting">
+                <span>1</span>
+                <img src="../../image/market/icon-daipingjia.png" alt="">
+                <p>待评价</p></li>
+
+          </ol>
+        </li>
+        <li onclick="order('collection')"><img src="../../image/Mshoucang.png" alt="">我的收藏</li>
+        <li onclick="order('address')"><img src="../../image/shouhuodizhi.png" alt="">收货地址</li>
+        <li style="display:none"><img src="../../image/cart.png" alt="">银行卡绑定</li>
+        <li  onclick="order('recommend')"><img src="../../image/Mgoods.png" alt="">推荐商品</li>
+        <li onclick="opens()"><img src="../../image/mshop.png" alt="">我要开店</li>
+
+
+      </ul>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+
+  <script type="text/javascript">
+  function cancel(){
+    api.closeFrame();
+  }
+  function cart(){
+    api.openWin({
+        name: 'cart',
+        url: '../../html/market/cartWin.html',
+
+    });
+  }
+  function opens(){
+    getData('/shop/sellers/new',function(data){
+      if(data.code==200){
+        if(data.data.type!=0){
+          api.openWin({
+              name: 'status',
+              url: '../../html/user/openshop/statusWin.html',
+              pageParam:{
+                message:data.data.message
+              }
+          });
+
+          return false
+        }
+        else{
+          api.openWin({
+              name: 'shopWin',
+              url: '../../html/user/openshop/shopWin.html',
+          });
+        }
+      }
+      else{
+        api.toast({
+                msg: '系统繁忙',
+                duration:2000,
+                location: 'bottom'
+            });
+      }
+    },{},{'Authorization':$api.getStorage('token')})
+
+  }
+  function order(name){
+    api.openWin({
+        name: name,
+        url: '../../html/market/'+name+'Win.html',
+        bounces:false
+
+    });
+  }
+  function init(){
+    getData('/shop/orders/status',function(data){
+      if(data.code==200){
+        $('.paying>span').text(data.data.paying)
+        $('.shipping>span').text(data.data.shipping)
+
+        $('.incoming>span').text(data.data.incoming)
+
+        $('.commenting>span').text(data.data.commenting)
+
+      }
+      else{
+        api.toast({
+            msg: '网络错误',
+            duration: 2000,
+            location: 'bottom'
+        });
+
+      }
+    },{},{'Authorization':$api.getStorage('token')})
+
+    if($api.getStorage('avata')){
+      $('.usercenter header img').attr('src',$api.getStorage('avata'))
+
+    }
+    $('.usercenter header .name').html($api.getStorage('mobile'))
+  }
+      apiready = function(){
+        init()
+        $('img').bind('error',function(){
+          $(this).attr('src','../../image/male.png')
+        })
+
+      };
+  </script>
+  </html>

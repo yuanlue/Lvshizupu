@@ -248,7 +248,7 @@
             <img src="../../image/quanzi.png" alt="">
             <span>圈子<i></i></span>
           </li>
-          <li style="display:none"  onclick="navchange('decoration')"><img src="../../image/mujuan.png" alt=""><span>募捐</span></li>
+          <li  style="display:none"  onclick="navchange('decoration')"><img src="../../image/mujuan.png" alt=""><span>募捐</span></li>
           <li onclick="navchange('market')"><img src="../../image/shangmao.png" alt=""><span>商贸</span></li>
       </ul>
     </div>
@@ -267,12 +267,12 @@
 
   </div>
 
-    <div class="mujuan"  style="display:none" >
-      <div class="header" onclick="navchange('decoration')"><img src="../../image/mujuan.jpg" alt="">爱心募捐</div>
+    <div class="mujuan"  style="display:none">
+      <div class="header" onclick="navchange('decoration')"><img src="../../image/mujuan.png" alt="">爱心募捐</div>
 
     </div>
     <div class="start">
-      <div class="header" onclick="navchange('start')"><img src="../../image/mingxing.jpg" alt="">明星活动</div>
+      <div class="header" onclick="navchange('start')"><img src="../../image/mingxing.png" alt="">明星活动</div>
       <div class="startList swiper-container">
         <div class="swiper-wrapper">
 
@@ -374,7 +374,7 @@ function mujuan(){
 }
 function init(){
   $('.mujuan').html('<div class="header" onclick="navchange(&quot;decoration&quot;)">'
-  +'<img src="../../image/mujuan.jpg" alt="">爱心募捐</div>'
+  +'<img src="../../image/mujuan.png" alt="">爱心募捐</div>'
 )
   getData('/donations',function(data){
     var startTime=new Date(data.data[0].start_at.split(' ')[0]).getTime()

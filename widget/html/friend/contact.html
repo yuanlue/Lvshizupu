@@ -132,13 +132,13 @@
         }
         .voice span img{
           vertical-align: middle;
-          width:20px;
+          width:12px;
         }
         .mine b{
           float: right;
           vertical-align: middle;
         }
-        .other .audio span img{
+        .mine .audio span img{
           transform:rotate(180deg);
         }
         .popup{
@@ -176,13 +176,24 @@
   var  obj=$api.dom('.conversation ul');
 
   function play(path,obj){
-    $(obj).find('span img').hide()
+    var str=  '../../image/voice_other.png'
+
+    $('.voice span img').attr('src',str)
+  if($(obj).hasClass('other')){
+    $(obj).find('span img').attr('src','../../image/gif_voice.gif')
+  }
+  else{
+    $(obj).find('span img').attr('src','../../image/redvoice_gif.gif')
+
+  }
     var audio = api.require('audio');
     audio.play({
         path: path
     }, function(ret, err) {
-      $(obj).find('span img').show()
+      if(ret.complete==true){
+        $(obj).find('span img').attr('src',str)
 
+      }
 
     });
 

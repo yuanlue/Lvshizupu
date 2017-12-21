@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      body{
+        min-height: 100vh;
+        background-color: #f5f4f4;
+
+      }
+      .mcontent>ul{
+        padding:0 10px;
+        font-size:0;
+      }
+      .mcontent ul li img{
+        width:100%;
+        height:100%;
+      }
+
+      .mcontent ul li{
+        position: relative;
+        vertical-align: middle;
+        display: inline-block;
+        width:48%;
+        margin:10px 1% 0;
+        color:#333333;
+        min-height:220px;
+        background-color: white;
+        box-sizing:border-box;
+        border-collapse: collapse;
+        font-size:13px;
+      }
+      .mcontent ul{
+        padding-bottom:50px;
+      }
+      .mcontent ul li>div{
+        overflow: hidden;
+        height:145px;
+        padding:10px;
+      }
+      .mcontent ul li p{
+        overflow : hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+        font-weight: bold;
+        padding:0 10px;
+        line-height: 20px;
+        height:40px;
+      }
+      i{
+        font-style: normal;
+      }
+     .mcontent ul li span{
+        color:#ef5737;
+        margin-left:10px;
+        font-size:15px;
+      }
+       .opera{
+        border-top:1px solid #eee;
+        box-sizing: border-box;
+      padding-left:13px;
+      background: white;
+      width:100%;
+      bottom:0;
+      line-height: 50px;
+      font-size:13px;
+      position: fixed;
+
+      }
+       .opera .total b{
+      margin-left:10px;
+      color:#999;
+      font-size:10px;
+      }
+       .opera .total i{
+      color:#ef5737;
+      font-size:16px;
+      }
+       .opera button{
+      font-size:16px;
+      line-height: 50px;
+      background: #9e2931;
+      border-radius: 0;
+      color:white;
+      width:120px;
+      float: right
+      }
+    .opera .allS,.sel{
+      background: url(../../image/market/circle.png);
+      width:18px;
+      height:18px;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right:5px;
+      background-repeat: no-repeat;
+      background-size: cover;
+      }
+      .sel{
+        position: absolute;
+        top:5px;
+        right:0;
+      }
+      .opera .active,.mcontent  .active{
+      background: url(../../image/market/accircle.png) !important;
+      background-repeat: no-repeat !important;
+      background-size: cover !important;
+      }
+      [v-cloak]{
+        display: none;
+      }
+      del{        color:#ccc;
+
+        font-size: 12px;
+      }
+      </style>
+  </head>
+  <body>
+    <div class="mcontent" v-cloak>
+      <ul>
+        <li v-for="item in Goods" @click="inner(item.id)">
+           <span @click="sels(item)" class="sel" v-bind:class="{active:item.active==true}" v-show="ischarge">
+           </span>
+              <div>
+            <img v-bind:src="url+item.img" alt="" :onerror="errorImg">
+            </div>
+            <p>{{item.name}}</p>
+            <span><i>￥</i>{{item.sell_price}}</span>
+            <del>{{item.market_price}}</del>
+          </li>
+
+      </ul>
+      <div class="opera" v-show="ischarge">
+        <i v-show="ischarge">全选:</i>
+        <span class="allS" @click="allaC()" v-bind:class="{active:allactive==true}" v-show="ischarge">
+        </span>
+
+        <button  @click="del()">删除</button>
+
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
+    <script type="text/javascript">
+    function re(){
+      app.charge()
+    }
+    apiready = function(){
+      // 融云模块
+       app=new Vue({
+        el: '.mcontent',
+        data: {
+          Goods:[],
+          ischarge:false,
+          allactive:false,
+          page:1,
+          url:"https://shop.kuaiyunma.com/",
+          errorImg: 'this.src="../../image/default.png"'
+
+        },
+
+        created:function(){
+          var that = this
+          this.init()
+          api.addEventListener({
+            name: 'scrolltobottom'
+          }, function(ret, err){
+
+            that.loadmore()
+
+            });
+        },
+      methods:{
+        loadmore(){
+          var that = this
+          that.page++
+          api.showProgress({
+              title: '努力加载中...',
+              text: '先喝杯茶...',
+              modal: false
+          });
+          getData('/shop/goods/favorites',function(data){
+            if(data.code==200){
+              data.data.forEach(function(item){
+                item.active=false
+                that.Goods.push(item)
+              })
+              api.hideProgress();
+
+            }
+          },{'page':that.page,'page_size':6},{'Authorization':$api.getStorage('token')})
+        },
+        del(){
+          var data=[]
+            this.Goods.forEach(function(item){
+                if(item.active==true){
+                    postData('/shop/goods/del_favorite',function(data){
+                      api.toast({
+                              msg: '商品移除成功',
+                              duration:5000,
+                              location: 'bottom'
+                          })
+
+                    },{'id':item.id},
+                    {
+                      'Authorization':$api.getStorage('token')
+                      })
+                }
+                else{
+                  data.push(item)
+                }
+            })
+              this.Goods=data
+        },
+        inner(id){
+          if(this.ischarge==true){
+            return false
+          }
+          api.openWin({
+              name: 'goodsInner',
+              url: '../../html/market/goodsInnerWin.html',
+              pageParam: {
+                  id: id
+              }
+          });
+        },
+        charge(){
+          this.ischarge=!this.ischarge
+        },
+        allaC(){
+          this.Goods.forEach(function(item){
+            item.active=true
+
+          })
+        },
+        sels(obj){
+          obj.active=!obj.active
+        },
+          init(){
+            var that = this
+            api.showProgress({
+            title: '努力加载中...',
+            text: '先喝杯茶...',
+            modal: false
+        });
+            getData('/shop/goods/favorites',function(data){
+              if(data.code==200){
+                data.data.forEach(function(item){
+                  item.active=false
+                })
+                that.Goods=data.data
+                api.hideProgress();
+
+              }
+            },{'page':1,'page_size':6},{'Authorization':$api.getStorage('token')})
+          }
+
+
+
+
+      }
+      })
+
+
+  }
+  </script>
+  </html>

@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      .wap_wechat{
+  		background: url('../../image/market/wechatpay.png');
+  		display: inline-block;
+  		width:27px;
+  		height: 27px;
+  		vertical-align: middle;
+  		display: inline-block;
+  		margin-right:5px;
+  		background-size: contain
+  	}
+  	.wap_alipay{
+  		background: url('../../image/market/paypal.png');
+  		display: inline-block;
+      width:27px;
+  		height: 27px;
+  		vertical-align: middle;
+  		display: inline-block;
+      margin-right:5px;
+  		background-size: contain
+
+  	}
+   	.confirmOrder{
+   		min-height: 100vh;
+   		background-color: #f5f3f3;
+   		padding-bottom:50px;
+   	}
+   	.confirmOrder .orderinfo{
+   		background-color: white;
+   		padding:25px 10px;
+   	}
+   	.confirmOrder .orderinfo >img{
+   		width:17px;
+   	}
+    @media screen  and (max-width: 320px) {
+      .confirmOrder .orderinfo >img{
+        width:10px;
+      }
+    }
+   	.confirmOrder .orderinfo .info h1{
+   		font-size:15px;
+   		font-weight: normal;
+   	}
+   	.confirmOrder .orderinfo .info p{
+   		line-height: 17px;
+   		font-size:13px;
+   		margin-top:10px;
+   	}
+   	.confirmOrder .orderinfo .info span{
+      margin-top:2px;
+   		float: right;
+   	}
+   	.confirmOrder .orderinfo:after{
+      content:"";
+      display: inline-block;
+      background:url('../../image/ar.png') no-repeat;
+      background-size: contain;
+      width:8px;
+      height:12px;
+      float: right;
+      margin-top:20px;
+   	}
+   	.confirmOrder .middle{
+   		background: url('../../image/market/middle.png');
+   		width:100%;
+   		background-size: cover;
+   		height:7px;
+   	}
+   	.confirmOrder .orderinfo .info{
+   		margin-left:10px;;
+   		display: inline-block;
+   		vertical-align: middle;
+   		width:272px;
+   	}
+   	.confirmOrder .orderdetail{
+   		margin-top:10px;
+   	}
+   	.confirmOrder .orderdetail header{
+   		padding:0 10px;
+   		line-height:50px;
+   		font-size: 15px;
+   	}
+   	.confirmOrder .orderdetail header img{
+   		vertical-align: middle;
+   		width:20px;
+   		margin-right:10px;
+
+   	}
+    	.confirmOrder .orderdetail .detailinfo{
+    	  border-bottom:1px solid #eee;
+    	}
+   	.confirmOrder .orderdetail .detailinfo >img{
+   		width:100px;
+   		vertical-align: middle;
+   	}
+    @media screen  and (max-width: 320px) {
+      .confirmOrder .orderdetail .detailinfo >img{
+        vertical-align: middle;
+        max-width:20%;}
+    }
+   	.confirmOrder .orderdetail >div{
+   		padding:0 10px 10px;
+   	}
+   	.confirmOrder .orderdetail .detailO{
+   		margin-left:10px;
+   		vertical-align: middle;
+   		display: inline-block;
+   		width:223px;
+   	}
+   	.confirmOrder .orderdetail .detailO h1{
+   		font-size:12px;
+   		font-weight: normal;
+   	}
+   	.confirmOrder .orderdetail .detailO .remark{
+   		font-size:12px;
+   		color:#999999;
+   		line-height: .53333333rem;
+   		margin:10px 0;
+   	}
+   	.confirmOrder .orderdetail .detailO  .price{
+   		color:#ef5737;
+   		font-size:16px;
+   	}
+   	.confirmOrder .orderdetail .detailO  .price i{
+   		font-size:12px;
+   	}
+   	.confirmOrder .orderdetail .detailO  .price .num{
+   		float: right;
+   		color:#333;
+   	}
+   	.confirmOrder .orderdetail{
+   		background-color: #fdfdfa;
+   	}
+   	.confirmOrder .funway ul li{
+   		border-bottom:1px solid #eee;
+   		background-color: white;
+   		padding:0 10px;
+   		font-size: 14px;
+   		line-height: 50px;
+   	}
+   	.confirmOrder .funway ul li span{
+   		margin-right:10px;
+   		float: right;
+   	}
+
+   	  .confirmOrder .funway ul li:before{
+        content:"";
+        display: inline-block;
+        background:url('../../image/ar.png') no-repeat;
+        background-size: contain;
+        width:8px;
+        height:12px;
+        float: right;
+        margin-top:20px;
+      }
+      .confirmOrder .funway ul .buymessage:before{
+        content:"";
+        width:0;
+        height:0;
+      }
+       .confirmOrder .funway ul li input{
+       	width:200px;
+       	font-size:14px;
+       	height:50px;
+       	margin-left:10px;
+       }
+      .confirmOrder .funway ul .bnum:before{
+      	width:0;
+      	content:"";
+      	background:transparent;
+      }
+      .confirmOrder .funway ul .bnum span {
+      	margin-right:0;
+      }
+       .confirmOrder .funway>p{
+       	     	font-size:16px;
+  		background-color: white;
+       	padding:0 10px;
+       	text-align: right;
+       	line-height: 50px;
+       }
+       .confirmOrder .funway>p span{
+       	font-size:16px;
+       	color:#ef5737;
+       	margin-left:5px;
+       }
+
+      .confirmOrder .funway ul .bnum span i{
+      	font-size:.51333333rem;
+      	display: inline-block;
+      	background-color: #fef7d5;
+      	color:#9e2931;
+      	text-align: center;
+      	font-weight: bold;
+      	width:22px;
+      	line-height:22px;
+      }
+      .confirmOrder .opera{
+      	border-top:1px solid #eee;
+      	position: fixed;
+      	bottom:0;
+      	width:100%;
+      	line-height:50px;
+      	background: white;
+      }
+      .confirmOrder .opera span{
+      	font-size:16px;
+      	margin-left:10px;
+      }
+       .confirmOrder .opera span i >span{
+       	font-size: 12px;
+       	color:#333;
+       }
+      .confirmOrder .opera span i{
+      	color:#ef5737;
+      }
+      .confirmOrder .opera button{
+      	font-size:16px;
+      	border-radius: 0;
+      	height:50px;
+      	color:white;
+      	background: #962931;
+      	text-align: center;
+      	width:120px;
+      	float: right;
+      }
+      .popup{
+          	background-color: rgba(0,0,0,0.5);
+          	position: fixed;
+          	top:0;
+          	left:0;
+          	width:100vw;
+          	height:100vh;
+          }
+          .popup ul{
+          	position: absolute;
+          	width:100%;
+          	bottom:0;
+          }
+          *:focus {
+               outline: none;
+              background-color: transparent;
+           }
+           .popup ul li{
+           	display: block;
+
+           	background:white;
+              padding:0 15px;
+              font-size:16px;
+              line-height: 50px;
+              border-bottom:1px solid #eee;
+            }
+            .popup ul li img{
+              margin-right:10px;
+
+              vertical-align: middle;
+              width:27px;
+            }
+
+            i{
+              font-style: normal;
+            }
+            [v-cloak]{
+              display: none;
+            }
+      </style>
+  </head>
+  <body>
+    <div class="confirmOrder" v-cloak>
+ <div class="orderinfo" @click="buycart()">
+   <img src="../../image/location.png" alt="">
+   <div class="info">
+     <h1>收货人：{{accept_name}}<span>{{telphone}}</span></h1>
+     <p>收货地址：{{province_name}}{{city_name}}
+         {{area_name}}{{address}}</p>
+   </div>
+ </div>
+ <div class='middle'>
+ </div>
+ <div class="orderdetail">
+
+   <div class="detailinfo" v-for="item in info.goods">
+        <header @click="shopinner(item.seller_id)">
+          <img src="../../image/logo.png" alt="">
+          {{item.seller_name}}
+        </header>
+     <img v-bind:src="url+item.img" :onerror="errorImg">
+     <div class="detailO" @click="inner(item.goods_id)">
+       <h1>{{item.name}}</h1>
+       <p class="remark"><span v-for="p in item.specs">{{p.name}}:{{p.real_price}}</span></p>
+       <p class="price">
+         <span><i>￥</i>{{item.real_price}}</span>
+         <span class="num">
+           x{{item.goods_nums}}
+         </span>
+       </p>
+     </div>
+   </div>
+ </div>
+ <div class="funway">
+   <ul>
+
+     <li @click="payWay()" style="display:none">支付方式
+       <span v-if="!paywayName">请选择支付方式</span>
+       <span v-if="paywayName">{{paywayName}}</span>
+
+     </li>
+     <li @click="deliverWay()">配送方式
+       <span v-if="!deliverwayName">请选择配送方式</span>
+       <span v-if="deliverwayName">{{deliverwayName}}</span>
+     </li>
+     <li style="display:none">店铺优惠<span>省100：满2998减100元</span></li>
+     <li class="buymessage">买家留言<input type="text" placeholder="选填：填写内容已和卖家协商" v-model="messgae"></li>
+   </ul>
+   <p>共{{info.count}}件商品<span>小计：<i>¥ {{info.real_price}}</i></span></p>
+
+ </div>
+ <div class="opera">
+   <span>合计：<i>￥{{parseFloat(info.real_price) + parseFloat(info.real_delivery_price)}}<span v-if="info.real_delivery_price>0">(包含运费：￥{{info.real_delivery_price}})</span></i></span>
+   <button  @click="payWay()">提交订单</button>
+ </div>
+     <div class="popup" @click="cancel()" v-if="payStatus">
+         <ul class="paypay">
+           <li v-for="item in paywayList" @click="selPayway(item.id,item.name)">
+             <span v-bind:class="item.class_name"></span>
+             {{item.name}}
+           </li>
+         </ul>
+     </div>
+      <div class="popup" @click="cancel()" v-if="delStatus">
+         <ul>
+           <li v-for="item in delList" @click="selDeliver(item.id,item.name)">
+             {{item.name}}{{item.description}}
+           </li>
+         </ul>
+     </div>
+ </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
+  <script type="text/javascript">
+  function re(id){
+    app.getaddress(id)
+  }
+  apiready = function(){
+    // 融云模块
+     app=new Vue({
+      el: '.confirmOrder',
+      data: {
+        active:0,
+   		num:1,
+   		price:4368.00,
+   		defaultAddress:[],
+   		accept_name:"",
+   		telphone:"",
+      errorImg: 'this.src="../../image/default.png"',
+   		province_name:"",
+   		city_name:"",
+   		area_name:"",
+   		address:"",
+   		goods:[],
+   		payStatus:false,
+      url:"https://shop.kuaiyunma.com/",
+      paywayList:[],
+   		delList:[],
+   		info:[],
+   		delStatus:false,
+   		para:[],
+   		paywayName:"",
+   		messgae:"",
+   		deliverwayName:"",
+      oder_nums:""
+
+      },
+      created:function(){
+        this.init()
+      },
+    methods:{
+      inner(id){
+        api.openWin({
+            name: 'goodsInner',
+            url: '../../html/market/goodsInnerWin.html',
+            pageParam: {
+                id: id
+            }
+        });
+      },
+      shopinner(id){
+        var that = this
+        if(!id||id==0){
+          api.toast({
+              msg: '该商户为自营商户',
+              duration: 2000,
+              location: 'bottom'
+          });
+          return false
+        }
+        api.openWin({
+            name: 'shopintroWin',
+            url: '../../html/market/shopintroWin.html',
+            pageParam: {
+                id:id
+            }
+        });
+
+
+      },
+        init(){
+          var that = this
+          api.closeWin({
+              name: 'cart'
+          });
+
+          api.showProgress({
+          title: '努力加载中...',
+          text: '先喝杯茶...',
+          modal: false
+      });
+          this.para=api.pageParam.para
+          postData('/shop/orders/build',function(data){
+            api.hideProgress();
+				 		if(data.code==200){
+				 			that.info=data.data
+				 		}
+				 	},that.para,{
+            'Authorization':$api.getStorage('token'),
+            'Content-Type':'application/json'
+          })
+          this.getaddress()
+        },
+        getaddress(id){
+          var that = this
+          if(!id){
+            getData('/shop/addresses',function(data){
+              if(data.code==200){
+                if(data.data.length==1){
+                    that.accept_name=data.data[0].accept_name
+                    that.telphone=data.data[0].telphone
+                    that.province_name=data.data[0].province_info.area_name
+                    that.city_name=data.data[0].city_info.area_name
+                    that.area_name=data.data[0].area_info.area_name
+                    that.address=data.data[0].address
+                    var par=JSON.parse(that.para)
+                    par.order.address_id=data.data[0].id
+                    that.para=JSON.stringify(par)
+                }
+                else{
+                  data.data.forEach(function(item){
+                    if(item.is_default==true){
+                            that.accept_name=item.accept_name
+                            that.telphone=item.telphone
+                            that.province_name=item.province_info.area_name
+                            that.city_name=item.city_info.area_name
+                            that.area_name=item.area_info.area_name
+                            that.address=item.address
+                            var par=JSON.parse(that.para)
+                            par.order.address_id=item.id
+                            that.para=JSON.stringify(par)
+                          }
+                  })
+                }
+
+              }
+              else{
+                api.toast({
+                        msg: '参数错误',
+                        duration:5000,
+                        location: 'bottom'
+                    })
+              }
+            },{},{'Authorization':$api.getStorage('token')})
+            return false
+          }
+          getData('/shop/addresses',function(data){
+            if(data.code==200){
+                data.data.forEach(function(item){
+                  if(item.id==id){
+                					that.accept_name=item.accept_name
+              				   	that.telphone=item.telphone
+              				   	that.province_name=item.province_info.area_name
+              				 	  that.city_name=item.city_info.area_name
+              				 	  that.area_name=item.area_info.area_name
+              				   	that.address=item.address
+              				    var par=JSON.parse(that.para)
+              				 		par.order.address_id=item.id
+              				 		that.para=JSON.stringify(par)
+                				}
+                })
+            }
+            else{
+              api.toast({
+                      msg: '参数错误',
+                      duration:5000,
+                      location: 'bottom'
+                  })
+            }
+          },{},{'Authorization':$api.getStorage('token')})
+        },
+        buycart(){
+          api.openWin({
+              name: 'address',
+              url: '../../html/market/addressWin.html',
+
+          });
+
+        },
+        payWay(){
+          var that = this
+
+          var par=JSON.parse(that.para)
+          par.order.message=that.messgae
+          par.order.accept_time=""
+          par.order.taxes=""
+          par.order.tax_title=""
+      		this.payStatus=true
+          if(!this.deliverwayName){
+            api.toast({
+                    msg: '请选择配送方式',
+                    duration:2000,
+                    location: 'bottom'
+                });
+            this.payStatus=false
+            return false
+          }
+          postData('/shop/orders',function(data){
+            that.order_nums=data.data.order_no
+
+            if(data.code==200){
+              getData('/shop/payments',function(data){
+                that.paywayList=data.data
+              },{'client_type':'app'},{'Authorization':$api.getStorage('token')})
+            }
+            else{
+              that.payStatus=false
+
+              api.toast({
+                      msg: '创建订单出错',
+                      duration:2000,
+                      location: 'bottom'
+                  });
+
+                }
+          },that.para,{
+            'Authorization':$api.getStorage('token'),
+            'Content-Type':'application/json'
+          })
+
+
+  	},
+    deliverWay(){
+      var that = this
+  		this.delStatus=true
+      getData('/shop/deliveries',function(data){
+        that.delList=data.data
+      },{},{'Authorization':$api.getStorage('token')})
+
+  	},
+    selDeliver(id,name){
+            this.deliverwayName=name
+            var that = this
+            var para=JSON.parse(this.para)
+            para.order.distribution=id
+            that.para=JSON.stringify(para)
+              postData('/shop/orders/build',function(data){
+                  if(data.code==200){
+                    that.info=data.data
+                  }
+          },JSON.stringify(para),{
+            'Authorization':$api.getStorage('token'),
+            'Content-Type':'application/json'
+          })
+  },
+    selPayway(id,name){
+            var that = this
+            this.paywayName=name
+            var para={
+              'order_no':that.order_nums,
+              'payment_id':id
+            }
+            api.showProgress({
+                title: '努力加载中...',
+                text: '先喝杯茶...',
+                        });
+
+            postData('/shop/orders/pay',function(data){
+              api.hideProgress();
+
+                if(data.code==200){
+
+                  var wxPay = api.require('wxPay');
+                    wxPay.payOrder(data.data, function(ret, err) {
+                        if (ret.status) {
+                          api.toast({
+                                  msg: '支付成功',
+                                  duration:2000,
+                                  location: 'bottom'
+                              });
+                            api.openWin({
+                                name: 'paysuccessWin',
+                                url: '../../html/market/paysuccessWin.html',
+
+                            });
+
+                        } else {
+                          api.toast({
+                                  msg: '支付失败，请重试',
+                                  duration:2000,
+                                  location: 'bottom'
+                              });
+                        }
+                    });
+                }
+                else{
+                  api.toast({
+                          msg: data.message,
+                          duration:2000,
+                          location: 'bottom'
+                      });
+                }
+            },para,{
+              'Authorization':$api.getStorage('token')
+            })
+
+
+  },
+    cancel(){
+  		this.delStatus=false
+  		this.payStatus=false
+  	},
+    submit(){
+
+
+
+  	}
+
+
+
+    }
+    })
+
+
+}
+  </script>
+  </html>

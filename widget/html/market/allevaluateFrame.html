@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      .alleva .evaluate{
+        margin-top:10px;
+        background-color: white;
+      }
+      .alleva .evaluate header,.detail header{
+        padding:0 10px;
+        font-size:15px;
+        line-height: 50px;
+        border-bottom:1px solid #eee;
+      }
+      .alleva .evaluate header span{
+        float: right;
+        font-size:12px;
+        color:#999;
+      }
+      .alleva .evaluate header span i{
+        font-size:15px;
+        margin-left:5px;
+        color:#f16e54;
+        font-style: normal;
+      }
+      .alleva .evaluate ul li{
+        border-bottom:1px solid #eee;
+        padding:20px 10px;
+      }
+      .alleva .evaluate ul li>.info{
+        font-size:16px;
+      }
+      .alleva .evaluate ul li>.info .time{
+        float: right;
+        font-size:12px;
+        color:#999;
+      }
+      .alleva .evaluate ul li>.content{
+        margin-top:10px;
+        font-size:14px;
+      }
+      .alleva .evaluate ul li>.goodsinfo{
+        margin-top:10px;
+              color:#999;
+      font-size:12px;
+      }
+
+      .alleva .shop:active{
+        background: #eee
+      }
+      [v-cloak]{
+        display: none;
+      }
+
+      .evaluate .goodsinfo>span{
+        background: url('../../image/market/noevaluate.png');
+        background-size:cover;
+        width:16px;
+        margin-right:5px;
+        height:18px;
+      }
+      .evaluate .goodsinfo>.active{
+        background: url('../../image/market/evaluate.png');
+        background-size: cover;
+      }
+      .empty{
+        background: white;
+        padding-top:50px;
+        text-align: center;
+        font-size: 16px;
+      }
+      .empty img{
+        width:100px;
+      }
+      </style>
+  </head>
+  <body>
+    <div class="alleva" v-cloak>
+
+      <div class="evaluate" v-if="evaluateList.comments">
+        <header>
+          买家评价(共{{evaluateList.praise_num}}条)<span>商品满意度<i>{{evaluateList.praise_rate}}</i></span>
+        </header>
+      <ul >
+        <li v-for="item in evaluateList.comments">
+          <p class="info">
+            <span >{{item.member_name}}
+
+            </span>
+            <span class="time">{{item.comment_time | formatDate}}</span>
+          </p>
+          <p class="content">
+            {{item.contents}}
+          </p>
+          <p class="evimg">
+            <img v-for="p in item.photoarr" v-bind:src="p" alt="">
+          </p>
+          <p class="goodsinfo">
+            <span  v-bind:class="{active:item.point<=5}"></span>
+            <span  v-bind:class="{active:item.point>=2&&item.point<=5}"></span>
+            <span  v-bind:class="{active:item.point>=3&&item.point<=5}"></span>
+            <span  v-bind:class="{active:item.point>=4&&item.point<=5}"></span>
+            <span  v-bind:class="{active:item.point==5}"></span>
+          </p>
+        </li>
+
+      </ul>
+      </div>
+      <div class="empty" v-if="!evaluateList.comments">
+        <img src="../../image/market/empty.png" alt="">
+        <p>该商品评论为空</p>
+      </div>
+      </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
+    <script type="text/javascript">
+    apiready = function(){
+      // 融云模块
+      var app=new Vue({
+        el: '.alleva',
+        data: {
+          evaluateList:[],
+
+        },
+        created:function(){
+          this.init()
+        },
+      methods:{
+        init(){
+          var that = this
+          getData('/shop/comments',function(data){
+            if(data.code==200){
+              if(!data.data.comments){
+                return false
+              }
+              data.data.comments.forEach(function(item){
+                item.photoarr=[]
+                if(item.comment_photo){
+                  item.photoarr=item.comment_photo.split(',')
+                }
+              })
+              that.evaluateList=data.data
+            }
+            else{
+              api.toast({
+                  msg: '获取评论信息错误',
+                  duration: 2000,
+                  location: 'bottom'
+              });
+
+            }
+          },{'goods_id':api.pageParam.id},{'Authorization':$api.getStorage('token')})
+        }
+      },
+      filters: {
+               formatDate: function (value) {
+                  console.log(value)
+                  var date=new Date(value)
+                  var year=date.getFullYear().toString()
+                  var month=(date.getMonth()+1).toString()
+                  var day=date.getDate()
+
+                  return  year+"-"+month+"-"+day
+               },
+           }
+      })
+
+
+  }
+  </script>
+  </html>

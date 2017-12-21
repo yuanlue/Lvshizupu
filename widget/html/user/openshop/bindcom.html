@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <style>
+          body{
+
+          }
+          ul li{
+            vertical-align: middle;
+            border-bottom: 1px solid #eee;
+            line-height: 50px;
+            font-size:16px;
+            padding:0 10px;
+          }
+          ul li span{
+            vertical-align: top;
+            float: right;
+          }
+          ul li span img{
+            vertical-align: middle;
+            width:20px;
+          }
+      </style>
+  </head>
+  <body>
+    <div class="binc">
+      <ul>
+        <li v-for="item in datalist" @click="selC(item)">
+            {{item.name}}
+            <span v-if="item.active==false">
+              <img src="../../../image/market/circle.png" alt="">
+              未绑定
+            </span>
+            <span v-if="item.active==true">
+              <img src="../../../image/market/accircle.png" alt="">
+              已经绑定
+            </span>
+        </li>
+      </ul>
+      </div>
+  </body>
+  <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../script/vue.js"></script>
+  <script type="text/javascript" src="../../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../../script/service.js"></script>  <script type="text/javascript">
+  apiready = function(){
+    var app=new Vue({
+      el: '.binc',
+      data: {
+        active:"",
+        datalist:[]
+      },
+    created:function(){
+        this.init()
+      },
+    methods:{
+      selC(obj){
+        obj.active=true
+        var para=api.pageParam.para
+        para.seller.company_id=obj.id
+        alert(JSON.stringify(para))
+        api.openFrame({
+            name: 'shopinfoFrame',
+            url: '../../../html/user/openshop/shopinfoFrame.html',
+            rect: {
+                x: 0,
+                y: api.pageParam.y,
+                w: 'auto',
+                h: api.pageParam.h
+
+            },
+            pageParam: {
+                comid: obj.id,
+                y:api.pageParam.y,
+                h:api.pageParam.h
+            },
+            bounces: false,
+            bgColor: 'rgba(0,0,0,0)',
+            vScrollBarEnabled: true,
+            hScrollBarEnabled: true
+        });
+      },
+        init(){
+          var that = this
+          getData('/shop/sellers/companies',function(data){
+            if(data.code==200){
+              data.data.forEach(function(item){
+                item.active=false
+              })
+                that.datalist=data.data
+            }
+            else{
+              api.toast({
+                      msg: '参数错误',
+                      duration:5000,
+                      location: 'bottom'
+                  })
+            }
+          },{},{'Authorization':$api.getStorage('token')})
+
+        }
+
+
+    }
+    })
+  };
+  </script>
+  </html>

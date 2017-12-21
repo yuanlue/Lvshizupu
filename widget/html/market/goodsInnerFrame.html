@@ -5,19 +5,1052 @@
       <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
       <title>title</title>
       <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
-      <style>
-          body{
+      <link rel="stylesheet" type="text/css" href="../../css/swiper-3.4.2.min.css"/>
 
-          }
+      <style>
+
+.goodsdetail{
+  padding-bottom:50px;
+  min-height: 100vh;
+  background-color: #f5f4f4;
+  font-size:16px;
+}
+.goodsdetail .navtab{
+  width:100%;
+  box-sizing: border-box;
+  z-index:9;
+  background:url("../../image/status.png");
+  background-size: cover;
+  color:white;
+  position: fixed;
+  top:0;
+  line-height:50px;
+  padding:0 10px;
+}
+.goodsdetail .navtab ul .active{
+  border-bottom:2px solid #fef7d5;
+  color:#fef7d5;
+}
+.goodsdetail .navtab span{
+  background: rgba(0,0,0,0.5);
+  width:30px;
+  height:30px;
+  border-radius: 50%;
+  line-height: 30px;
+  text-align: center;
+  display: inline-block;
+  position: fixed;
+  left:20px;
+  bottom:80px;
+}
+.goodsdetail .navtab ul{
+  vertical-align: top;
+  margin:0 auto;
+  width:80%;
+  display:table;
+}
+.goodsdetail .navtab ul li{
+  color:white;
+  display: table-cell;
+  text-align: center;
+}
+.goodsdetail .navtab ul li a{
+  color:white;
+}
+.goodsdetail .return {
+  left:10px;
+}
+.goodsdetail>.opera{
+  font-size:0;
+  z-index:9999;
+  width:100%;
+  position: fixed;
+  background-color: white;
+  border-top:1px solid #eee;
+  line-height: 50px;
+  bottom:0;
+}
+.goodsdetail>.opera img{
+  width:20px;
+}
+.goodsdetail>.opera div{
+  vertical-align: middle;
+  display: inline-block;
+}
+.goodsdetail>.opera ul{
+  display: table;
+  width:150px;
+}
+.goodsdetail>.opera ul li{
+  line-height: 1;
+  display: table-cell;
+  text-align: center;
+}
+.goodsdetail>.opera .btn{
+  height:50px;
+  width:calc(100% - 150px);
+}
+.goodsdetail>.opera .btn button{
+  border-radius: 0;
+  width:50%;
+  text-align: center;
+  line-height:50px;
+}
+.goodsdetail>.opera .btn .addcart{
+  background-color: #fef7d5;
+  color:#9e2931;
+  font-size: 16px;
+}
+.goodsdetail>.opera .btn .imbuy{
+      background-color: #9e2931;
+  color:#fef7d5;
+  font-size:16px;
+}
+.goodsdetail .cart{
+  background: rgba(0,0,0,0.5);
+  width:30px;
+  height:30px;
+  border-radius: 50%;
+  line-height: 30px;
+  text-align: center;
+  display: inline-block;
+  position: fixed;
+  left:20px;
+  bottom:80px;
+}
+.goodsdetail .return img{
+  width:10px;
+}
+.goodsdetail .cart img{
+  margin-top:4px;
+  width:21px;
+}
+
+.goodsdetail>.banner{
+  margin-top:5px;
+  text-align: center;
+    background-color: white;
+    position: relative;
+    width: 100%;
+    height:145px;
+}
+.goodsdetail>.banner img{
+    height:145px;
+    width:auto;
+}
+.goodsdetail .inner{
+  padding:10px;
+}
+.goodsdetail .inner table,.goodsdetail .inner img,.goodsdetail .inner div{
+  width:100% !important;
+}
+.goodsdetail .inner img{
+  height:auto;
+}
+.goodsdetail>.goodsinfo{
+  background-color: white;
+  padding:20px 10px;
+}
+.goodsdetail .goodsinfo>p{
+  margin-top:10px;
+}
+.goodsdetail .goodsinfo>p .price{
+  color:#ef5737;
+  font-size:18px;
+}
+.goodsdetail .goodsinfo ul{
+  width:100%;
+  display: table
+}
+.goodsdetail .goodsinfo ul li{
+  font-size:12px;
+  display: table-cell;
+  color:#999999;
+}
+.goodsdetail .goodsinfo>p i{
+  font-size:12px;
+  font-style: normal;
+}
+.goodsdetail .goodsinfo h1{
+  font-size:15px;
+}
+.goodsdetail .operalist ul li{
+  background-color: white;
+    line-height: 50px;
+    padding:0 10px;
+    border-bottom:1px solid #eee;
+    font-size:16px;
+  }
+  .goodsdetail .operalist ul{
+          border-top:1px solid #eee;
+
+  }
+  .goodsdetail .operalist ul li:before{
+    content:"";
+    display: inline-block;
+    background:url('../../image/ar.png') no-repeat;
+    background-size: contain;
+    width:15px;
+    height:12px;
+    float: right;
+    margin-top:20px;
+  }
+  .goodsdetail .operalist ul .gap{
+    margin-top:10px;
+  }
+  .goodsdetail .operalist ul li img{
+    width:23px;
+    margin-right:10px;
+    vertical-align: middle;
+  }
+  .goodsdetail .operalist ul li:active{
+    background: #eee
+  }
+  .goodsdetail .evaluate{
+    margin-top:10px;
+    background-color: white;
+  }
+  .goodsdetail .evaluate header,.detail header{
+    padding:0 10px;
+    font-size:15px;
+    line-height: 50px;
+    border-bottom:1px solid #eee;
+  }
+  .goodsdetail .evaluate header span{
+    float: right;
+    font-size:12px;
+    color:#999;
+  }
+  .goodsdetail .evaluate header span i{
+    font-size:15px;
+    color:#f16e54;
+    font-style: normal;
+  }
+  .goodsdetail .evaluate ul li{
+    border-bottom:1px solid #eee;
+    padding:20px 10px;
+  }
+  .goodsdetail .evaluate ul li>.info{
+    font-size:16px;
+  }
+  .goodsdetail .evaluate ul li>.info .time{
+    float: right;
+    font-size:12px;
+    color:#999;
+  }
+  .goodsdetail .evaluate ul li>.content{
+    margin-top:10px;
+    font-size:14px;
+  }
+  .goodsdetail .evaluate ul li>.goodsinfo{
+          color:#999;
+  font-size:12px;
+  }
+  .goodsdetail .evaluate .opera{
+    font-size:16px;
+    background-color:white;
+    line-height:50px;
+    text-align: center;
+  }
+  .goodsdetail .shop:active{
+    background: #eee
+  }
+  .goodsdetail .evaluate .opera button{
+    color:#9e2931;
+    border:1px solid #9e2931;
+    border-radius: 20px;
+    text-align: center;
+    background-color: white;
+    padding:7px 15px;
+  }
+  .goodsdetail .shop {
+    margin-top:10px;
+    background-color: white;
+    padding:15px 10px;
+  }
+  .goodsdetail .shop .shopinfo{
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .goodsdetail .shop img{
+    vertical-align: middle;
+    width:50px;
+  }
+  .goodsdetail .shop:before{
+    content:"";
+    display: inline-block;
+    background:url('../../image/ar.png') no-repeat;
+    background-size: contain;
+    width:.15px;
+    height:12px;
+    float: right;
+    margin-top:12px;
+  }
+  .goodsdetail .detail{
+    margin-top:10px;
+    background-color: white;
+  }
+  .goodsdetail .gride{
+    width:100%;
+    position: absolute;
+    bottom:0;
+    background: white;
+    height:470px;
+    padding-bottom:50px;
+    box-sizing:border-box;
+  }
+  .goodsdetail .gride .grideInfo{
+    padding:15px 10px;
+          border-bottom:1px solid #eee;
+
+  }
+  .goodsdetail .gride .grideInfo b{
+    padding:5px;
+    display: inline-block;
+    border:1px solid #9e2931;
+    color:#9e2931;
+    line-height: 20px;
+    text-align: center;
+    width:10px;
+    height:10px;
+    line-height: 7px;
+    font-weight: bold;
+    border-radius: 50%;
+    position: absolute;
+    top:10px;
+    right:10px;
+  }
+  .goodsdetail .gride .gridedetail h1{
+    font-size:12px;
+    line-height: 20px;
+    font-weight: normal;
+  }
+  .goodsdetail .gride .total span{
+    color:#9e2931;
+  }
+  .goodsdetail .gride .total{
+    padding:0 10px;
+    line-height: 50px;
+    text-align: right;
+    font-size: 13px;
+  }
+  .goodsdetail .gride .gridedetail  p{
+    color:#ef5737;
+    font-size:12px;
+  }
+  .goodsdetail .gride .gridedetail  p span{
+    font-size: 16px;
+  }
+  .goodsdetail .gride .tab{
+    border-bottom:1px solid #eee;
+  }
+
+  .goodsdetail .gride .tab ul .active{
+    background-color: #9e2931;
+    color:white;
+  }
+  .goodsdetail .gride .tab ul li{
+    width:100%;
+    box-sizing: border-box;
+    padding:10px;
+    color:#9e2931;
+    border-bottom:1px solid #eee;
+    font-size:12px;
+    min-width:40px;
+    display: inline-block;
+    line-height:30px;
+  }
+  .goodsdetail .gride .tab ul li b{
+    color:#333;
+  }
+  .goodsdetail .gride .tab ul li input[type='radio']{
+    opacity: 0;
+  }
+  .goodsdetail .gride .tab ul li input:checked + span{
+      background-color: #9e2931;
+    color:white;
+  }
+  .goodsdetail .gride .tab ul li span{
+    margin-top:5px;
+  border:1px solid #9e2931;
+  padding:5px;
+  }
+  .goodsdetail .gride .grideInfo img{
+    width:85px;
+  }
+  .goodsdetail .gride ul li{
+    padding:0 10px;
+    font-size:12px;
+  }
+   .goodsdetail .gride .saveNum{
+    color:#999999;
+   }
+  .goodsdetail .gride .gridedetail{
+    vertical-align: top;
+    margin-left:10px;
+    display: inline-block;
+    width:220px;
+  }
+  .goodsdetail .grideList ul li{
+    position: relative;
+    border-bottom:1px solid #eee;
+  }
+  *:focus {
+       outline: none;
+      background-color: transparent;
+   }
+  .goodsdetail .grideList ul li p{
+    max-width:70%;
+    line-height: 25px;
+  }
+  .goodsdetail .grideList ul {
+    height:210px;
+    overflow: auto;
+  }
+  .goodsdetail .grideList ul li span{
+    position: absolute;
+    right:10px;
+    top:10px;
+  }
+   .goodsdetail .grideList ul li span i{
+    font-size:20px;
+    display: inline-block;
+    background-color: #fef7d5;
+    color:#9e2931;
+    text-align: center;
+    font-weight: bold;
+    width:22px;
+    line-height:22px;
+  }
+  .goodsdetail .para{
+    padding-bottom:50px;
+    overflow: auto;
+    position: absolute;;
+    width:100vw;
+    height:470px;
+    bottom:0;
+    background: white;
+  }
+    .goodsdetail .para ul{
+      margin-top:50px;
+    }
+  .goodsdetail .para ul li{
+    border-bottom:1px solid #eee;
+    line-height: 50px;
+    padding: 0 10px;
+    color:#999999;
+  }
+  .goodsdetail .para header{
+    box-sizing: border-box;
+    padding:0 10px;
+    text-align: center;
+    color:#333333;
+    line-height: 50px;
+    font-weight: normal;
+    position: fixed;
+    width:100%;
+    background-color: white;
+    border-bottom:1px solid #eee;
+  }
+  .goodsdetail .para ul li span{
+    float: right;
+    color:#333333;
+  }
+   .goodsdetail .para b{
+     margin-top:10px;
+     padding:5px;
+     float: right;
+     display: inline-block;
+     border:1px solid #9e2931;
+     color:#9e2931;
+     line-height: 20px;
+     text-align: center;
+     width:10px;
+     height:10px;
+     line-height: 7px;
+     font-weight: bold;
+     border-radius: 50%;
+
+  }
+  .top{
+    height:25px;
+    background: black;
+  }
+  .goodsdetail .para .size span{
+    font-size:13px;
+    line-height: 1.5;
+    display: inline-block;
+    max-width: 80%;
+    text-align: right;
+    float: none;
+    vertical-align: middle;
+    margin-left:30px;
+  }
+  .popup{
+    z-index:2001;
+    background: rgba(0,0,0,0.5);
+    position: fixed;;
+    top:0;
+    width:100vw;
+    height:100vh;
+  }
+  .evimg {
+    margin:10px 0 10px;
+  }
+  .evimg img{
+    margin-right:10px;
+    width:100px;
+  }
+[v-cloak]{
+  display: none
+}
+.goodsdetail .goodsinfo>span{
+  background: url('../../image/market/noevaluate.png');
+  background-size:cover;
+  width:16px;
+  margin-right:5px;
+  height:18px;
+}
+.goodsdetail .goodsinfo>.active{
+  background: url('../../image/market/evaluate.png');
+  background-size: cover;
+}
       </style>
   </head>
   <body>
-11
+
+    <div class="goodsdetail" v-cloak>
+
+               <div  id="product" class="swiper-container banner">
+                   <div class="swiper-wrapper">
+                     <div class="swiper-slide" v-for="item in goodsDetail.photos">
+                         <img v-bind:src="url+item" alt="" :onerror="errorde">
+                     </div>
+                   </div>
+
+                   <div class="swiper-pagination"></div>
+
+              </div>
+              <div class="goodsinfo" >
+              <h1>{{goodsDetail.name}}
+              </h1>
+              <p>
+              <span class="price"><i>¥</i>{{goodsDetail.sell_price}}</span>
+              </p>
+              <ul>
+              <li>销量：{{goodsDetail.sale}}次</li>
+              <li style="display:none">快递：包邮</li>
+              <li v-if="saller">商家：{{saller.true_name}}</li>
+              <li v-if="!saller">商家：商家自营</li>
+              <li>库存：{{goodsDetail.store_nums}}{{goodsDetail.unit}}</li>
+              </ul>
+              </div>
+              <div class="operalist">
+              <ul>
+                <li style="display:none">店铺优惠券</li>
+               <li class="gap" @click="guige()">选规格</li>
+               <li @click="param()">商品参数</li>
+              </ul>
+              </div>
+              <div class="evaluate" id="evaluate">
+              <header v-if="evaluateList.comments">
+               买家评价(共{{evaluateList.praise_num}}条)<span>商品满意度<i>{{evaluateList.praise_rate}}</i></span>
+              </header>
+              <header v-if="!evaluateList.comments">
+                 买家评价(共0条)
+              </header>
+              <ul>
+               <li v-for="item in evaluateList.comments">
+                 <p class="info">
+                   <span >{{item.member_name}}
+
+                   </span>
+                   <span class="time">{{item.comment_time | formatDate}}</span>
+                 </p>
+                 <p class="content">
+                   {{item.contents}}
+                 </p>
+                 <p class="evimg">
+                   <img v-for="(p,index) in item.photoarr" @click="check(item.photoarr,index)" v-bind:src="p" alt="">
+                 </p>
+                 <p class="goodsinfo">
+                   <span  v-bind:class="{active:item.point<=5}"></span>
+                   <span  v-bind:class="{active:item.point>=2&&item.point<=5}"></span>
+                   <span  v-bind:class="{active:item.point>=3&&item.point<=5}"></span>
+                   <span  v-bind:class="{active:item.point>=4&&item.point<=5}"></span>
+                   <span  v-bind:class="{active:item.point==5}"></span>
+                 </p>
+               </li>
+
+              </ul>
+              <div class="opera">
+               <button @click="allevaluate()">查看全部评价</button>
+              </div>
+              </div>
+              <div class="shop">
+              <img v-if="saller" v-bind:src="saller.logo" :onerror="errorImg" alt="">
+              <img v-if="!saller" src="../../image/logo.png" alt="">
+
+              <div class="shopinfo">
+               <p class="shopname" v-if="saller" @click="shopinner()">{{saller.true_name}}</p>
+               <p class="shopname" v-if="!saller">自营商家</p>
+
+               <p class="shopauth"></p>
+              </div>
+              </div>
+               <div class="detail" id="detail">
+              <header>
+               商品详情
+              </header>
+              <div class="inner" v-html="goodsDetail.content"></div>
+
+              </div>
+              <div class="opera">
+              <div class="classify">
+               <ul>
+                 <li style="display:none"><img src="../../image/market/client.png" alt=""></li>
+                 <li @click="shopinner()"><img src="../../image/market/shop.png" alt=""></li>
+                 <li @click="collect()">
+                   <img v-if="acollect==true" src="../../image/market/activeshoucang.png" alt="">
+                   <img v-if="acollect==false" src="../../image/market/shoucang.png" alt="">
+                 </li>
+               </ul>
+              </div>
+              <div class="btn">
+               <button class="addcart" @click="addtoCart()">加入购物车</button>
+               <button class="imbuy" @click="buy()">立即购买</button>
+              </div>
+              </div>
+              <div class="popup" v-if="paraVisble">
+                <div slot="" class="para">
+
+            		<header @click="close()">产品参数							<b>x</b>
+</header>
+            		<ul>
+            			<li>货源类别<span>现货</span></li>
+            			<li>库存<span>{{goodsDetail.store_nums}}{{goodsDetail.unit}}</span></li>
+            			<li>产品编号<span>{{goodsDetail.goods_no}}</span></li>
+            			<li>计量单位<span>{{goodsDetail.unit}}</span></li>
+            			<li>上架时间<span>{{goodsDetail.up_time}}</span></li>
+            			<li>重量<span>{{goodsDetail.weight}}</span></li>
+            			<li class="size">描述<span>{{goodsDetail.description}}</span>
+            					</li>
+
+            		</ul>
+            	</div>
+</div>
+              <div class="popup"  v-show="gVisble">
+                <div slot="" class="gride">
+		<div class="grideInfo">
+					<img v-bind:src="url+goodsDetail.img" alt="" :onerror="errorde">
+					<div class="gridedetail">
+						<h1>{{goodsDetail.name}}</h1>
+						<p>￥<span>{{goodsDetail.sell_price}}</span></p>
+					</div>
+					<b @click="close()">x</b>
+		</div>
+		<div class="tab">
+						<form id="formg">
+
+            			<ul>
+            				<li   v-for="item in size">
+            					<b>{{item.name}}:</b>
+            				 <label v-for="p in item.value">
+            				 	<input @click="guiS(item.id)" v-bind:id="item.id" type="radio" v-bind:name="item.name" v-bind:value="p.name"/>
+            					<span>
+            						{{p.name}}
+
+            					</span>
+            				 </label>
+
+            				</li>
+            					<li>
+            					<b>数量:</b>
+            					<input v-model="sallernum" type="number" placeholder="请填写商品数量">
+            				</li>
+            			</ul>
+            			</form>
+            		</div>
+
+            		<p class="total">共 {{sallernum}} 件 ,  <span>单价：¥{{sell_price}}</span></p>
+            	</div>
+              </div>
+              </div>
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
-  <script type="text/javascript">
-      apiready = function(){
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
+  <script type="text/javascript" src="../../script/swiper-3.4.2.min.js"></script>
 
-      };
+
+   <script type="text/javascript">
+   function locationc(name){
+    $("html,body").animate({scrollTop:$("#"+name).offset().top+20},500)
+   }
+  apiready = function(){
+    // 融云模块
+
+    var app=new Vue({
+      el: '.goodsdetail',
+      data: {
+            active:0,
+         		gVisble:false,
+         		paraVisble:false,
+         		goodsDetail:[],
+         		saller:[],
+            url:"https://shop.kuaiyunma.com/",
+         		sactive:"",
+         		size:[],
+            acollect:false,
+         		sizeW:[],
+            evaluateList:[],
+         		guigeDetail:[],
+            errorImg: 'this.src="../../image/logo.png"',
+            errorde:'this.src="../../image/default.png"',
+         		sell_price:"",
+         		sallernum:1,
+         		cartid:"",
+         		para:{
+        		    "specs":[]
+  		   }
+      },
+      created:function(){
+        var u = navigator.userAgent;
+        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+        var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+        if(isiOS){
+          $('.top').css({'background':'white',"height":"20px"})
+        }
+         var that = this
+        $(window).scroll(function(){
+
+       var scrollBottom = $(document).height() - $(window).height() - $(window).scrollTop();
+
+         if(  $(document).scrollTop()<$('#evaluate').offset().top-10){
+           that.active=0;
+           api.execScript({
+               name: 'goodsInner',
+               script: 'changeIndex(0);'
+           });
+
+           }
+         if($('#detail').offset().top>=  $(document).scrollTop()&&  $(document).scrollTop()>=$('#evaluate').offset().top){
+         that.active=1;
+         api.execScript({
+             name: 'goodsInner',
+             script: 'changeIndex(1);'
+         });
+         }
+
+         if(  $(document).scrollTop()>$('#detail').offset().top||scrollBottom==0){
+          that.active=2;
+          api.execScript({
+              name: 'goodsInner',
+              script: 'changeIndex(2);'
+          });
+         }
+
+       })
+        this.init()
+      },
+    methods:{
+      check(arr,index){
+      arr.forEach(function(item){
+        item=item.split('!')[0]
+      })
+        api.openWin({
+            name: 'imgWin',
+            url: '../../html/Home/imgWin.html',
+            pageParam: {
+                imgarr: arr,
+                index:index
+            },
+            bgColor:"#000"
+        });
+      },
+      shopinner(){
+        var that = this
+        if(!that.saller){
+          api.toast({
+              msg: '该商户为自营商户',
+              duration: 2000,
+              location: 'bottom'
+          });
+          return false
+        }
+        api.openWin({
+            name: 'shopintroWin',
+            url: '../../html/market/shopintroWin.html',
+            pageParam: {
+                id:that.saller.id
+            }
+        });
+
+
+      },
+      guige(){
+  		 this.gVisble=true
+  	},
+    param(){
+      this.paraVisble=true
+    },
+    close(){
+        this.paraVisble=false
+         this.gVisble=false
+    },
+    allevaluate(){
+      api.openWin({
+          name: 'allevaluateWin',
+          url: '../../html/market/allevaluateWin.html',
+          pageParam:{
+            id:api.pageParam.id
+          }
+      });
+
+    },
+    collect(){
+      var that = this
+      postData('/shop/goods/add_favorite',function(data){
+        if(data.code==200){
+          that.acollect=true
+          api.toast({
+                  msg: '收藏成功',
+                  duration:5000,
+                  location: 'bottom'
+            })
+        }
+        else{
+          api.toast({
+                  msg: data.message,
+                  duration:5000,
+                  location: 'bottom'
+            })
+        }
+      },{'id':api.pageParam.id},
+      {
+        'Authorization':$api.getStorage('token')
+      })
+    },
+    addtoCart(){
+      var that = this
+  		var para={
+		  "cart": {
+		      "goods_id": that.cartid,
+		      "type": "goods",
+		      "num": parseInt(that.sallernum)
+		   }
+		}
+		if(this.goodsDetail.spec_array){
+			para.cart.type='product'
+			if(that.para.specs.length<1){
+        api.toast({
+                msg: '请选择商品规格',
+                duration:5000,
+                location: 'bottom'
+            });
+
+				return false
+			}
+		}
+  			postData("/shop/carts/add",function(res){
+  			console.log(res)
+  			if(res.code==200){
+          api.toast({
+                  msg: '添加购物车成功',
+                  duration:5000,
+                  location: 'bottom'
+              })
+  			}
+        else{
+          api.toast({
+              msg: res.message,
+              duration: 2000,
+              location: 'bottom'
+          });
+
+        }
+  		},JSON.stringify(para),{
+        'Authorization':$api.getStorage('token'),
+        'Content-Type':'application/json'
+      })
+    },
+        init(){
+          var that = this
+          api.showProgress({
+          title: '努力加载中...',
+          text: '先喝杯茶...',
+          modal: false
+      });
+      getData('/shop/favorites/'+api.pageParam.id+'/is_favorite',function(data){
+        if(data.code==200){
+          that.acollect=data.data.is_favorite
+        }
+        else{
+          api.toast({
+              msg: data.message,
+              duration: 2000,
+              location: 'bottom'
+          });
+
+        }
+      },{},{'Authorization':$api.getStorage('token')})
+        getData('/shop/comments',function(data){
+          if(data.code==200){
+            if(!data.data.comments){
+              return false
+            }
+            data.data.comments.forEach(function(item){
+              item.photoarr=[]
+              if(item.comment_photo){
+                item.photoarr=item.comment_photo.split(',')
+              }
+            })
+            that.evaluateList=data.data
+          }
+          else{
+            api.toast({
+                msg: '获取评论信息错误',
+                duration: 2000,
+                location: 'bottom'
+            });
+
+          }
+        },{'goods_id':api.pageParam.id,'page':1,'page_size':3},{'Authorization':$api.getStorage('token')})
+          getData("/shop/products/"+api.pageParam.id,function(data){
+            api.hideProgress();
+
+            that.goodsDetail=data.data.goods;
+            that.$nextTick(function(){
+              var mySwiper = new Swiper ('.swiper-container', {
+                  direction: 'horizontal',
+                  loop: true,
+                  autoplay: 3000,
+                  // 如果需要分页器
+                  pagination: '.swiper-pagination',
+
+
+                })
+            })
+            that.sell_price=data.data.goods.sell_price
+            var arr=[]
+            if(that.goodsDetail.spec_array){
+                for(var s in that.goodsDetail.spec_array){
+                  arr.push(that.goodsDetail.spec_array[s])
+                }
+               that.active=arr[0].name
+
+              for(var i in that.goodsDetail.spec_array){
+                that.goodsDetail.spec_array[i].value.forEach(item=>{
+                  console.log(item)
+                  for(var p in item){
+                    item.tip=p
+                    item.name=item[p]
+                  }
+                })
+                that.size.push(that.goodsDetail.spec_array[i])
+                console.log(this.size)
+              }
+
+
+              }
+              that.cartid=data.data.goods.id
+              that.saller	=data.data.seller;
+
+          },{},{'Authorization':$api.getStorage('token')})
+        },
+        cart(){
+          api.openWin({
+              name: 'cart',
+              url: '../../html/market/cartWin.html',
+
+          });
+
+        },
+        buy(){
+          var that = this
+        		var para={
+      		  "order": {
+      		      "goods_id": that.cartid,
+      		      "type": "goods",
+      		      "num": parseInt(that.sallernum),
+      		      "active_type":"",
+      		      "active_id":""
+      		   }
+      		}
+      		if(this.goodsDetail.spec_array){
+      			para.order.type='product'
+      			if(that.para.specs.length<1){
+              api.toast({
+                      msg: '请先选择商品规格',
+                      duration:5000,
+                      location: 'bottom'
+                  })
+      				return false
+      			}
+      		}
+          api.closeWin({
+              name: 'confirmOrderWin'
+          });
+
+          api.openWin({
+              name: 'confirmOrderWin',
+              url: '../../html/market/confirmOrderWin.html',
+              pageParam: {
+                  para:JSON.stringify(para)
+              }
+          });
+
+        },
+        guiS(id){
+
+              var that = this
+              var data=new FormData($('#formg'))
+              var dataForm=$('form').serializeArray()
+              dataForm[dataForm.length-1].id=id
+              dataForm.forEach(item=>{
+                item.tip=item.value
+                this.size.forEach(p=>{
+                  item.type=p.type
+                  if(item.name==p.name){
+                    item.id=p.id
+                    item.tip=p.tip
+                  }
+                  p.value.forEach(s=>{
+                    if(s.name==item.value){
+                      item.tip=s.tip
+                    }
+                  })
+                })
+              })
+              that.para.specs=dataForm
+
+              postData("/shop/products/"+api.pageParam.id+"/detail",function(res){
+                that.sell_price=res.data.sell_price
+                that.cartid=res.data.id
+              },JSON.stringify(that.para),
+              {'Authorization':$api.getStorage('token'),
+              'Content-Type':'application/json'
+            })
+
+  }
+
+
+},
+filters: {
+         formatDate: function (value) {
+            console.log(value)
+            var date=new Date(value)
+            var year=date.getFullYear().toString()
+            var month=(date.getMonth()+1).toString()
+            var day=date.getDate()
+
+            return  year+"-"+month+"-"+day
+         },
+     }
+    })
+
+
+}
   </script>
   </html>

@@ -6,7 +6,10 @@
     <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
     <title>Hello APP</title>
     <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/swiper-3.4.2.min.css"/>
+
 	<style>
+
   .market{
   	padding-bottom:50px;
   	min-height: 100vh;
@@ -24,15 +27,16 @@
     box-sizing: border-box;
   	line-height:45px;
   	padding:0 10px;
+    z-index:9999;
   	position: absolute;
   	width:100%;
-  	bottom:-10px;
+  	bottom:-15px;
   }
   .market .search input{
     background: white;
   	text-align: center;
   	font-size:14px;
-  	border-radius: .53333333rem;
+  	border-radius: 20px;
   	box-shadow: 1px 1px 5px #ccc;
   	width:100%;
   	line-height: 45px;
@@ -96,13 +100,13 @@
   	background-size: cover;
   }
   .market .visit ul{
-  	border-bottom:1px solid #ccc;
+  	border-bottom:1px solid #efebeb;
   	font-size:0;
   }
   .market .visit ul>li{
   	overflow: hidden;
   	background:white;
-  	border-right:1px solid #ccc;
+  	border-right:1px solid #efebeb;
   	height: 110px;
   	display: inline-block;
   	box-sizing: border-box;
@@ -113,15 +117,15 @@
   	font-size:16px;
   }
   .market .visit ol{
-  	border-bottom:1px solid #ccc;
+  	border-bottom:1px solid #efebeb;
   	font-size:0;
   }
   .market .visit ol>li{
-
+      vertical-align: top;
   	overflow: hidden;
   	background:white;
   	  border-collapse:collapse;
-  	border-right:1px solid #ccc;
+  	border-right:1px solid #efebeb;
   	height: 150px;
   	display: inline-block;
   	box-sizing: border-box;
@@ -213,16 +217,20 @@
   	font-size:13px;
   }
   .market .like>ul li>div{
-  	min-height:145px;
+  	height:145px;
+    overflow: hidden;
     padding:10px;
   }
   .market .like>ul li p{
-    white-space:nowrap;
-  text-overflow:ellipsis;
-  overflow:hidden;
+    overflow : hidden;
+text-overflow: ellipsis;
+display: -webkit-box;
+-webkit-line-clamp: 2;
+-webkit-box-orient: vertical;
   	font-weight: bold;
   	padding:0 10px;
-  	line-height: 1.5;
+  	line-height: 20px;
+    height:40px;
   }
   .market .like>ul li span{
   	color:#ef5737;
@@ -235,12 +243,40 @@
   .qidai img{
     width:100%;
   }
+  del{
+    color:#999;
+    font-size:12px;
+  }
+  [v-cloak]{
+    display: none;
+  }
+  .popup{
+    z-index:2001;
+    background: rgba(0,0,0,0.5);
+    position: fixed;;
+    top:0;
+    width:100vw;
+    display: none;
+    height:100vh;
+  }
 	</style>
 </head>
 <body>
-  <div class="market">
-  <div class="banner">
-    <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1510742238117&di=fd30037daa4161d250f7591174127565&imgtype=0&src=http%3A%2F%2Fpic2.ooopic.com%2F11%2F86%2F80%2F51bOOOPIC6a_1024.jpg">
+  <div class="market" v-cloak>
+  <div class="banner ">
+    <div class="swiper-container">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide">
+          <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1510742238117&di=fd30037daa4161d250f7591174127565&imgtype=0&src=http%3A%2F%2Fpic2.ooopic.com%2F11%2F86%2F80%2F51bOOOPIC6a_1024.jpg" alt="">
+      </div>
+      <div class="swiper-slide">
+          <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1510742238117&di=fd30037daa4161d250f7591174127565&imgtype=0&src=http%3A%2F%2Fpic2.ooopic.com%2F11%2F86%2F80%2F51bOOOPIC6a_1024.jpg" alt="">
+      </div>
+      <div class="swiper-slide">
+          <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1510742238117&di=fd30037daa4161d250f7591174127565&imgtype=0&src=http%3A%2F%2Fpic2.ooopic.com%2F11%2F86%2F80%2F51bOOOPIC6a_1024.jpg" alt="">
+      </div>
+      </div>
+    </div>
 
   <div class="search">
     <input type="text" placeholder="请输入商品／店铺名">
@@ -248,36 +284,36 @@
   </div>
   <div class="menu">
     <ul>
-    <li>
+    <li @click="all('all')">
       <img src="../../image/Mclassify.png" alt="">
         <p>全部分类</p>
       </li>
 
-      <li>
+      <li @click="all('cart')">
         <img src="../../image/cart.png" alt="">
         <p>购物车</p>
       </li>
-      <li>
+      <li @click="all('myorder')">
         <img src="../../image/order.png" alt="">
         <p>我的订单</p>
       </li>
-      <li>
-        <img src="../../image/Mfoot.png" alt="">
-        <p>浏览足迹</p>
+      <li @click="sepcial('specialty')">
+        <img src="../../image/techanicon.png" alt="">
+        <p>土特产专区</p>
       </li>
-      <li>
+      <li @click="all('collection')">
         <img src="../../image/Mshoucang.png" alt="">
         <p>我的收藏</p>
       </li>
-      <li>
+      <li @click="all('recommend')">
         <img src="../../image/Mgoods.png" alt="">
         <p>推荐商品</p>
       </li>
-      <li>
-        <img src="../../image/Mdiscount.png" alt="">
-        <p>折扣专区</p>
+      <li @click="foot()" >
+        <img src="../../image/Mfoot.png" alt="">
+        <p>我的足迹</p>
       </li>
-      <li>
+      <li @click="content('限时秒杀')">
         <img src="../../image/Mtime.png" alt="">
         <p>限时秒杀</p>
       </li>
@@ -287,24 +323,24 @@
   <div class="visit">
     <header><span>逛商场</span></header>
     <ul>
-      <li>
+      <li @click="content('食品饮料')">
         <img src="../../image/market/ad1.jpg" alt="">
       </li>
-      <li>
+      <li @click="content('厨电特惠')">
         <img src="../../image/market/ad2.jpg" alt="">
       </li>
     </ul>
     <ol>
-      <li>
+      <li @click="content('家居家装')">
         <img src="../../image/market/ad3.jpg" alt="">
       </li>
-      <li>
+      <li @click="content('美妆特惠')">
         <img src="../../image/market/ad4.jpg" alt="">
       </li>
-      <li>
+      <li  @click="content('母婴玩具')">
         <img src="../../image/market/ad5.jpg" alt="">
       </li>
-      <li>
+      <li @click="content('智能数码')">
         <img src="../../image/market/ad6.jpg" alt="">
       </li>
     </ol>
@@ -312,9 +348,9 @@
       <div class="recom">
     <header><span>推荐商品</span></header>
     <ul>
-      <li v-for="item in recomGoods">
+      <li v-for="item in recomGoods" @click="inner(item.id)">
   				<div>
-  				<img v-bind:src="url+item.img" alt="">
+  				<img v-bind:src="url+item.img" alt="" :onerror="errorImg">
   				</div>
   				<p>{{item.name}}</p>
   				<span><i>￥</i>{{item.sell_price}}</span>
@@ -326,16 +362,16 @@
     <header><span>限时秒杀</span></header>
     <div>
       <p>
-        <img src="../../image/default.png" alt="">
+        <img src="../../image/littime.png" alt="">
         16点场
         <span>26</span>:<span>00</span>:<span>00</span>
       </p>
 
     </div>
     <ul>
-      <li v-for="item in timeGoods" >
+      <li v-for="item in timeGoods" @click="inner(item.goods_id)" >
     				<div>
-    				<img v-bind:src="url+item.img" alt="">
+    				<img v-bind:src="url+item.img" alt="" :onerror="errorImg">
     				</div>
     				<p>{{item.name}}</p>
     				<span><i>￥</i>{{item.award_value}}</span>
@@ -347,20 +383,19 @@
     <header><span>猜你喜欢</span></header>
 
     <ul>
-      <li v-for="item in timeGoods">
+      <li v-for="item in likeGoods" @click="inner(item.id)">
   					<div>
-  				<img v-bind:src="url+item.img" alt="">
+  				<img v-bind:src="url+item.img" alt="" :onerror="errorImg">
   				</div>
   				<p>{{item.name}}</p>
-  				<span><i>￥</i>{{item.award_value}}</span>
+  				<span><i>￥</i>{{item.sell_price}}</span>
+          <del>{{item.market_price}}</del>
   			</li>
 
     </ul>
 
   </div>
-  <div class="qidai">
-    <img src="../../image/qidai.jpeg" alt="">
-  </div>
+
 
 </div>
 </body>
@@ -368,33 +403,138 @@
 <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="../../script/service.js"></script>
 <script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/swiper-3.4.2.min.js"></script>
 
 <script type="text/javascript">
     apiready = function(){
       // 融云模块
-      var app=new Vue({
+       app=new Vue({
         el: '.market',
         data: {
-          url:"http://wx.kuaiyunma.com/",
+          url:"https://shop.kuaiyunma.com/",
           timeGoods:[],
-          recomGoods:[]
+          recomGoods:[],
+          likeGoods:[],
+          page:1,
+          errorImg: 'this.src="../../image/default.png"'
+
         },
         created:function(){
+          var that = this
           this.init()
+          that.$nextTick(function(){
+            var mySwiper = new Swiper ('.swiper-container', {
+                direction: 'horizontal',
+                loop: true,
+                autoplay: 2000
+                // 如果需要分页器
+
+
+              })
+          })
+          api.setCustomRefreshHeaderInfo({
+          bgColor: '#eee',
+          images: [
+              'widget://image/refresh/dropdown0.png',
+              'widget://image/refresh/dropdown1.png',
+              'widget://image/refresh/dropdown2.png',
+              'widget://image/refresh/dropdown3.png',
+              'widget://image/refresh/dropdown4.png',
+              'widget://image/refresh/dropdown5.png',
+              'widget://image/refresh/dropdown6.png'
+          ],
+          tips: {
+              pull: '下拉刷新',
+              threshold: '松开立即刷新',
+              load: '正在刷新'
+          }
+      }, function() {
+          //下拉刷新被触发，自动进入加载状态，使用 api.refreshHeaderLoadDone() 手动结束加载中状态
+          //下拉刷新被触发，使用 api.refreshHeaderLoadDone() 结束加载中状态
+            that.init()
+
+
+      });
+          api.addEventListener({
+            name: 'scrolltobottom'
+          }, function(ret, err){
+
+            that.loadmore()
+
+            });
         },
       methods:{
+        foot(){
+          api.openWin({
+              name: 'myfootWin',
+              url: '../../html/market/myfootWin.html'
+          });
+
+        },
+        all(name){
+          api.openWin({
+              name: name,
+              url: '../../html/market/'+name+'Win.html',
+              bounces:false
+
+          });
+
+        },
+
+        loadmore(){
+          var that = this
+          that.page++
+          api.showProgress({
+              style: 'default',
+              title: '努力加载中...',
+              text: '先喝杯茶...',
+              modal: false
+          });
+          getData('/shop/goods/promotions/commend_goods',function(data){
+            if(data.code==200){
+              data.data.forEach(function(item){
+                that.likeGoods.push(item)
+              })
+              api.hideProgress();
+            }
+          },{'commend_id':4,'page':that.page,'page_size':6},{'Authorization':$api.getStorage('token')})
+
+        },
           init(){
             var that =this
+            that.timeGoods=[],
+            that.recomGoods=[],
+            that.likeGoods=[]
+            that.page=1;
+            api.showProgress({
+                style: 'default',
+                title: '努力加载中...',
+                text: '先喝杯茶...',
+                modal: false
+            });
+
             getData('/shop/goods/promotions/flash_sale',function(data){
               if(data.code==200){
                 that.timeGoods=data.data
               }
             },{},{'Authorization':$api.getStorage('token')})
-            getData('/shop/goods/promotions/commend_goods?commend_id=4',function(data){
+            getData('/shop/goods/promotions/commend_goods?commend_id=4&page=1&page_size=6',function(data){
               if(data.code==200){
                 that.recomGoods=data.data
+                that.likeGoods=data.data
+                api.refreshHeaderLoadDone()
+
+                api.hideProgress();
+
               }
             },{},{'Authorization':$api.getStorage('token')})
+          },
+          sepcial(){
+            api.openWin({
+                name: 'specialtyWin',
+                url: '../../html/market/specialtyWin.html'
+
+            });
           },
           inner(id){
             api.openWin({
@@ -402,6 +542,16 @@
                 url: '../../html/market/goodsInnerWin.html',
                 pageParam: {
                     id: id
+                }
+            });
+
+          },
+          content(name){
+            api.openWin({
+                name: 'Mcontent',
+                url: '../../html/market/contentWin.html',
+                pageParam: {
+                    name: name
                 }
             });
 

@@ -41,12 +41,12 @@
             color:#999999;
             text-align: center;
           }
+          .zupuBook .inner{
+            padding:0 10px;
+          }
           .zupuBook .inner img{
             width:100% !important;
             height:auto !important;
-          }
-          .zupuBook .inner{
-            padding:0 10px;
           }
           .zupuBook  .content{
             background: white;
@@ -81,13 +81,14 @@
 
 
   <script type="text/javascript">
-  function Bookinner(id){
+  function Bookinner(id,name){
     api.openWin({
         name: 'Bookinner',
         url: '../../../html/Home/zupu/Bookinner.html',
         slidBackEnabled:false,
         pageParam:{
-          id:id
+          id:id,
+          name:name
         }
     });
 
@@ -102,7 +103,7 @@
           api.hideProgress();
           data.data.forEach(function(item){
             $('.swiper-wrapper').append('<div id="'+item.id+'" class="swiper-slide booksurface">'
-                +'<img onclick="Bookinner('+item.id+')" src="../../../image/zupubook.png" alt="">'
+                +'<img onclick="Bookinner('+item.id+',&quot;'+item.name+'&quot;)" src="../../../image/zupubook.png" alt="">'
                 +'</div>')
           })
           $('.content h1').text(data.data[0].name)

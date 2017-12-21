@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      body{
+        min-height: 100vh;
+        background-color: #f5f4f4;
+
+      }
+      .mcontent>ul{
+        margin-top:50px;
+        padding:0 10px;
+        font-size:0;
+      }
+      .mcontent>ul li img{
+        width:100%;
+        height:100%;
+      }
+
+      .mcontent>ul li{
+        vertical-align: middle;
+        display: inline-block;
+        width:48%;
+        margin:10px 1% 0;
+        color:#333333;
+        height:250px;
+        background-color: white;
+        box-sizing:border-box;
+        border-collapse: collapse;
+        font-size:13px;
+      }
+      .mcontent>ul li>div{
+        overflow: hidden;
+        height:145px;
+        padding:10px;
+      }
+      .mcontent>ul li p{
+        overflow : hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+        font-weight: bold;
+        padding:0 10px;
+        line-height: 20px;
+        height:40px;
+      }
+      i{
+        font-style: normal;
+      }
+     .mcontent>ul li span{
+        color:#ef5737;
+        margin-left:10px;
+        font-size:15px;
+      }
+      [v-cloak]{
+        display: none;
+      }
+      .tab{
+        position: fixed;
+        top:0;
+        width:100%;
+        height: 50px;
+        border-bottom:1px solid #eee;
+        background: white;
+      }
+      .tab ul{
+        width:100%;
+        display: table
+      }
+      .tab ul li{
+        text-align:center;
+        display: table-cell;
+        line-height: 50px;
+        font-size:14px;
+      }
+      .tab ul .active{
+        color:#9e2931;
+        border-bottom:2px solid #9e2931;
+      }
+      del{
+        color:#999;
+      }
+      </style>
+  </head>
+  <body>
+    <div class="mcontent" v-cloak>
+      <div class="tab">
+          <ul>
+            <li @click="navchange(4)" v-bind:class="{active:active==4}">推荐</li>
+            <li @click="navchange(2)" v-bind:class="{active:active==2}">特价</li>
+            <li @click="navchange(3)" v-bind:class="{active:active==3}">热卖</li>
+            <li @click="navchange(1)" v-bind:class="{active:active==1}">新品</li>
+          </ul>
+      </div>
+      <ul>
+        <li v-for="item in Goods" @click="inner(item.id)">
+              <div>
+            <img v-bind:src="url+item.img" alt="" :onerror="errorImg">
+            </div>
+            <p>{{item.name}}</p>
+            <span><i>￥</i>{{item.sell_price}}</span>
+            <del>{{item.market_price}}</del>
+          </li>
+      </ul>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
+    <script type="text/javascript">
+    apiready = function(){
+      // 融云模块
+      var app=new Vue({
+        el: '.mcontent',
+        data: {
+          Goods:[],
+          active:4,
+          page:1,
+          url:"https://shop.kuaiyunma.com/",
+          errorImg: 'this.src="../../image/default.png"'
+
+        },
+        created:function(){
+          var that = this
+          api.addEventListener({
+            name: 'scrolltobottom'
+          }, function(ret, err){
+
+            that.loadmore()
+
+            });
+          this.init()
+        },
+      methods:{
+        inner(id){
+          api.openWin({
+              name: 'goodsInner',
+              url: '../../html/market/goodsInnerWin.html',
+              reload:true,
+              pageParam: {
+                  id: id
+              }
+          });
+
+        },
+        loadmore(){
+          var that = this
+          that.page++
+          api.showProgress({
+          title: '努力加载中...',
+          text: '先喝杯茶...',
+          modal: false
+      });
+          getData('/shop/goods/promotions/commend_goods',function(data){
+            api.hideProgress();
+            if(data.code==200){
+              data.data.forEach(function(item){
+                that.Goods.push(item)
+              })
+              api.hideProgress();
+            }
+          },{'commend_id':that.active,'page':that.page,'page_size':4},{'Authorization':$api.getStorage('token')})
+        },
+        navchange(index){
+          var that = this
+          this.active=index
+          that.page=1
+          getData('/shop/goods/promotions/commend_goods',function(data){
+            api.hideProgress();
+            if(data.code==200){
+              that.Goods=data.data
+              api.hideProgress();
+            }
+          },{'commend_id':that.active,'page':that.page,'page_size':4},{'Authorization':$api.getStorage('token')})
+        },
+          init(){
+            var that = this
+            api.showProgress({
+            title: '努力加载中...',
+            text: '先喝杯茶...',
+            modal: false
+        });
+            getData('/shop/goods/promotions/commend_goods',function(data){
+              if(data.code==200){
+                that.Goods=data.data
+                api.hideProgress();
+
+              }
+            },{'commend_id':1,'page':1,'page_size':4},{'Authorization':$api.getStorage('token')})
+          }
+
+
+
+
+      }
+      })
+
+
+  }
+  </script>
+  </html>

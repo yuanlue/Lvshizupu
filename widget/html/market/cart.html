@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      .buycart{
+        min-height: 100vh;
+        background-color: #f5f4f4
+        }
+        .buycart ul {
+        padding-bottom:50px;
+        }
+        .buycart ul li header{
+        text-overflow:ellipsis;
+        white-space:nowrap;
+        overflow:hidden;
+        height:50px;
+        padding:0 10px;
+        font-size:15px;
+        line-height: 50px;
+        border-bottom:1px solid #eee;
+        }
+          .buycart ul li header img{
+            width:20px;
+            margin-right:5px;
+            vertical-align: middle;
+          }
+        .buycart .de{
+          box-sizing: border-box;
+        background:#eee;
+        position: fixed;
+        width:100%;
+        border-bottom:1px solid #eee;
+        padding:0 10px;
+        line-height: 50px;
+        text-align: right;
+        }
+        .buycart .de button{
+        background: transparent;
+        border:1px solid #9e2931;
+        border-radius: 20px;
+        color:#9e2931;
+        width:65px;
+        line-height: 30px;
+
+        }
+        .buycart ul li header  i{
+          font-style: normal;
+        margin-left:10px;
+        float: right;
+        color:#9e2931;
+        }
+
+        .buycart ul li header span,.buycart ul li .goodsC>span,.opera .allS{
+        background: url(../../image/market/circle.png);
+        width:18px;
+        height:18px;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right:5px;
+
+        background-repeat: no-repeat;
+        background-size: cover;
+        }
+        .opera .total{
+          font-size:13px;
+        }
+        .buycart ul li  .active,.opera .active{
+        background: url(../../image/market/accircle.png) !important;
+        background-repeat: no-repeat !important;
+        background-size: cover !important;
+
+        }
+        .buycart ul li{
+        background-color: white;
+        margin-bottom:10px;
+        }
+        .buycart ul li>div{
+        padding:0 10px;
+
+        }
+        .buycart ul li .goodsC{
+        padding:10px;
+        }
+        .buycart ul li .goodsC img{
+          vertical-align: middle;
+        width:70px;
+        }
+        @media screen  and (max-width: 320px) {
+          .buycart ul li .goodsC img{
+            vertical-align: middle;
+            max-width:15%;}
+        }
+        .buycart ul li .goodsC p{
+        width:65%;
+        display: inline-block;
+        font-size:14px;
+        margin-left:10px;
+        vertical-align: top;
+        }
+        .buycart ul li .remark{
+        background-color: #fdfdfa
+        }
+        .buycart ul li .remark .price{
+        line-height: 50px;
+        color:#ef5737;
+        font-size:12px;
+        }
+        .buycart ul li .remark .price i{
+          font-style:normal;
+        font-size:16px;
+        }
+        .buycart ul li .remark .price >span{
+        float: right;
+        }
+        .buycart ul li .footer{
+        line-height:50px;
+        font-size:15px;
+        }
+        .buycart ul li>div{
+          border-bottom:1px solid #eee;
+        }
+        .buycart ul li .remark span i{
+          font-size:15px;
+        display: inline-block;
+        background-color: #fef7d5;
+        color:#9e2931;
+        text-align: center;
+        font-weight: bold;
+        width:22px;
+        line-height:22px;
+        }
+        .buycart ul li .remark b{
+        font-size: 13px;
+        color:#333;
+        }
+        i{
+          font-style:normal;
+        }
+        .buycart ul li .footer{
+        text-align: right;
+        }
+        .buycart ul li>.footer span i {
+        color:#ef5737;
+        }
+        .buycart ul li .info{
+          text-align: right;
+        display: block;
+        color:#999;
+        font-size: 13px;
+        }
+        .buycart .opera{
+          border-top:1px solid #eee;
+          box-sizing: border-box;
+        padding-left:13px;
+        background: white;
+        width:100%;
+        bottom:0;
+        font-size:0;
+        line-height: 50px;
+        position: fixed;
+
+        }
+        .buycart .opera .total b{
+        margin-left:10px;
+        color:#999;
+        font-size:10px;
+        }
+        .buycart .opera .total i{
+        color:#ef5737;
+        font-size:16px;
+        }
+        .buycart .opera button{
+        font-size:16px;
+        line-height: 55px;
+        background: #9e2931;
+        border-radius: 0;
+        color:white;
+        width:120px;
+        float: right
+        }
+        [v-cloak]{
+          display: none;
+        }
+        .empty{
+          min-height: 100vh;
+          background: white;
+          padding-top:50px;
+          text-align: center;
+          font-size: 16px;
+        }
+        .empty img{
+          width:100px;
+        }
+      </style>
+  </head>
+  <body>
+        <div class="buycart" v-cloak>
+       		<ul v-if="goods.goods&&goods.goods.length>0">
+       			<li v-for="item in goods.goods">
+       				<header><span style="display:none"></span><img src="../../image/logo.png" alt="">{{item.name}}<i style="display:none">领券</i></header>
+              <div v-for="p in item.data">
+       				<div class="goodsC" @click="selAc(p)">
+       					<span v-bind:class="{active:p.active==true}"   ></span>
+       					<img v-bind:src="url+p.img" :onerror="errorImg">
+       					<p v-if="!ischarge"  @click="inner(p.goods_id)">{{p.name}}
+                  <span class="info">
+                    {{p.goods_nums}}&nbsp;&nbsp;X&nbsp;&nbsp;{{p.real_price}}
+                  </span>
+       				</p>
+              <p  v-if="ischarge">{{p.name}}
+              <span class="info">
+              </span>
+            </p>
+       				</div>
+       				<div class="remark" v-show="ischarge">
+       					<p class="price">
+       						￥<i>{{p.real_price}}</i>
+       							<span>
+       						<i class="sub" @click="sub(p)">-</i>
+      							<b>{{p.goods_nums}}</b>
+      						<i class="add" @click="add(p)">+</i>
+       					</span>
+       					</p>
+       				</div>
+       				<div class="footer" style="display:none">
+       					共{{p.goods_nums}}件商品
+
+       					<span>单价：<i>¥ {{p.real_price}}</i></span>
+       				</div>
+              </div>
+       			</li>
+       		</ul>
+       		<div class="opera" v-if="goods.goods&&goods.goods.length>0">
+       			<i v-show="ischarge">全选:</i>
+       			<span class="allS" @click="allaC()" v-bind:class="{active:allactive==true}" v-show="ischarge"></span>
+
+       			<span class="total">合计:<i>￥{{goods.real_price}}</i><b>不含运费</b></span>
+       			<button @click="sure()" v-show="!ischarge" >结算</button>
+       			<button v-show="ischarge" @click="del()">删除</button>
+
+       		</div>
+          <div class="empty" v-if="!goods.goods||goods.goods==[]||goods.goods.length<1">
+            <img src="../../image/market/empty.png" alt="">
+            <p>您的购物车为空</p>
+          </div>
+          </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
+  <script type="text/javascript">
+  function change(){
+    app.charge()
+  }
+  apiready = function(){
+    var dialogBox = api.require('dialogBox');
+
+    // 融云模块
+   app=new Vue({
+      el: '.buycart',
+      data: {
+        active:0,
+     		num:1,
+     		goods:[],
+     		allactive:true,
+     		ischarge:false,
+     		acgoods:[],
+        errorImg: 'this.src="../../image/default.png"',
+        url:"https://shop.kuaiyunma.com/",
+        execgoods:[],
+        execproduct:[]
+      },
+      created:function(){
+        this.init()
+      },
+    methods:{
+      inner(id){
+        api.openWin({
+            name: 'goodsInner',
+            url: '../../html/market/goodsInnerWin.html',
+            pageParam: {
+                id: id
+            }
+        });
+      },
+      selAc(obj){
+        var that = this
+        that.execgoods=[]
+        that.execproduct=[]
+   		obj.active=!obj.active
+      that.allactive=true
+      this.goods.goods.forEach(item=>{
+          item.data.forEach(p=>{
+            if(p.active==false){
+              that.allactive=false
+                if(p.type=='goods'){
+                    that.execgoods.push(p.goods_id.toString())
+                }
+                else{
+                    that.execproduct.push(p.product_id.toString())
+                }
+            }
+          })
+
+
+      })
+      var para= {
+             "cart": {
+               "except": { "goods": that.execgoods, "product": that.execproduct }
+             }
+           }
+          postData('/shop/carts',function(data){
+            api.hideProgress();
+            if(data.code==200){
+              that.goods.real_price=data.data.real_price
+            }
+            else{
+              api.toast({
+                        msg: '服务器错误',
+                        duration:5000,
+                        location: 'bottom'
+                    });
+            }
+
+          },JSON.stringify(para),
+          {'Authorization':$api.getStorage('token'),
+          'Content-Type':'application/json'
+        })
+   	},
+    allaC(){
+      var that = this
+      that.execgoods=[]
+      that.execproduct=[]
+        this.allactive=!this.allactive
+        if(this.allactive==false){
+          this.goods.goods.forEach(item=>{
+              item.data.forEach(p=>{
+                p.active=false
+
+              })
+          })
+        }else{
+          this.goods.goods.forEach(item=>{
+            item.data.forEach(p=>{
+              p.active=true
+
+            })
+          })
+        }
+
+        this.goods.goods.forEach(item=>{
+            item.data.forEach(p=>{
+              if(p.active==false){
+                that.allactive=false
+                  if(p.type=='goods'){
+                      that.execgoods.push(p.goods_id.toString())
+                  }
+                  else{
+                      that.execproduct.push(p.product_id.toString())
+                  }
+              }
+            })
+
+
+        })
+      var para= {
+             "cart": {
+               "except": { "goods": that.execgoods, "product": that.execproduct }
+             }
+           }
+          postData('/shop/carts',function(data){
+            api.hideProgress();
+            if(data.code==200){
+              that.goods.real_price=data.data.real_price
+            }
+            else{
+              api.toast({
+                        msg: '服务器错误',
+                        duration:5000,
+                        location: 'bottom'
+                    });
+            }
+
+          },JSON.stringify(para),
+          {'Authorization':$api.getStorage('token'),
+          'Content-Type':'application/json'
+        })
+
+        },
+        del(){
+          var that = this
+          var arr=[]
+          var parm= {
+                 "cart": {
+                   "except": { "goods": [], "product": [] }
+                 }
+               }
+          this.goods.goods.forEach(item=>{
+                item.data.forEach(p=>{
+                  if(p.active==true){
+            					var para={
+          					  "cart": {
+          					      "goods_id": p.goods_id,
+          					      "type": p.type
+          					   }
+          					}
+                    if(p.type=='product'){
+                      para.cart.goods_id=p.product_id
+                    }
+            				arr.push(para)
+            			}
+                })
+
+          		})
+              if(arr.length<=0){
+                api.toast({
+                        msg: '请选择要删除的商品',
+                        duration:5000,
+                        location: 'bottom'
+                    });
+                return false
+              }
+          dialogBox.alert({
+              texts: {
+                  content: '确定要将该商品从购物车清除吗？',
+                  leftBtnTitle: '取消',
+                  rightBtnTitle: '确认'
+              },
+              styles: {
+                  bg: '#fff',
+                  w: 300,
+
+                  content: {
+                      color: '#000',
+                      size: 14
+                  },
+                  left: {
+                      marginB: 7,
+                      marginL: 20,
+                      w: 130,
+                      h: 35,
+                      corner: 2,
+                      color:'#fff',
+
+                      bg: '#c2262b',
+                      size: 12
+                  },
+                  right: {
+                      marginB: 7,
+                      marginL: 10,
+                      w: 130,
+                      h: 35,
+                      corner: 2,
+                      color:'#fff',
+                      bg: '#c2262b',
+                      size: 12
+                  }
+              }
+          }, function(ret) {
+              if (ret.eventType == 'left') {
+                  dialogBox.close({
+                      dialogName: 'alert'
+                  });
+
+              }
+              else{
+                arr.forEach(p=>{
+                            postData('/shop/carts/remove',function(data){
+                              if(data.code==200){
+                                dialogBox.close({
+                                    dialogName: 'alert'
+                                });
+                                api.toast({
+                                        msg: '删除成功',
+                                        duration:5000,
+                                        location: 'bottom'
+                                    });
+                                postData('/shop/carts',function(data){
+                                  api.hideProgress();
+
+                                  if(data.code==200){
+                                    data.data.goods.forEach(function(item){
+                                      item.active=true
+                                    })
+
+                                    data.data.goods=that.adData(data.data.goods)
+                                    that.goods=data.data
+
+                                    that.allactive=true
+
+                                  }
+                                  else{
+                                    api.toast({
+                                            msg: '服务器错误',
+                                            duration:5000,
+                                            location: 'bottom'
+                                        });
+                                        dialogBox.close({
+                                            dialogName: 'alert'
+                                        });
+                                  }
+
+                                },JSON.stringify(parm),{
+                                  'Authorization':$api.getStorage('token'),
+                                  'Content-Type':'application/json'
+                                })
+                              }
+                            },JSON.stringify(p),{
+                              'Authorization':$api.getStorage('token'),
+                              'Content-Type':'application/json'
+                            })
+                    })
+              }
+          });
+        },
+        init(){
+          this.execproduct=[]
+          this.execgoods=[]
+          api.showProgress({
+          title: '努力加载中...',
+          text: '先喝杯茶...',
+          modal: false
+      });
+      var para= {
+             "cart": {
+               "except": { "goods": [], "product": [] }
+             }
+           }
+          var that =this
+          postData('/shop/carts',function(data){
+            api.hideProgress();
+            arr=data.data.goods
+            if(data.code==200){
+              data.data.goods.forEach(function(item){
+                item.active=true
+              })
+
+              data.data.goods=that.adData(data.data.goods)
+              that.goods=data.data
+            }
+            else{
+              api.toast({
+                        msg: '服务器错误',
+                        duration:5000,
+                        location: 'bottom'
+                    });
+            }
+
+          },JSON.stringify(para),
+          {'Authorization':$api.getStorage('token'),
+          'Content-Type':'application/json'
+        })
+        },
+        charge(){
+          if(this.ischarge==true){
+            this.init()
+          }
+          this.ischarge=!this.ischarge
+      },
+      adData(data){
+        arr=data
+        var map = {},
+        dest = [];
+        for(var i = 0; i < arr.length; i++){
+            var ai = arr[i];
+            if(!map[ai.seller_id]){
+                dest.push({
+                    seller_id: ai.seller_id,
+                    name: ai.seller_name,
+                    data: [ai]
+                });
+                map[ai.seller_id] = ai;
+            }else{
+                for(var j = 0; j < dest.length; j++){
+                    var dj = dest[j];
+
+                    if(dj.seller_id == ai.seller_id){
+                        dj.data.push(ai);
+                        break;
+                    }
+                }
+            }
+        }
+        return dest
+      },
+      add(obj){
+        var that = this
+        that.execgoods=[]
+        that.execproduct=[]
+      obj.active=true
+      this.allactive=true
+      this.goods.goods.forEach(item=>{
+        item.data.forEach(p=>{
+          if(p.active==false){
+            that.allactive=false
+
+              if(p.type=='goods'){
+                  that.execgoods.push(p.goods_id.toString())
+              }
+              else{
+                  that.execproduct.push(p.product_id.toString())
+              }
+          }
+        })
+
+      })
+      var parm= {
+             "cart": {
+               "except": { "goods": that.execgoods, "product": that.execproduct }
+             }
+           }
+  		var that = this
+  		var num=1
+  		var para={
+			  "cart": {
+			      "goods_id":obj.goods_id,
+			      "type": obj.type,
+			      "num": num
+			   }
+			}
+      if(obj.type=='product'){
+        para.cart.goods_id=obj.product_id
+      }
+  		postData('/shop/carts/add',function(data){
+  			if(data.code==200){
+
+          postData('/shop/carts',function(data){
+            api.hideProgress();
+
+            if(data.code==200){
+                data.data.goods.forEach(function(item){
+                  if(item.type==obj.type&&item.obj_id==obj.obj_id){
+                      obj.goods_nums=item.goods_nums
+                      obj.real_price=item.real_price
+                  }
+                })
+              that.goods.count=data.data.count
+              that.goods.goods_price=data.data.goods_price
+              that.goods.real_price=data.data.real_price
+              that.goods.delivery_price=data.data.delivery_price
+              that.goods.real_delivery_price=data.data.real_delivery_price
+            }
+            else{
+              api.toast({
+                        msg: data.message,
+                        duration:5000,
+                        location: 'bottom'
+                    });
+            }
+
+          },JSON.stringify(parm),
+          {'Authorization':$api.getStorage('token'),
+          'Content-Type':'application/json'
+        })
+      }else{
+        api.toast({
+            msg: data.message,
+            duration: 2000,
+            location: 'bottom'
+        });
+
+      }
+  		},JSON.stringify(para),{
+        'Authorization':$api.getStorage('token'),
+        'Content-Type':'application/json'
+      })
+
+  	},
+    sure(){
+      var that = this
+      var para= {
+			    "order": {
+			      "pay_type":"",
+			      "distribution":"",
+			      "address_id":"",
+            "except": { "goods":that.execgoods , "product": that.execproduct}
+			   }
+			}
+      api.closeWin({
+          name: 'confirmOrderWin'
+      });
+      api.openWin({
+          name: 'confirmOrderWin',
+          url: '../../html/market/confirmOrderWin.html',
+          pageParam: {
+              para:JSON.stringify(para)
+          }
+      });
+
+    },
+      sub(obj){
+        var that = this
+        that.execgoods=[]
+        that.execproduct=[]
+        obj.active=true
+        this.allactive=true
+        this.goods.goods.forEach(item=>{
+        item.data.forEach(p=>{
+          if(p.active==false){
+            that.allactive=false
+
+              if(p.type=='goods'){
+                  that.execgoods.push(p.goods_id.toString())
+              }
+              else{
+                  that.execproduct.push(p.product_id.toString())
+              }
+          }
+        })
+
+      })
+          var parm= {
+                 "cart": {
+                   "except": { "goods":that.execgoods, "product": that.execproduct }
+                 }
+               }
+          var para={
+        			  "cart": {
+        			      "goods_id":obj.goods_id,
+        			      "type": obj.type,
+
+        			   }
+        			}
+          if(obj.type=='product'){
+            para.cart.goods_id=obj.product_id
+          }
+          if(obj.goods_nums==1){
+
+            dialogBox.alert({
+                texts: {
+                    content: '您确定将'+obj.name+'从您的购物车中删除吗？',
+                    leftBtnTitle: '取消',
+                    rightBtnTitle: '确认'
+                },
+                styles: {
+                    bg: '#fff',
+                    w: 300,
+
+                    content: {
+                        color: '#000',
+                        size: 14
+                    },
+                    left: {
+                        marginB: 7,
+                        marginL: 20,
+                        w: 130,
+                        h: 35,
+                        corner: 2,
+                        color:'#fff',
+
+                        bg: '#c2262b',
+                        size: 12
+                    },
+                    right: {
+                        marginB: 7,
+                        marginL: 10,
+                        w: 130,
+                        h: 35,
+                        corner: 2,
+                        color:'#fff',
+                        bg: '#c2262b',
+                        size: 12
+                    }
+                }
+            }, function(ret) {
+                if (ret.eventType == 'left') {
+                  postData('/shop/carts',function(data){
+                    api.hideProgress();
+
+                    if(data.code==200){
+                      data.data.goods.forEach(function(item){
+                        if(item.type==obj.type&&item.obj_id==obj.obj_id){
+                            obj.goods_nums=item.goods_nums
+                            obj.real_price=item.real_price
+                        }
+                      })
+                      that.goods.count=data.data.count
+                      that.goods.goods_price=data.data.goods_price
+                      that.goods.real_price=data.data.real_price
+                      that.goods.delivery_price=data.data.delivery_price
+                      that.goods.real_delivery_price=data.data.real_delivery_price
+                    }
+                    else{
+                      api.toast({
+                                msg: '服务器错误',
+                                duration:5000,
+                                location: 'bottom'
+                            });
+                    }
+
+                  },JSON.stringify(parm),
+                  {'Authorization':$api.getStorage('token'),
+                  'Content-Type':'application/json'
+                })
+                    dialogBox.close({
+                        dialogName: 'alert'
+                    });
+
+                }
+                else{
+                              postData('/shop/carts/remove',function(data){
+                                if(data.code==200){
+                                  dialogBox.close({
+                                      dialogName: 'alert'
+                                  });
+                                  api.toast({
+                                          msg: '删除成功',
+                                          duration:5000,
+                                          location: 'bottom'
+                                      });
+                                      postData('/shop/carts',function(data){
+                                        api.hideProgress();
+
+                                        if(data.code==200){
+
+                                          data.data.goods.forEach(function(item){
+                                            item.active=true
+                                          })
+
+                                          data.data.goods=that.adData(data.data.goods)
+                                          that.goods=data.data
+
+                                        }
+                                        else{
+                                          api.toast({
+                                                    msg: '服务器错误',
+                                                    duration:5000,
+                                                    location: 'bottom'
+                                                });
+                                        }
+
+                                      },JSON.stringify(parm),
+                                      {'Authorization':$api.getStorage('token'),
+                                      'Content-Type':'application/json'
+                                    })
+                                }
+                              },JSON.stringify(para),{
+                                'Authorization':$api.getStorage('token'),
+                                'Content-Type':'application/json'
+                              })
+                }
+            });
+            return false
+          }
+          var num=-1
+          para.cart.num=num
+          postData('/shop/carts/add',function(data){
+        			if(data.code==200){
+                obj.goods_nums--
+                postData('/shop/carts',function(data){
+                  api.hideProgress();
+
+                  if(data.code==200){
+                    data.data.goods.forEach(function(item){
+                      if(item.type==obj.type&&item.obj_id==obj.obj_id){
+                          obj.goods_nums=item.goods_nums
+                          obj.real_price=item.real_price
+                      }
+                    })
+                    that.goods.count=data.data.count
+                    that.goods.goods_price=data.data.goods_price
+                    that.goods.real_price=data.data.real_price
+                    that.goods.delivery_price=data.data.delivery_price
+                    that.goods.real_delivery_price=data.data.real_delivery_price
+                  }
+                  else{
+                    api.toast({
+                              msg: '服务器错误',
+                              duration:5000,
+                              location: 'bottom'
+                          });
+                  }
+
+                },JSON.stringify(parm),
+                {'Authorization':$api.getStorage('token'),
+                'Content-Type':'application/json'
+              })
+        			}
+  		},JSON.stringify(para),{
+        'Authorization':$api.getStorage('token'),
+        'Content-Type':'application/json'
+      })
+      }
+
+
+
+    }
+    })
+
+
+}
+  </script>
+  </html>

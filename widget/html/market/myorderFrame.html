@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      .myorder{
+          background-color: #f5f4f4;
+          font-size:14px;
+        }
+        .myorder header ul  .active{
+          color:#9e2931;
+          border-bottom:2px solid #9e2931;
+        }
+
+        .myorder header{
+          position: fixed;
+          width:100%;
+          top:0;
+          padding:0 10px;
+          background:white;
+          line-height: 45px;
+          border-bottom:1px solid #eee;
+        }
+        .myorder header ul {
+          white-space: nowrap;
+          width:100%;
+          overflow: auto;
+          text-align: center
+        }
+        .myorder header ul li{
+          padding:0 10px;
+          font-size: 14px;
+          margin-right:10px;
+          display: inline-block;
+        }
+          .myorder .cart img{
+          width:21px;
+        }
+        i{
+          font-style: normal;
+        }
+        .myorder .cart{
+          background: rgba(0,0,0,0.5);
+          width:30px;
+          height:30px;
+          border-radius: 50%;
+          line-height: 30px;
+          text-align: center;
+          display: inline-block;
+          position: fixed;
+          left:20px;
+          bottom:80px;
+        }
+        .myorder .orderList ul{
+          padding-top:50px;
+        }
+        .myorder .orderList ul li{
+          background-color: white;
+          margin-top:10px;
+        }
+        .myorder .orderList ul li .header img{
+          margin-right:10px;
+          width:16px;
+        }
+        .myorder .orderList ul li .header{
+          padding:0 10px;
+          line-height: 50px;
+
+        }
+        .myorder .orderList ul li .header .status{
+          float: right;
+          color: #9e2931;
+          font-size:14px;
+        }
+        .myorder .orderList ul li .info>.thumb img{
+          vertical-align: middle;
+          width:60px;
+        }
+        @media screen  and (max-width: 320px) {
+          .myorder .orderList ul li .info>.thumb img{
+            width:30px;
+          }
+        }
+          .myorder .orderList ul li .info>.thumb p{
+                vertical-align: middle;
+
+            width:250px;
+            display: inline-block;
+            margin-left:10px;
+          }
+          .myorder .orderList ul li .info>p{
+            line-height: 85px;
+            color:#999999;
+            justify-content:space-between;
+            display: flex;
+            align-content:space-between;
+          }
+          .myorder .orderList ul li .info>p span{
+            font-size: 16px;
+          }
+          .myorder .orderList ul li .total{
+            border-bottom:1px solid #eee;
+            line-height: 50px;
+            padding:0 10px;
+            text-align: right;
+          }
+          .myorder .orderList ul li .total i{
+            color:#ef5737;
+            font-size: 16px;
+          }
+        .myorder .orderList ul li .info{
+          background-color: #fdfdfa;
+          padding:10px;
+        }
+        .myorder .orderList ul li .opera button{
+          margin-left:10px;
+          border:1px solid #9e2931;
+          color:#9e2931;
+          font-size:14px;
+          background-color: transparent;
+          border-radius: 20px;
+          padding:10px 20px;
+        }
+        .myorder .orderList ul li .opera .cancel{
+          border:1px solid #ccc;
+          color:#000;
+        }
+        .myorder .orderList ul li .opera{
+          padding:0 10px;
+          line-height: 50px;
+          text-align: right;
+        }
+        *:focus {
+             outline: none;
+            background-color: transparent;
+         }
+         .empty{
+           background: white;
+           margin-top:80px;
+           text-align: center;
+         }
+         .empty img{
+           width:100px;
+         }
+         .empty p{
+           margin-top:10px;
+         }
+      [v-cloak]{
+        display: none;
+      }
+      </style>
+  </head>
+  <body>
+          <div class="myorder" v-cloak>
+
+       	<header>
+       		<ul>
+       			<li v-bind:class="{active:active==''}" @click="navchange('')">全部</li>
+       			<li v-bind:class="{active:active=='paying'}" @click="navchange('paying')">待付款</li>
+       			<li v-bind:class="{active:active=='shipping'}" @click="navchange('shipping')">待发货</li>
+       			<li v-bind:class="{active:active=='incoming'}" @click="navchange('incoming')">待收货</li>
+       			<li v-bind:class="{active:active=='commenting'}" @click="navchange('commenting')">待评价</li>
+       		</ul>
+       	</header>
+       	<div class="orderList">
+       		<ul v-if="orderList.length>0">
+       			<li @click="inner(item.order_no)" v-for="item in orderList">
+       				<div class="header">
+       					<img src="../../image/market/shop.png">
+       					{{item.seller_name}}
+       					<span class="status">
+       					{{item.status_name}}
+       					</span>
+       				</div>
+       				<div class="info" v-for="p in item.goods">
+       					<div class="thumb">
+       						<img v-bind:src="url+p.img" alt="" :onerror="errorImg">
+       						<p>{{p.goods_array.name}}</p>
+       					</div>
+       					<p>
+       						<span>{{p.goods_array.value}}</span>
+       						<span>{{p.goods_price}}&nbsp;x&nbsp;{{p.goods_nums}}</span>
+       					</p>
+       				</div>
+       				<p class="total">
+       					共{{item.goods.length}}件商品，合计<i>￥{{parseFloat(item.order_amount)}}</i>
+       					(含运费￥{{item.real_freight}})
+       				</p>
+       				<div class="opera">
+       					<button v-if="item.status==2" class="cancel" >取消订单</button>
+       					<button  v-if="item.status==2" class="pay">付款</button>
+                <button  v-if="item.status==3" class="pay">确认收货</button>
+                <button  v-if="item.status==6" class="pay">去评价</button>
+       				</div>
+       			</li>
+
+       		</ul>
+          <div class="empty" v-if="orderList.length<1">
+            <img src="../../image/market/empty.png" alt="">
+            <p>订单为空</p>
+          </div>
+       	</div>
+
+           </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
+  <script type="text/javascript">
+  function re(){
+    app.init()
+  }
+  apiready = function(){
+    // 融云模块
+    var dialogBox = api.require('dialogBox');
+
+    app=new Vue({
+      el: '.myorder',
+      data: {
+        url:"https://shop.kuaiyunma.com/",
+            loading:false,
+      	    page:1,
+            orderList:[],
+            active:'',
+            errorImg: 'this.src="../../image/default.png"'
+
+      },
+      created:function(){
+        var that = this
+        this.init()
+        api.addEventListener({
+          name: 'scrolltobottom'
+        }, function(ret, err){
+
+          that.loadmore()
+
+          });
+      },
+    methods:{
+        init(){
+          api.closeWin({
+              name: 'refundWin'
+          });
+          var that = this
+          that.page=1;
+          api.showProgress({
+          title: '努力加载中...',
+          text: '先喝杯茶...',
+          modal: false
+      });
+              getData('/shop/orders',function(data){
+                api.hideProgress();
+                if(data.code==200){
+                  that.orderList=data.data
+
+                }
+              },{'page':1,'page_size':3},{'Authorization':$api.getStorage('token')})
+        },
+        loadmore(){
+          var that = this
+          that.page++;
+          api.showProgress({
+          title: '努力加载中...',
+          text: '先喝杯茶...',
+          modal: false
+      });
+              getData('/shop/orders',function(data){
+                api.hideProgress();
+                if(data.code==200){
+                  data.data.forEach(function(item){
+                    that.orderList.push(item)
+
+                  })
+                }
+              },{'page':that.page,'page_size':3,'status':that.active},
+              {'Authorization':$api.getStorage('token')}
+            )
+        },
+        cancelO(id){
+          var that = this
+          dialogBox.alert({
+              texts: {
+                  content: '确定要删除该订单吗？',
+                  leftBtnTitle: '取消',
+                  rightBtnTitle: '确认'
+              },
+              styles: {
+                  bg: '#fff',
+                  w: 300,
+
+                  content: {
+                      color: '#000',
+                      size: 14
+                  },
+                  left: {
+                      marginB: 7,
+                      marginL: 20,
+                      w: 130,
+                      h: 35,
+                      corner: 2,
+                      color:'#fff',
+
+                      bg: '#c2262b',
+                      size: 12
+                  },
+                  right: {
+                      marginB: 7,
+                      marginL: 10,
+                      w: 130,
+                      h: 35,
+                      corner: 2,
+                      color:'#fff',
+                      bg: '#c2262b',
+                      size: 12
+                  }
+              }
+          }, function(ret) {
+              if (ret.eventType == 'left') {
+                  dialogBox.close({
+                      dialogName: 'alert'
+                  });
+
+              }
+              else{
+                postData('/shop/orders/cancel',function(data){
+                  dialogBox.close({
+                      dialogName: 'alert'
+                  });
+                  if(data.code==200){
+                    api.toast({
+                            msg: '取消订单成功',
+                            duration:5000,
+                            location: 'bottom'
+                        })
+                        that.active=''
+                        that.init()
+                  }
+                },{'order_no':id},{
+                  'Authorization':$api.getStorage('token')
+                })
+
+              }
+          });
+
+        },
+        inner(id){
+            api.openWin({
+                name: 'orderdetailWin',
+                url: '../../html/market/orderdetailWin.html',
+                pageParam: {
+                    id: id
+                }
+            });
+
+        },
+        navchange(name){
+          this.page=1
+          var that =this
+          this.active=name
+          api.showProgress({
+          title: '努力加载中...',
+          text: '先喝杯茶...',
+          modal: false
+      });
+          getData('/shop/orders',function(data){
+            api.hideProgress();
+            if(data.code==200){
+              that.orderList=data.data
+
+            }
+          },{'page':1,'page_size':3,'status':name},
+          {'Authorization':$api.getStorage('token')})
+        },
+
+
+
+
+    }
+    })
+
+
+}
+  </script>
+  </html>

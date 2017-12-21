@@ -40,7 +40,7 @@
     <header>
         <div id="cloud" class="topbar  activebar">
           <img class="return" onclick="api.closeWin()" src="../../../image/return.png" alt="">
-                    族谱详情
+                    <span>族谱详情</span>
           <img class="search" onclick="search()" src="../../../image/search.png" alt="">
         </div>
     </header>
@@ -61,6 +61,7 @@
 
   }
       apiready = function(){
+        $('#cloud>span').text(api.pageParam.name)
         var u = navigator.userAgent;
         var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
         var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端

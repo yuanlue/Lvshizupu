@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      .addaddress .selArea{
+        position: fixed;
+        left:0;
+        overflow: auto;
+        height: 100vh;
+        width:100vw;
+        background-color: white;
+        }
+        .addaddress .selArea header{
+        line-height: 50px;
+        background-color:#eee;
+        padding:0 10px;
+        font-size:15px;
+        }
+        .addaddress .selArea header img{
+        margin-right:10px;
+        width:15px;
+        transform:rotate(180deg);
+        }
+        .addaddress{
+        background: white;
+        padding:0 10px;
+        }
+
+        .addaddress .opera{
+        left:0;
+        width:100%;
+        background: #9e2931;
+        position: fixed;
+        line-height: 50px;
+        text-align: center;
+        color:white;
+        bottom:0;
+        font-size:15px;
+        }
+        .addaddress ul li>span{
+        float: right;
+        margin-right:10px;
+        }
+        .addaddress ul li input{
+        font-size:15px;
+        margin-left:10px;
+        line-height:50px;
+        }
+        .addaddress ul li,.addaddress .selArea ul li{
+          line-height: 50px;
+          padding:0 10px;
+          border-bottom:1px solid #eee;
+          font-size:16px;
+        }
+        .addaddress ul .info input{
+          margin-left:0;
+        }
+        .addaddress ul .address:before,.addaddress .selArea ul li:before{
+          content:"";
+          display: inline-block;
+          background:url('../../image/ar.png') no-repeat;
+          background-size: contain;
+          width:8px;
+          height:12px;
+          float: right;
+          margin-top:20px;
+        }
+        .popup{
+          z-index:2001;
+          background: rgba(0,0,0,0.5);
+          position: fixed;;
+          top:0;
+          width:100vw;
+          height:100vh;
+        }
+        *:focus {
+             outline: none;
+            background-color: transparent;
+         }
+         [v-cloak]{
+           display: none;
+         }
+      </style>
+  </head>
+  <body>
+    <div class="addaddress" v-cloak>
+       		<ul>
+       			<li>
+       				收货人<input type="text" placeholder="请填写收货人信息" v-model="name">
+       			</li>
+       			<li>
+       				联系电话<input type="number" placeholder="请填写收人联系电话" v-model="tel">
+       			</li>
+       			<li>
+       				邮编<input type="number" placeholder="请填地址邮编信息" v-model="code">
+       			</li>
+       			<li class="address" @click="addA()">
+       				所在地区
+       				<span>
+       					{{province}}{{city}}{{area}}
+       				</span>
+       			</li>
+
+       			<li class="info">
+       				<input type="text" placeholder="详细地址" v-model="address">
+       			</li>
+       		</ul>
+       		<div class="opera" @click="sure()">
+       			修改收货地址
+       		</div>
+          <div class="popup" v-if="isAdd">
+            <div class="selArea">
+
+              <ul>
+                <li v-for="item in cityList" @click="step(item)">
+                  {{item.area_name}}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
+  <script type="text/javascript">
+  apiready = function(){
+    // 融云模块
+    var app=new Vue({
+      el: '.addaddress',
+      data: {
+        addressList:[],
+      	isAdd:false,
+      	address:"",
+      	sCity:[],
+      	cityList:[],
+      	province:"",
+      	city:"",
+      	tel:"",
+      	area:"",
+      	street:"",
+      	name:"",
+      	code:"",
+        citycodeList:[]
+      },
+      created:function(){
+        this.init()
+      },
+    methods:{
+        init(){
+          var that = this
+          this.sCity=[]
+        		this.name=api.pageParam.obj.accept_name
+        		this.tel=api.pageParam.obj.telphone
+        		this.address=api.pageParam.obj.address
+        		this.id=api.pageParam.obj.id
+        		this.province=api.pageParam.obj.province_info.area_name
+        		this.city=api.pageParam.obj.city_info.area_name
+        		this.area=api.pageParam.obj.area_info.area_name
+
+        		this.code=api.pageParam.obj.zip
+        		this.street=""
+        		this.isAdd=false
+        		this.addressList=[]
+          getData('/shop/areas',function(data){
+            that.cityList=data.data
+          },{},{'Authorization':$api.getStorage('token')})
+        },
+        addA(){
+      		this.isAdd=true
+      	},
+      	close(){
+      		this.isAdd=false
+      	},
+        sure(){
+        		var that = this
+            if(!this.name||!this.province||!this.city||!this.area||!this.tel){
+              api.toast({
+                      msg: '提交失败，请填写收货人信息',
+                      duration:5000,
+                      location: 'bottom'
+                  })
+        			return false
+        		}
+            if(this.code.length!=6){
+              api.toast({
+                      msg: '邮政编码错误',
+                      duration:5000,
+                      location: 'bottom'
+                  })
+                  return false
+            }
+        		var para= {
+      			    "address": {
+      			       "accept_name": that.name,
+      			       "telphone": that.tel,
+      			       "province": that.citycodeList[0].area_id,
+      			       "city": that.citycodeList[1].area_id,
+      			       "area": that.citycodeList[2].area_id,
+      			       "address": that.address,
+      			       "mobile": that.tel,
+      			       'zip':that.code,
+      			       "is_default": 1
+      			   }
+      			}
+			putData('/shop/addresses/'+that.id,function(data){
+				if(data.code==200){
+          api.toast({
+                  msg: '修改成功',
+                  duration:5000,
+                  location: 'bottom'
+              })
+              api.execScript({
+                  name: 'address',
+                  frameName: 'addressFrame',
+                  script: 're();'
+              });
+              api.execScript({
+                  name: 'confirmOrderWin',
+                  frameName: 'confirmOrderFrame',
+                  script: 're();'
+              });
+              api.closeToWin({
+                  name: 'confirmOrderWin'
+              });
+
+
+
+
+				}
+				else{
+          api.toast({
+                  msg: data.message,
+                  duration:5000,
+                  location: 'bottom'
+              })
+				}
+			},JSON.stringify(para),{
+        'Authorization':$api.getStorage('token'),
+        'Content-Type':'application/json'
+      })
+
+  	},
+        step(obj){
+          var that = this
+          this.sCity.push(obj)
+          getData('/shop/areas',function(data){
+              if(data.code==200){
+                that.cityList=data.data
+                if(data.data.length<1){
+          				that.province=that.sCity[0].area_name
+          				that.city=that.sCity[1].area_name
+          				that.area=that.sCity[2].area_name
+          				that.street=that.sCity[3].area_name
+          				that.isAdd=false
+                    getData('/shop/areas',function(data){
+                      if(data.code==200){
+                        that.cityList=data.data
+                        that.citycodeList=that.sCity
+                        that.sCity=[]
+
+                      }
+                    },{},{'Authorization':$api.getStorage('token')})
+
+          			}
+                else{
+                  that.cityList=data.data
+
+                }
+
+              }
+              else{
+                api.toast({
+                        msg: '服务器异常',
+                        duration:5000,
+                        location: 'bottom'
+                    })
+              }
+          },{'id':obj.area_id},{'Authorization':$api.getStorage('token')})
+        }
+
+
+
+    }
+    })
+
+
+}
+  </script>
+  </html>

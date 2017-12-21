@@ -125,6 +125,22 @@
             display:none;
             color:#9e2932;
           }
+          #dev>img{
+            width:20px;
+            line-height: 50px;
+            position: absolute;
+            left:10px;
+            top:13px
+          }
+          .popup{
+            z-index:2001;
+            background: rgba(0,0,0,0.5);
+            position: fixed;;
+            top:0;
+            width:100vw;
+            display: none;
+            height:100vh;
+          }
     </style>
 </head>
 <body>
@@ -141,10 +157,11 @@
         </div>
 
         <div id="dev" class="topbar ">
+                  <img onclick="menu()" class="menu" src="../../image/market/menu.png" alt="">
                     商城
                     <span><img onclick="message()" src="../../image/message.png" alt="">
                       <i></i>
-</span>
+                    </span>
 
         </div>
         <div id="doc" class="topbar ">
@@ -179,6 +196,8 @@
 
         </ul>
     </div>
+
+</div>
 </div>
 </body>
 <script type="text/javascript" src="../../script/api.js"></script>
@@ -204,6 +223,40 @@ Array.prototype.unique = function(){
   }
  }
  return res;
+}
+
+function menu(){
+  var $header = $api.dom('header');
+  $api.fixIos7Bar($header);
+  var $body = $api.dom('body');
+  var $footer = $api.byId('footer');
+  var header_h = $api.offset($header).h;
+  var body_h = $api.offset($body).h;
+  var footer_h = $api.offset($footer).h;
+
+  var rect_h = body_h - header_h - footer_h;
+  var y=43+  $('.top').height()
+  rect_h=rect_h-5
+  api.openFrame({
+      name: 'marketMenu',
+      url: '../../html/market/menuWin.html',
+      rect: {
+          x: 0,
+          y: 25,
+          w: 'auto',
+          h: 'auto'
+      },
+      bounces: false,
+      animation:{
+        type:"movein",                //动画类型（详见动画类型常量）
+        subType:"from_left",       //动画子类型（详见动画子类型常量）
+        duration:200
+      },
+      bgColor: 'rgba(0,0,0,0.2)',
+      vScrollBarEnabled: true,
+      hScrollBarEnabled: true
+  });
+
 }
 function re(){
   $('header>div>span i').hide()
@@ -332,94 +385,170 @@ function message(){
       //         api.toast({ msg: err.code });
       // });
   // getNewMessage()
-  $.ajax({
-    "url": "https://api.cn.ronghub.com/user/getToken.json",
-    "cache": false,
-    "headers": {
-      "appKey": "lmxuhwagl06ud",
-      "appSecret": 'fBjNe6uY8foiUh'
-    },
-    "data": {
-      "portraitUri": "http://wx.qlogo.cn/mmhead/PiajxSqBRaEIFokNHj9VibzSg9s8al9cp5Yticn1AdJTibTuKDK7wyH5JA/132",
-      "userId": api.pageParam.token
-    },
-    "type": "POST",
-    success:function(data){
-      rong.connect({
-      token: data.token},
-      function(ret, err){
-          if (ret.status == 'success')
-              api.toast({ msg: ret.result.userId });
-});
-    }
-  })
+  var $header = $api.dom('header');
+  $api.fixIos7Bar($header);
+  var $body = $api.dom('body');
+  var $footer = $api.byId('footer');
+  var header_h = $api.offset($header).h;
+  var body_h = $api.offset($body).h;
+  var footer_h = $api.offset($footer).h;
+
+  var rect_h = body_h - header_h - footer_h;
+   y=43+  $('.top').height()
+  rect_h=rect_h-5
+  api.openFrame({
+      name: 'home',
+      url: '../../html/Home/main.html',
+      rect: {
+          x: 0,
+          y: y,
+          w: 'auto',
+          h: rect_h
+      },
+      customRefreshHeader: 'UIPullRefreshFlash',
+      reload:true,
+      bounces: true,
+      bgColor: 'rgba(0,0,0,0)',
+      vScrollBarEnabled: true,
+      hScrollBarEnabled: true
+  });
+
 
 //       rong.getTotalUnreadCount(function(ret, err) {
 //       })
 //       rong.getConversationList(function (ret, err) {
 //
 // })
-        var $header = $api.dom('header');
-        $api.fixIos7Bar($header);
-        var $body = $api.dom('body');
-        var $footer = $api.byId('footer');
-        var header_h = $api.offset($header).h;
-        var body_h = $api.offset($body).h;
-        var footer_h = $api.offset($footer).h;
-
-        var rect_h = body_h - header_h - footer_h;
-        var y=50+  $('.top').height()
-        if(isiOS){
-        var y=43+  $('.top').height()
-        }
-        else{
-          rect_h=rect_h-25
-        }
-
-        api.openFrameGroup({
-            name: 'group',
-            scrollEnabled: false,
-
-            rect: {  x: 0,
-                     y: y,
-                     w: 'auto',
-                     h:rect_h
-                  },
-            index: 0,
-            frames: [
-                {
-                    name: 'home',
-                    url: '../../html/Home/main.html',
-                    customRefreshHeader: 'UIPullRefreshFlash',
-                    reload:true
 
 
-
-                },
-                {
-                    name: 'market',
-                    url: '../../html/market/marketWin.html',
-                    reload:true
-                },
-                {
-                    name: 'userCenter',
-                    url: '../../html/user/userCenterWin.html',
-                    reload:true
-                }
-            ]
-        }, function (ret, err) {
-          $('ul').find('li').removeClass('active')
-          $('header').find('div').removeClass('activebar')
-          $('header').find('div').eq(ret.index).addClass('activebar')
-          $('ul').find('li').eq(ret.index).addClass('active')
-
-
-        });
+        // api.openFrameGroup({
+        //     name: 'group',
+        //     scrollEnabled: false,
+        //
+        //     rect: {  x: 0,
+        //              y: y,
+        //              w: 'auto',
+        //              h:rect_h
+        //           },
+        //     index: 0,
+        //     frames: [
+        //         {
+        //             name: 'home',
+        //             url: '../../html/Home/main.html',
+        //             customRefreshHeader: 'UIPullRefreshFlash',
+        //             reload:true
+        //
+        //
+        //
+        //         },
+        //         {
+        //             name: 'market',
+        //             url: '../../html/market/marketWin.html',
+        //             reload:true
+        //         },
+        //         {
+        //             name: 'userCenter',
+        //             url: '../../html/user/userCenterWin.html',
+        //             reload:true
+        //         }
+        //     ]
+        // }, function (ret, err) {
+        //   $('ul').find('li').removeClass('active')
+        //   $('header').find('div').removeClass('activebar')
+        //   $('header').find('div').eq(ret.index).addClass('activebar')
+        //   $('ul').find('li').eq(ret.index).addClass('active')
+        //
+        //
+        // });
 //                滑动
 
     }
     // 随意切换按钮
     function randomSwitchBtn(obj, name, index) {
+      var $header = $api.dom('header');
+      var $body = $api.dom('body');
+      var $footer = $api.byId('footer');
+      var header_h = $api.offset($header).h;
+      var body_h = $api.offset($body).h;
+      var footer_h = $api.offset($footer).h;
+
+      var rect_h = body_h - header_h - footer_h;
+      var y=43+  $('.top').height()
+      rect_h=rect_h-5
+
+      if(name=='cloud'){
+        api.openFrame({
+            name: 'home',
+            url: '../../html/Home/main.html',
+            rect: {
+                x: 0,
+                y: y,
+                w: 'auto',
+                h: rect_h
+            },
+            customRefreshHeader: 'UIPullRefreshFlash',
+            reload:false,
+            bounces: false,
+            bgColor: '#fff',
+            vScrollBarEnabled: true,
+            hScrollBarEnabled: true
+        });
+        api.setFrameAttr({ // 隐藏内容层
+                  name: 'market',
+                  hidden:true,
+              });
+              api.setFrameAttr({ // 隐藏内容层
+                        name: 'userCenter',
+                        hidden:true,
+                    });
+
+
+      }
+      else if(name=='dev'){
+        api.openFrame({
+            name: 'market',
+            url: '../../html/market/marketWin.html',
+            rect: {
+                x: 0,
+                y: y,
+                w: 'auto',
+                h: rect_h
+            },
+            customRefreshHeader: 'UIPullRefreshFlash',
+            reload:false,
+            bounces: false,
+            progress:true,
+            bgColor: 'rgba(0,0,0,0)',
+            vScrollBarEnabled: true,
+            hScrollBarEnabled: true
+        });
+        api.setFrameAttr({ // 隐藏内容层
+                  name: 'home',
+                  hidden:true,
+              });
+              api.setFrameAttr({ // 隐藏内容层
+                        name: 'userCenter',
+                        hidden:true,
+                    });
+      }
+      else if(name=='doc'){
+        api.openFrame({
+            name: 'userCenter',
+            url: '../../html/user/userCenterWin.html',
+            rect: {
+                x: 0,
+                y: y,
+                w: 'auto',
+                h: rect_h
+            },
+            customRefreshHeader: 'UIPullRefreshFlash',
+            reload:false,
+            bounces: false,
+            bgColor: 'rgba(0,0,0,0)',
+            vScrollBarEnabled: true,
+            hScrollBarEnabled: true
+        });
+      }
         var $header = $api.dom('header');
         var $titleBar = $api.domAll($header, '.topbar');
         for (var i = 0; i < $titleBar.length; i++) {
@@ -433,10 +562,7 @@ function message(){
         }
         $api.addCls(obj, 'active');
 
-        api.setFrameGroupIndex({
-            name: 'group',
-            index: index
-        });
+
 
     }
 </script>

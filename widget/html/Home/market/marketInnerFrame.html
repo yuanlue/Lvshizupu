@@ -226,8 +226,14 @@
 
       },
       navChange(index){
+        var that = this
       this.index=index;
-
+      this.$nextTick(function(){
+        $('.intro img').each(function(){
+          var src=$(this).attr('src')
+          $(this).attr('src',that.url+src)
+        })
+      })
     }
 
   },

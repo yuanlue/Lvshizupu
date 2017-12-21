@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+          body{
+            padding-top:10px;
+            box-sizing: border-box;
+            min-height:100vh;
+            background: #f5f4f4;
+          }
+          i{
+            font-style: normal;
+            color:#ef5737;
+            font-size:16px;
+          }
+          .refund header>span{
+            float: right;
+            margin-right:5px;
+            font-size:14px;
+            color:#999999;
+            vertical-align: middle;
+          }
+          .refund header,.refund .info>p{
+            line-height: 50px;
+            padding:0 10px;
+            box-sizing: border-box;
+
+            border-bottom:1px solid #eee;
+            font-size:16px;
+          }
+          .refund .info *{
+            border:none;
+          }
+          .refund .top{
+            background: white;
+          }
+          .refund .info>*{
+            width:100%;
+            font-size:15px;
+          }
+            .refund .info .remark{
+              line-height: 40px;
+              background: #fffbea;
+              font-size:13px;
+              color:#666666;
+            }
+            .refund header:before{
+            content:"";
+            display: inline-block;
+            background:url('../../image/ar.png') no-repeat;
+            background-size: contain;
+            width:8px;
+            height:12px;
+            float: right;
+            margin-top:20px;
+          }
+
+          ul li:active{
+            background: #eee
+          }
+          .cert{
+            margin-top:10px;
+          }
+          .cert .header{
+            border-bottom:1px solid #eee;
+            line-height: 50px;
+            padding:0 10px;
+            font-size: 15px;
+            background: white;
+          }
+          .cert .certinfo{
+            background: white;
+            padding:10px;
+          }
+          .cert .certinfo >span{
+            width:55px;
+            height:55px;
+            margin-bottom:10px;
+            overflow: hidden;
+            line-height: 60px;
+            margin-right:5px;
+            text-align: center;
+            vertical-align: middle;
+            border:1px dashed #ccc;
+          }
+          .cert .certinfo >span .defalut{
+            width:20px;
+            height:auto;
+          }
+            .cert .certinfo >span img{
+              height:100%;
+            }
+            .reason{
+              z-index:9;
+              position: fixed;
+              left:0;
+              top:0;
+              overflow: auto;
+              height: 100vh;
+              width:100vw;
+              background-color: white;
+            }
+            .reason ul li{
+              line-height: 50px;
+              padding:0 10px;
+              border-bottom:1px solid #eee;
+            }
+            .opera{
+              background: #9e2831;
+              line-height: 48px;
+              text-align: center;
+              position: fixed;
+              width:100%;
+              left:0;
+              bottom:0;
+              color:white;
+            }
+            [v-cloak]{
+              display: none
+            }
+      </style>
+  </head>
+  <body>
+        <div class="refund" v-cloak>
+          <div class="top">
+          <header @click="refoundS()">退款原因
+            <span v-if="!refundReason">请选择</span>
+            <span v-if="refundReason">{{refundReason}}</span>
+          </header>
+          <div class="info">
+            <p>共{{refoundInfo.count}}件商品<span>退款金额：<i>¥ {{refoundInfo.amount}}</i></span></p>
+            <p class="remark">最多¥{{refoundInfo.amount}}，含发货邮费¥{{refoundInfo.real_delivery_price}}</p>
+            <p>退款说明：<input type="text" v-model="remark"></p>
+          </div>
+      </div>
+      <div class="cert">
+        <p class="header">
+          上传凭证
+        </p>
+        <div class="certinfo">
+          <span  v-for="(p,index) in imgurl" @click="del(index,item)">
+            <img  v-bind:src="p" alt="">
+          </span>
+          <span @click="imgUp">
+            <img class="defalut" src="../../image/add1.png" alt="">
+          </span>
+        </div>
+      </div>
+      <div class="reason" v-if="isrefundReason">
+        <ul>
+          <li @click="refundC(item.name,item.index)" v-for="item in reasonList">{{item.name}}</li>
+        </ul>
+      </div>
+      <div class="opera" @click="submit()" >
+        提交申请
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>  <script type="text/javascript">
+      apiready = function(){
+        var app=new Vue({
+          el: '.refund',
+          data: {
+          refundReason:"",
+          isrefundReason:false,
+          remark:"",
+          reasonKey:"",
+          imgurl:[],
+          reasonList:"",
+          refoundInfo:[]
+          },
+          created:function(){
+            this.init()
+          },
+        methods:{
+          submit(){
+            if(!this.refundReason||!this.reasonKey){
+              api.toast({
+                  msg: '请填写退款理由',
+                  duration: 2000,
+                  location: 'bottom'
+              });
+            return false
+            }
+            var para= {
+                 refundment_doc: {
+                    order_no: api.pageParam.order_no,
+                    content: this.remark,
+                    refund_reason_id:this.reasonKey,
+                    refund_goods_imgs:this.imgurl
+                       }
+               }
+               postData('/shop/refundment_docs',function(data){
+                 if(data.code==200){
+                   api.toast({
+                       msg: data.data,
+                       duration: 2000,
+                       location: 'bottom'
+                   });
+                  api.closeWin({
+                      name: 'myorder'
+                  });
+                  api.closeWin({
+                      name: 'serviceTypeWin'
+                  });
+
+                  api.closeWin({
+                      name: 'orderdetailWin'
+                  });
+                  setTimeout(function(){
+                    api.openWin({
+                        name: 'myorder',
+                        url: '../../html/market/myorderWin.html'
+
+                    });
+                  },2000)
+
+
+
+
+
+
+                 }
+                 else{
+                   api.toast({
+                       msg: '退款申请失败',
+                       duration: 2000,
+                       location: 'bottom'
+                   });
+                 }
+               },JSON.stringify(para),{
+                 'Authorization':$api.getStorage('token'),
+                 'Content-Type':'application/json'
+               })
+          },
+          refoundS(){
+            var that = this
+            this.isrefundReason=true
+            getData('/shop/refundment_docs/refund_reason',function(data){
+                data.reason=[]
+                for(var i in data.data)
+                {
+
+                  var para={
+                    index:i,
+                    name:data.data[i]
+                  }
+                  data.reason.push(para)
+                }
+                that.reasonList=data.reason
+            },{},
+            {'Authorization':$api.getStorage('token')})
+          },
+          init(){
+            var that = this
+            getData('/shop/refundment_docs/refund_info',function(data){
+              if(data.code==200){
+                that.refoundInfo=data.data.order
+
+              }
+              else{
+                api.toast({
+                    msg: '获取退款信息失败',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+              }
+            },{'order_no':api.pageParam.order_no},{'Authorization':$api.getStorage('token')})
+          },
+          refundC(name,index){
+            this.refundReason=name
+            this.reasonKey=index
+            this.isrefundReason=false
+          },
+          uploadImg(ret){
+            var that = this
+            var img =ret.imgPath
+            var card=new Date().getTime()+Math.floor(Math.random()*100)
+            var name=card+ret.imgName
+            var path='/'+$api.getStorage('uid')+'/'+name
+          api.showProgress({
+              title: '努力加载中...',
+              text: '先喝杯茶...',
+              modal: false
+          });
+          upload(path,'image',ret.imgPath,function(data){
+            api.hideProgress();
+              if(data.code==200){
+                that.imgurl.push(data.data.url)
+                //上传成功后 发送消息
+              }
+            },{"Authorization":$api.getStorage('token')},function(err){
+            })
+
+          },
+          del(index,obj){
+            this.imgurl.splice(index,1)
+          },
+          imgUp(){
+            var that = this
+            api.getPicture({
+              sourceType: 'all',
+              encodingType: 'jpg',
+              mediaValue: 'pic',
+              destinationType: 'url',
+              allowEdit: true,
+              quality: 50,
+              targetWidth: 100,
+              targetHeight: 100,
+              saveToPhotoAlbum: false
+          }, function(ret, err) {
+              if (ret) {
+                if(!ret.data){
+                  api.hideProgress();
+                  return false
+                }
+                      ret.imgName="";
+                      var card=new Date().getTime()+Math.floor(Math.random()*100)
+                      var name=card+ret.imgName+'.png'
+                      ret.imgPath=ret.data
+                      that.uploadImg(ret)
+              } else {
+              }
+          });
+          },
+        }
+        })
+
+
+      };
+  </script>
+  </html>

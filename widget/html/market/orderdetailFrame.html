@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+          .orderdetail{
+            padding-bottom: 50px;
+            background-color: #f5f4f4;
+            font-size:14px;
+          }
+          .orderdetail>header{
+            background:url(../../image/market/orderDetail.png) no-repeat;
+            background-size: cover;
+            width:100%;
+            padding:10px 0;
+            text-align: center;
+            color:white;
+            height:70px;
+          }
+           .orderdetail>header h1{
+             margin-top:20px;
+            font-size:18px;
+           }
+           .orderdetail>header p{
+            font-size:13px;
+            margin-top:5px;
+           }
+           .orderdetail .info{
+            background-color:white;
+            padding:25px 10px;
+
+           }
+           .orderdetail .receive{
+            line-height: 30px;
+            font-size: 15px;
+           }
+           .orderdetail .info>img{
+            width:20px;
+           }
+              .orderdetail .cart img{
+            width:21px;
+          }
+          .orderdetail .cart{
+            background: rgba(0,0,0,0.5);
+            width:30px;
+            height:30px;
+            border-radius: 50%;
+            line-height: 30px;
+            text-align: center;
+            display: inline-block;
+            position: fixed;
+            left:20px;
+            bottom:80px;
+          }
+           .orderdetail .info>div{
+            display: inline-block;
+            width: 80%;
+            vertical-align: middle;
+            margin-left:10px;
+           }
+            .orderdetail .receive+p{
+              font-size:13px;
+            }
+            .orderdetail .receive span{
+              float: right;
+            }
+              .orderdetail .middle{
+            background: url('../../image/market/middle.png');
+            width:100%;
+            background-size: cover;
+            height:8px;
+          }
+          .orderdetail .orderdetailInfo{
+            margin-top:10px;
+          }
+          .orderdetail .orderdetailInfo header{
+            background:white;
+            padding:0 10px;
+            line-height: 50px;
+            font-size: 15px;
+          }
+          .orderdetail .orderdetailInfo header img{
+            vertical-align: middle;
+            width:20px;
+            margin-right:10px;
+
+          }
+          .orderdetail .orderdetailInfo .detailinfo >img{
+            width:100px;
+            vertical-align: middle;
+          }
+          .orderdetail .orderdetailInfo >div{
+            padding:10px;
+          }
+          .orderdetail .orderdetailInfo .detailO{
+            margin-left:10px;
+            vertical-align: middle;
+            display: inline-block;
+            width:223px;
+          }
+          .orderdetail .orderdetailInfo .detailO h1{
+            font-size:12px;
+            font-weight: normal;
+          }
+          .orderdetail .orderdetailInfo .detailO .remark{
+            font-size:12px;
+            color:#999999;
+            line-height: 20px;
+          }
+          .orderdetail .orderdetailInfo .detailO  .price{
+            color:#ef5737;
+            font-size:16px;
+          }
+          .orderdetail .orderdetailInfo .detailO  .price i{
+            font-size:12px;
+          }
+          .orderdetail .orderdetailInfo .detailO  .price .num{
+            float: right;
+            color:#333;
+          }
+          .orderdetail .orderdetailInfo{
+            background-color: #fdfdfa;
+          }
+            .orderdetail .funway ul li{
+            border-bottom:1px solid #eee;
+            background-color: white;
+            padding:0 10px;
+            font-size: 14px;
+            line-height: 50px;
+          }
+          .orderdetail .funway ul li span{
+            float: right;
+          }
+
+             .orderdetail .funway ul li input{
+              font-size:14px;
+              height:50px;
+              margin-left:10px;
+             }
+            .orderdetail .funway ul .bnum:before{
+              width:0;
+              content:"";
+              background:transparent;
+            }
+            .orderdetail .funway ul .bnum span {
+              margin-right:0;
+            }
+             .orderdetail .funway>p{
+                    font-size:16px;
+            background-color: white;
+              padding:0 10px;
+              text-align: right;
+              line-height: 50px;
+             }
+
+             .orderdetail .funway>p button{
+               float: left;
+               margin-top:5px;
+               border-radius: 20px;
+               padding:10px 15px;
+               font-size:14px;
+               color:#9e2931;
+               border:1px solid #9e2931;
+               background: transparent;
+             }
+             .orderdetail .funway ul li>p{
+              display: inline-block;
+             }
+            .orderdetail .funway ul .bnum span i{
+              font-size:20px;
+              display: inline-block;
+              background-color: #fef7d5;
+              color:#9e2931;
+              text-align: center;
+              font-weight: bold;
+              width:23px;
+              line-height:23px;
+            }
+             .orderdetail .orderdeinfo button{
+              border:1px solid #ccc;
+              background: transparent;
+              padding:5px;
+              margin-left:10px;
+             }
+            .orderdetail .orderdeinfo{
+              color:#666;
+              margin-top:10px;
+              line-height: 20px;
+              padding:10px;
+              background-color: white;
+            }
+            .orderdetail .opera .client img{
+              width:20px;
+              vertical-align: middle;
+              margin-right:5px;
+            }
+            .orderdetail .opera button{
+              border-radius: 20px;
+              padding:10px 15px;
+              font-size:14px;
+              border:1px solid #ccc;
+              background: transparent;
+            }
+
+            .orderdetail .opera .payBtn{
+              color:#9e2931;
+            padding:10px 15px;
+              border:1px solid #9e2931
+            }
+            .orderdetail .opera>div{
+              display: inline-block;
+
+            }
+             .orderdetail .opera .left{
+              text-align: left;
+                width:38%;
+             }
+             .orderdetail .opera .right{
+              text-align: right;
+              width:60%;
+
+             }
+            .orderdetail .opera{
+              box-sizing: border-box;
+              line-height: 50px;
+              width:100%;
+              padding:0 10px;
+              background: white;
+              border-top:1px solid #eee;
+              position: fixed;
+              bottom:0;
+            }
+            i{
+              font-style: normal
+            }
+            *:focus {
+                 outline: none;
+                background-color: transparent;
+             }
+            [v-cloak]{
+              display: none
+            }
+            .popup{
+                  background-color: rgba(0,0,0,0.5);
+                  position: fixed;
+                  top:0;
+                  left:0;
+                  width:100vw;
+                  height:100vh;
+                }
+                .popup ul{
+                  position: absolute;
+                  width:100%;
+                  bottom:0;
+                }
+                 .popup ul li{
+                  display: block;
+
+                  background:white;
+                    padding:0 15px;
+                    font-size:16px;
+                    line-height: 50px;
+                    border-bottom:1px solid #eee;
+                  }
+                  .popup ul li img{
+                    margin-right:10px;
+
+                    vertical-align: middle;
+                    width:27px;
+                  }
+      </style>
+  </head>
+  <body>
+    <div class="orderdetail" v-cloak>
+
+ 		<header>
+ 				<h1>{{orderDetail.status_name}}</h1>
+ 				<p style="display:none">剩余2天0小时自动关闭</p>
+ 		</header>
+ 		<div class="info">
+ 			<img src="../../image/location.png">
+ 			<div>
+ 			<p class="receive">收货人：{{orderDetail.accept_name}}<span>电话：{{orderDetail.mobile}}</span></p>
+ 			<p>地址：{{orderDetail.address}}</p>
+ 			</div>
+
+ 		</div>
+ 		 		<div class='middle'>
+ 		 	</div>
+ 		 	<div class="orderdetailInfo">
+  			<header><img src="../../image/logo.png" alt="">{{orderDetail.seller_name}}</header>
+  			<div class="detailinfo" v-for="item in orderDetail.goods" @click="detail(item.goods_id)">
+  				<img v-bind:src="url+item.img" :onerror="errorImg">
+  				<div class="detailO">
+  					<h1>{{item.goods_array.name}}</h1>
+  					<p class="remark"><span>{{item.goods_array.value}}</span></p>
+  					<p class="price">
+  						<span><i>￥</i>{{item.goods_price}}</span>
+  						<span class="num">
+  							x1
+  						</span>
+  					</p>
+  				</div>
+  			</div>
+  		</div>
+  			<div class="funway">
+  			<ul>
+
+  				<li>
+  					运费<span>￥{{orderDetail.real_freight}}</span>
+  				</li>
+  				<li>
+  					商品价格<span>￥{{orderDetail.order_amount}}</span>
+  				</li>
+  				<li style="display:none">
+            买家留言：
+ 					<p>包装结实一点，谢谢</p>
+  				</li>
+  			</ul>
+  			<p class="status">
+          <button v-if="orderDetail.status==6" @click="seller()">申请售后</button>
+          <button v-if="orderDetail.status!=6&&orderDetail.status!=5&&orderDetail.status!=12" @click="seller()">退款</button>
+          实际付款：<span><i>¥ {{orderDetail.real_amount}}</i></span></p>
+  		</div>
+  		<div class="orderdeinfo">
+  				<p>订单编号：{{orderDetail.order_no}}<button @click="copy(orderDetail.order_no)">复制</button></p>
+  				<p>创建时间：{{orderDetail.create_time | formatDate}}</p>
+  				<p v-if="orderDetail.pay_time">付款时间：{{orderDetail.pay_time | formatDate}}</p>
+  				<p v-if="orderDetail.send_time">发货时间：{{orderDetail.send_time | formatDate}}</p>
+          <p v-if="orderDetail.accept_time">收货时间：{{orderDetail.accept_time | formatDate}}</p>
+
+  		</div>
+  		<div class="opera">
+  			<div class="left">
+          <p v-if="orderDetail.status==5">该订单已经被取消</p>
+          <p v-if="orderDetail.status==4">等待卖家发货</p>
+
+  				<button class="client" style="display:none"><img src="../../image/market/kefu.png">联系卖家</button>
+ 			</div>
+ 			<div class="right">
+
+    <button class="cancel" v-if="orderDetail.status==2" @click="del()">取消订单</button>
+    <button class="payBtn" v-if="orderDetail.status==2" @click="payWay()">付款</button>
+    <button class="payBtn" v-if="orderDetail.status==6" @click="deliver(orderDetail.delivery_info)">查看物流</button>
+
+    <button class="payBtn" v-if="orderDetail.status==3" @click="receive()">确认收货</button>
+    <button class="payBtn" v-if="orderDetail.status==6" @click="evaluate()">评价</button>
+
+ 			</div>
+
+
+  		</div>
+      <div class="popup" @click="cancel()" v-if="payStatus">
+          <ul class="paypay">
+            <li v-for="item in paywayList" @click="selPayway(item.id,item.name)">
+              <span v-bind:class="item.class_name"></span>
+              {{item.name}}
+            </li>
+          </ul>
+      </div>
+     </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>  <script type="text/javascript">
+  function re(){
+    app.init()
+    api.toast({
+        msg: '感谢您的反馈和评价',
+        duration: 2000,
+        location: 'bottom'
+    });
+  }
+  apiready = function(){
+    // 融云模块
+    var dialogBox = api.require('dialogBox');
+
+    var clipBoard = api.require('clipBoard');
+
+     app=new Vue({
+      el: '.orderdetail',
+      data: {
+            order_no:"",
+            orderDetail:[],
+            payStatus:false,
+            url:"https://shop.kuaiyunma.com/",
+            paywayList:[],
+            errorImg: 'this.src="../../image/default.png"'
+
+      },
+      created:function(){
+        this.init()
+      },
+    methods:{
+      seller(){
+        var that = this
+        api.openWin({
+            name: 'serviceTypeWin',
+            url: '../../html/market/serviceTypeWin.html',
+            pageParam: {
+                status: that.orderDetail.status,
+                order_no: api.pageParam.id
+            }
+        });
+
+      },
+      evaluate(){
+        api.openWin({
+            name: 'evaluateWin',
+            url: '../../html/market/evaluateWin.html',
+            pageParam: {
+                order_no: api.pageParam.id
+            }
+        });
+
+      },
+      receive(){
+        postData('/shop/orders/confirm',function(data){
+          if(data.code==200){
+            api.toast({
+                    msg: '确认收货成功',
+                    duration:2000,
+                    location: 'bottom'
+                });
+                api.execScript({
+                    name: 'myorder',
+                    frameName: 'myorderFrame',
+                    script: 're();'
+                });
+
+                api.closeWin();
+
+          }
+          else{
+            api.toast({
+                    msg: '系统繁忙，请稍后',
+                    duration:2000,
+                    location: 'bottom'
+                });
+          }
+        },{'order_no':api.pageParam.id},{
+          'Authorization':$api.getStorage('token')
+        })
+      },
+      selPayway(id,name){
+              var that = this
+              var para={
+                'order_no':api.pageParam.id,
+                'payment_id':id
+              }
+              postData('/shop/orders/pay',function(data){
+                  if(data.code==200){
+                    var wxPay = api.require('wxPay');
+                      wxPay.payOrder(data.data, function(ret, err) {
+                          if (ret.status) {
+                            api.toast({
+                                    msg: '支付成功',
+                                    duration:2000,
+                                    location: 'bottom'
+                                });
+                                api.execScript({
+                                    name: 'myorder',
+                                    frameName: 'myorderFrame',
+                                    script: 're();'
+                                });
+                                api.closeWin();
+
+                          } else {
+                            api.toast({
+                                    msg: '支付失败，请重试',
+                                    duration:2000,
+                                    location: 'bottom'
+                                });
+                                that.payStatus=true
+
+                          }
+                      });
+                  }
+                  else{
+                    api.toast({
+                            msg: data.message,
+                            duration:2000,
+                            location: 'bottom'
+                        });
+                        that.payStatus=true
+                  }
+              },para,{
+                'Authorization':$api.getStorage('token')
+              })
+
+
+    },
+      payWay(){
+        var that = this
+          this.payStatus=true
+
+        getData('/shop/payments',function(data){
+          that.paywayList=data.data
+        },{'client_type':'app'},{'Authorization':$api.getStorage('token')})
+
+      },
+      cancel(){
+        this.payStatus=true
+
+      },
+      detail(id){
+        api.openWin({
+            name: 'goodsInner',
+            url: '../../html/market/goodsInnerWin.html',
+            pageParam: {
+                id: id
+            }
+        });
+      },
+        init(){
+          api.showProgress({
+          title: '努力加载中...',
+          text: '先喝杯茶...',
+          modal: false
+      });
+          var that = this
+            this.order_no=api.pageParam.id
+            getData('/shop/orders/'+this.order_no,function(data){
+              api.hideProgress();
+
+              that.orderDetail=data.data
+            },{},{'Authorization':$api.getStorage('token')})
+        },
+        deliver(obj){
+          api.openWin({
+              name: 'deliverWin',
+              url: '../../html/market/deliverWin.html',
+              pageParam: {
+                  id: api.pageParam.id,
+                  delivery_info:obj
+              }
+          });
+
+        },
+        copy(text){
+          clipBoard.set({
+              value: text
+          }, function(ret, err) {
+              if (ret) {
+                api.toast({
+                        msg: '复制成功',
+                        duration:5000,
+                        location: 'bottom'
+                    })
+              } else {
+              }
+          });
+        },
+        pay(){
+          postData('/shop/orders/pay',function(data){
+            var wxPay = api.require('wxPay');
+            alert(JSON.stringify(data))
+              wxPay.payOrder(data.data, function(ret, err) {
+                  if (ret.status) {
+                    api.toast({
+                            msg: '支付成功',
+                            duration:2000,
+                            location: 'bottom'
+                        });
+                        api.execScript({
+                            name: 'myorder',
+                            frameName: 'myorderFrame',
+                            script: 're();'
+                        });
+                        api.closeWin();
+                  } else {
+                    api.toast({
+                            msg: '支付失败，请重试',
+                            duration:2000,
+                            location: 'bottom'
+                        });
+                  }
+              });
+          },{'order_no':api.pageParam.id},{
+            'Authorization':$api.getStorage('token')
+          })
+        },
+        del(){
+
+          var that = this
+          dialogBox.alert({
+              texts: {
+                  content: '确定要删除该订单吗？',
+                  leftBtnTitle: '取消',
+                  rightBtnTitle: '确认'
+              },
+              styles: {
+                  bg: '#fff',
+                  w: 300,
+
+                  content: {
+                      color: '#000',
+                      size: 14
+                  },
+                  left: {
+                      marginB: 7,
+                      marginL: 20,
+                      w: 130,
+                      h: 35,
+                      corner: 2,
+                      color:'#fff',
+
+                      bg: '#c2262b',
+                      size: 12
+                  },
+                  right: {
+                      marginB: 7,
+                      marginL: 10,
+                      w: 130,
+                      h: 35,
+                      corner: 2,
+                      color:'#fff',
+                      bg: '#c2262b',
+                      size: 12
+                  }
+              }
+          }, function(ret) {
+              if (ret.eventType == 'left') {
+                  dialogBox.close({
+                      dialogName: 'alert'
+                  });
+
+              }
+              else{
+                postData('/shop/orders/cancel',function(data){
+                  dialogBox.close({
+                      dialogName: 'alert'
+                  });
+                  if(data.code==200){
+                    api.toast({
+                            msg: '取消订单成功',
+                            duration:5000,
+                            location: 'bottom'
+                        })
+                        api.execScript({
+                            name: 'myorder',
+                            frameName: 'myorderFrame',
+                            script: 're();'
+                        });
+                        api.closeWin();
+
+
+                  }
+                },{'order_no':api.pageParam.id},{
+                  'Authorization':$api.getStorage('token')
+                })
+
+              }
+          });
+
+        }
+
+
+
+
+    },
+    filters: {
+             formatDate: function (value) {
+                console.log(value)
+                var date=new Date(value)
+                var year=date.getFullYear().toString()
+                var month=(date.getMonth()+1).toString()
+                var day=date.getDate()
+                var hour=date.getUTCHours()
+                var min=date.getUTCMinutes()
+                return  year+"-"+month+"-"+day+" "+hour+":"+min
+             },
+         }
+    })
+
+
+}
+  </script>
+  </html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      ul li{
+        display: none;
+        height: 70px;
+        padding:10px;
+        box-sizing: border-box;
+        border-bottom:1px solid #eee;
+        font-size:16px;
+      }
+      ul li:before{
+        content:"";
+        display: inline-block;
+        background:url('../../image/ar.png') no-repeat;
+        background-size: contain;
+        width:8px;
+        height:12px;
+        float: right;
+        margin-top:20px;
+      }
+      ul li img{
+        width:23px;
+        margin-right:10px;
+        vertical-align: middle;
+      }
+      ul li:active{
+        background: #eee
+      }
+      ul li>.info{
+        vertical-align: middle;
+        display: inline-block;
+      }
+      ul li>.info h1{
+        font-size:16px;
+      }
+      ul li>.info h1+p{
+        margin-top:5px;
+        font-size:12px;
+        color:#999999;
+      }
+      </style>
+  </head>
+  <body>
+      <div class="serviceSelect">
+        <ul>
+          <li class="tuikuan" onclick="backMoney()">
+            <img src="../../image/market/tuikuan.png" alt="">
+            <div class="info">
+              <h1>仅退款</h1>
+              <p>未收到货(包含未签收)，或卖家协商同意前提下</p>
+            </div>
+          </li>
+          <li class="tuihuotuikuan" onclick="backMoney()">
+            <img src="../../image/market/tuihuotuikuan.png" alt="">
+            <div class="info">
+              <h1>退货退款</h1>
+              <p>已收到货，需要退换已收到的货物订单</p>
+            </div>
+          </li>
+          <li class="huanhuo" onclick="exchange()">
+            <img src="../../image/market/huanhuo.png" alt="">
+            <div class="info">
+              <h1>换货</h1>
+              <p>商品存在质量问题，联系卖家协商换货</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+
+  <script type="text/javascript">
+  function exchange(){
+    api.openWin({
+        name: 'exchangeWin',
+        url: '../../html/market/exchangeWin.html',
+        pageParam:{
+          order_no:api.pageParam.order_no
+        }
+    });
+  }
+  function backMoney(){
+    api.openWin({
+        name: 'refundWin',
+        url: '../../html/market/refundWin.html',
+        pageParam:{
+          order_no:api.pageParam.order_no
+        }
+    });
+
+  }
+      apiready = function(){
+        if(api.pageParam.status==6){
+          $('.tuihuotuikuan').show()
+          $('.huanhuo').show()
+        }else if(api.pageParam.status!=6&&api.pageParam.status!=5&&api.pageParam.status!=12){
+          $('.tuikuan').show()
+        }
+      };
+  </script>
+  </html>

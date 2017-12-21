@@ -5,7 +5,9 @@
     </description>
     <author email="developer@apicloud.com" href="http://www.apicloud.com">
         Developer
-    </author>
+    </author>    <preference name="appBackground" value="rgba(0,0,0,0.0)"/>
+      <preference name="windowBackground" value="rgba(0,0,0,0.0)"/>
+      <preference name="frameBackgroundColor" value="rgba(0,0,0,0.0)"/>
     <content src="index.html" />
     <access origin="*" />
     <preference name="pageBounce" value="false"/>
@@ -27,8 +29,7 @@
 	<permission name="fileSystem" />
 	<permission name="internet" />
 	<permission name="bootCompleted" />
-	<permission name="hardware" /><permission name="sms"/><preference name="softInputMode" value="resize"/>
- <preference name="customRefreshHeader" value="UIPullRefreshFlash"/>
+	<permission name="hardware" /><permission name="sms"/> <preference name="customRefreshHeader" value="UIPullRefreshFlash"/>
  <feature name="aliPayPlus">
      <param name="urlScheme" value="AliPayPlusA6050245549832" />
  </feature>

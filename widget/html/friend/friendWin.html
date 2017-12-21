@@ -193,18 +193,13 @@ function contact(obj){
             api.openWin({
                 name: 'friendDetail',
                 url: '../../html/friend/friendDetail.html',
-                rect: {
-                    x: 0,
-                    y: api.pageParam.header_height,
-                    w: 'auto',
-                    h: api.pageParam.footer_height
-                },
+
                 pageParam:{
                   'id':ret.data.uid,
                   'title':ret.data.title,
                   'avatar':ret.data.imgPath
                 },
-                bounces: true,
+                bounces: false,
                 bgColor: 'rgba(0,0,0,0)',
                 vScrollBarEnabled: true,
                 hScrollBarEnabled: true,
@@ -431,18 +426,13 @@ function contact(obj){
                 api.openWin({
                     name: 'friendDetail',
                     url: '../../html/friend/friendDetail.html',
-                    rect: {
-                        x: 0,
-                        y: api.pageParam.header_height,
-                        w: 'auto',
-                        h: api.pageParam.footer_height
-                    },
+
                     pageParam:{
                       'id':ret.data.uid,
                       'title':ret.data.title,
                       'avatar':ret.data.imgPath
                     },
-                    bounces: true,
+                    bounces: false,
                     bgColor: 'rgba(0,0,0,0)',
                     vScrollBarEnabled: true,
                     hScrollBarEnabled: true,

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+          body{
+
+          }
+          .banner{
+            font-size: 0
+          }
+          .banner img{
+          width:100%;
+
+          }
+          .middle{
+            background: url(../../image/market/tumiddle.png) no-repeat;
+            background-size: cover;
+            width:100%;
+            height:16px;
+          }
+          .goodslist  header{
+            border-bottom:1px solid #eee;
+            line-height: 50px;
+            text-align: center;
+          }
+          .goodslist header img {
+            width:210px;
+          }
+            .goodslist ul li>div{
+              padding:15px 10px;
+            }
+            i{
+              font-style:normal;
+            }
+              .goodslist ul li{
+                border-bottom:1px solid #eee;
+              }
+            .goodslist ul li .info{
+              vertical-align: top;
+              width: 70%;
+              margin-left:10px;
+              display: inline-block;
+            }
+          .goodslist ul li img{
+            width:75px;
+          }
+          .goodslist ul li .name{
+            font-size:15px;
+            line-height:25px
+          }
+            .goodslist ul li .price{
+              margin-top:15px;
+            }
+            .goodslist ul li .price>span{
+              font-size:12px;
+              color:#ef5737;
+            }
+            .goodslist ul li .price del{
+              font-size:12px;
+              color:#999;
+
+            }
+            .goodslist ul li .price>span i{
+              font-size: 16px;
+            }
+            .goodslist ul li .price b {
+              font-size: 12px;
+              font-weight: normal;
+              float: right;
+              color:#999;
+            }
+            [v-cloak]{
+              display: none;
+            }
+      </style>
+  </head>
+  <body>
+    <div class="specialty" v-cloak>
+      <div class="banner">
+        <img src="../../image/market/bannerT.png" alt="">
+      </div>
+    <div class="middle">
+    </div>
+    <div class="goodslist">
+      <header>
+        <img src="../../image/market/spetext.png" alt="">
+      </header>
+      <ul>
+        <li v-for="item in Goods" @click="inner(item.id)">
+          <div>
+          <img v-bind:src="url+item.img" alt="">
+            <div class="info">
+                <p class="name">{{item.name}}</p>
+                <p class="price">
+                  <span>￥<i>{{item.sell_price}}</i></span>
+                  <del>{{item.market_price}}</del>
+                  <b style="display:none">已售 22130 件</b>
+                </p>
+            </div>
+            </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
+   <script type="text/javascript">
+  apiready = function(){
+    // 融云模块
+    var app=new Vue({
+      el: '.specialty',
+      data: {
+        Goods:[],
+        page:1,
+        url:"https://shop.kuaiyunma.com/",
+      },
+      created:function(){
+        var that = this
+        api.setCustomRefreshHeaderInfo({
+        bgColor: '#eee',
+        images: [
+            'widget://image/refresh/dropdown0.png',
+            'widget://image/refresh/dropdown1.png',
+            'widget://image/refresh/dropdown2.png',
+            'widget://image/refresh/dropdown3.png',
+            'widget://image/refresh/dropdown4.png',
+            'widget://image/refresh/dropdown5.png',
+            'widget://image/refresh/dropdown6.png'
+        ],
+        tips: {
+            pull: '下拉刷新',
+            threshold: '松开立即刷新',
+            load: '正在刷新'
+        }
+    }, function() {
+        //下拉刷新被触发，自动进入加载状态，使用 api.refreshHeaderLoadDone() 手动结束加载中状态
+        //下拉刷新被触发，使用 api.refreshHeaderLoadDone() 结束加载中状态
+          that.init()
+
+
+    });
+
+        this.init()
+        api.addEventListener({
+          name: 'scrolltobottom'
+        }, function(ret, err){
+
+          that.loadmore()
+
+          });
+      },
+    methods:{
+      inner(id){
+        api.openWin({
+            name: 'goodsInner',
+            url: '../../html/market/goodsInnerWin.html',
+            pageParam: {
+                id: id
+            }
+        });
+      },
+        init(){
+          var that = this
+          that.page=1;
+          api.showProgress({
+          title: '努力加载中...',
+          text: '先喝杯茶...',
+          modal: false
+      });
+          getData('/shop/categories/category_goods',function(data){
+            api.hideProgress();
+            if(data.code==200){
+              that.Goods=data.data
+              api.refreshHeaderLoadDone()
+
+            }
+          },{'id':35,'page':1,'page_size':5},{'Authorization':$api.getStorage('token')})
+        },
+        loadmore(){
+          var that=this
+          that.page++
+          api.showProgress({
+          title: '努力加载中...',
+          text: '先喝杯茶...',
+          modal: false
+      });
+          getData('/shop/categories/category_goods',function(data){
+            api.hideProgress();
+            if(data.code==200){
+              data.data.forEach(function(item){
+                that.Goods.push(item)
+              })
+            }
+          },{'id':35,'page':that.page,'page_size':5},{'Authorization':$api.getStorage('token')})
+        }
+
+
+
+
+    }
+    })
+
+
+}
+  </script>
+  </html>

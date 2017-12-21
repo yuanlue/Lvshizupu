@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      .deliverInfo{
+		min-height: 100vh;
+		background-color: #fff;
+	}
+	.deliverInfo .header{
+		padding:15px 20px;
+		background: #fef7d5
+	}
+	.deliverInfo .header .info h1{
+		font-size:16px;
+		font-weight: normal;
+	}
+	.deliverInfo .header >img{
+		width:38px;
+	}
+	.deliverInfo .header .info p{
+		font-size:14px;
+		color:#666666;
+	}
+	.deliverInfo .header .info{
+		display: inline-block;
+		vertical-align: top;
+		margin-left:10px;
+	}
+	.deliverInfo .content ul li{
+		background-color: white;
+		position: relative;
+		padding:10px;
+	}
+	.deliverInfo .content ul li>div h1{
+		font-size:16px;
+	}
+	.deliverInfo .content ul li>div p{
+		font-size:14px;
+		color:#666;
+	}
+	.deliverInfo .content ul li>div .time{
+		font-size:12px;
+		line-height: 40px;
+	}
+	.deliverInfo .content ul{
+		border-top:10px solid #f5f4f4;
+	}
+
+	.deliverInfo .content ul li .info{
+		margin-left:7px;
+		display: inline-block;
+		width:calc(100% - 25px);
+		border-bottom:1px solid #eee;
+	}
+  [v-cloak]{
+    display: none
+  }
+      </style>
+  </head>
+  <body>
+    <div class="deliverInfo" v-cloak>
+    	 	<div class="header" >
+    	 		<img src="../../image/market/deliverIcon.png">
+    	 		<div class="info">
+    	 			<h1>物流信息</h1>
+    	 			<p>{{deliverInfo.name}}:{{deliverInfo.description}}</p>
+    	 		</div>
+    	 	</div>
+    	 	<div class="content">
+    	 		<ul>
+    	 			<li class="new" v-for="p in traceList">
+    	 				<div class="info " v-for="item in p.Traces">
+    	 					<h1></h1>
+    	 					<p>{{item.AcceptStation}}</p>
+    	 					<p class="time">{{item.AcceptTime}}</p>
+    	 				</div>
+    	 			</li>
+
+    	 		</ul>
+    	 	</div>
+     </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
+    <script type="text/javascript">
+    apiready = function(){
+      // 融云模块
+      var app=new Vue({
+        el: '.deliverInfo',
+        data: {
+          traceList:[],
+          deliverInfo:[],
+          url:"https://shop.kuaiyunma.com/",
+        },
+        created:function(){
+          this.init()
+        },
+      methods:{
+        init(){
+          var that = this
+          api.showProgress({
+          title: '努力加载中...',
+          text: '先喝杯茶...',
+          modal: false
+      });
+          this.deliverInfo=api.pageParam.delivery_info
+          alert(JSON.stringify(api.pageParam.delivery_info))
+
+            var para={
+                'order_no':api.pageParam.id,
+                'company_code':api.pageParam.delivery_infocompany_code,
+                'delivery_code':api.pageParam.delivery_info.delivery_code
+            }
+            getData('/shop/kdniao',function(data){
+              api.hideProgress();
+              if(data.code==200){
+                that.traceList.push(data.data)
+              }
+              else{
+                api.toast({
+                        msg: data.message,
+                        duration:2000,
+                        location: 'bottom'
+                    });
+              }
+            },para,{
+              'Authorization':$api.getStorage('token')
+            })
+
+  }
+
+
+
+
+
+      }
+      })
+
+
+  }
+  </script>
+  </html>

@@ -30,14 +30,100 @@
             left:10px;
             top:13px;
           }
+           .navtab{
+             position: relative;
+            width:100%;
+            box-sizing: border-box;
+            z-index:9;
+            background:url("../../image/status.png");
+            background-size: cover;
+            color:white;
+            line-height:50px;
+          }
+           .navtab ul .active{
+            border-bottom:2px solid #fef7d5;
+            color:#fef7d5;
+          }
+           .navtab span{
+            background: rgba(0,0,0,0.5);
+            width:30px;
+            height:30px;
+            border-radius: 50%;
+            line-height: 30px;
+            text-align: center;
+            display: inline-block;
+            position: fixed;
+            left:20px;
+            bottom:80px;
+          }
+           .navtab ul{
+            vertical-align: top;
+            margin:0 auto;
+            width:80%;
+            display:table;
+          }
+           .navtab ul li{
+            color:white;
+            box-sizing: border-box;
+            display: table-cell;
+            text-align: center;
+          }
+           .navtab ul li a{
+            color:white;
+          }
+          .navtab .return{
+            width:12px;
+            position: absolute;
+            left:10px;
+            top:13px;
+          }
+          .navtab .cart{
+            width:22px;
+            position: absolute;
+            right:10px;
+            top:13px;
+          }
       </style>
   </head>
   <body>
+    <div class="top"></div>
 
+    <div class="navtab">
+      <img class="return" onclick="api.closeWin()" src="../../image/return.png" alt="">
+
+    <ul>
+         <li onclick="changeL('product')" class='active'> 商品</li>
+         <li onclick="changeL('evaluate')">评价</li>
+         <li onclick="changeL('detail')">详情</li>
+    </ul>
+    <img onclick="cart()" class="cart" src="../../image/market/Mcart.png">
+
+    </div>
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
   <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
   <script type="text/javascript">
+  function cart(){
+    api.openWin({
+        name: 'cart',
+        url: '../../html/market/cartWin.html',
+
+    });
+
+  }
+  function changeIndex(index){
+    $('.navtab ul').children().removeClass('active')
+    $('.navtab ul').children().eq(index).addClass('active')
+  }
+  function changeL(name){
+    var str="locationc('"+name+"')";
+    api.execScript({
+        name: 'goodsInner',
+        frameName: 'goodsInnerFrame',
+        script: str
+    });
+
+  }
       apiready = function(){
         var u = navigator.userAgent;
         var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
@@ -46,21 +132,19 @@
           $('.top').css({'background':'white',"height":"20px"})
         }
           api.openFrame({
-              name: 'cultureframe',
+              name: 'goodsInnerFrame',
               url: '../../html/market/goodsInnerFrame.html',
               rect: {
                 x: 0,
-                y: 50+  $('.top').height(),
+                y: 52+  $('.top').height(),
                 w: 'auto',
-                h: api.frameHeight
+                h: api.frameHeight-(50+  $('.top').height())
 
               },
-              customRefreshHeader: 'UIPullRefreshFlash',
               pageParam:{
-                token:api.pageParam.token,
-                title:$('#cloud').text()
+                  id:api.pageParam.id
               },
-              bounces: true,
+              bounces: false,
               bgColor: 'rgba(0,0,0,0)',
               vScrollBarEnabled: true,
               hScrollBarEnabled: true

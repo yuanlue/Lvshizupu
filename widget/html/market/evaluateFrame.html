@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      body{
+        min-height: 100vh;
+        background-color: #f5f4f4;
+
+      }
+      .evaluate ul li{
+        background: white;
+      }
+        .evaluate ul li  .pname{
+          display: block;
+          padding:0 10px;
+          border-bottom:1px solid #ccc;
+        }
+      .evaluate ul li header{
+        padding:10px;
+
+      }
+      .evaluate ul li header .info{
+        display: inline-block;
+        line-height: 30px;
+        margin-left:10px;
+        vertical-align: middle;
+      }
+        .evaluate ul li header .info>p{
+          font-size:14px;
+        }
+      .evaluate ul li header .info .evaluatecom>span{
+        background: url('../../image/market/noevaluate.png');
+        background-size:cover;
+        width:16px;
+        margin-right:5px;
+        height:18px;
+      }
+      .evaluate ul li header >img{
+        width:60px;
+        vertical-align: middle;
+      }
+      .evaluate ul li .pname{
+        background-color: white;
+        line-height: 50px;
+        display: block;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+        overflow: hidden;
+
+        border-bottom:1px solid #eee;
+      }
+        .evaluate .content {
+          background: #fdfdfa;
+          padding:0 10px;
+        }
+      .evaluate .content .tectcontent{
+        background: #fdfdfa;
+        min-height:50px;
+        line-height: 30px;
+        width:100%;
+      }
+      .evaluate .content .tectcontent:empty:before{
+    content: '说说您对商品的评价吧！';
+    color:#bbb;
+}
+      .evaluate .content >span{
+        width:55px;
+        height:55px;
+        margin-bottom:10px;
+        overflow: hidden;
+        line-height: 60px;
+        margin-right:5px;
+        text-align: center;
+        vertical-align: middle;
+        border:1px dashed #ccc;
+      }
+      .evaluate .content >span .defalut{
+        width:20px;
+        height:auto;
+      }
+        .evaluate .content >span img{
+          height:100%;
+        }
+      .foot{
+        padding:0 10px;
+        text-align: right;
+        font-size:12px;
+        line-height: 50px;
+      }
+      .foot>span{
+        background: url('../../image/market/circle.png');
+        background-size: cover;
+        width:18px;
+        margin-right:10px;
+        display: inline-block;
+        vertical-align: middle;
+        height:18px;
+      }
+      .foot>.active{
+        background: url('../../image/market/accircle.png');
+        background-size: cover;
+
+      }
+      .evaluate ul li header .info .evaluatecom>.active{
+        background: url('../../image/market/evaluate.png');
+        background-size: cover;
+      }
+      .opera{
+        background: #9e2831;
+        line-height: 48px;
+        text-align: center;
+        position: fixed;
+        width:100%;
+        left:0;
+        bottom:0;
+        color:white;
+      }
+      [v-cloak]{
+        display:none;
+      }
+      </style>
+  </head>
+  <body>
+    <div class="evaluate" v-cloak>
+        <ul>
+          <li v-for="item in orderDetail.goods">
+            <p class="pname">{{item.goods_array.name}}</p>
+          <header>
+            <img v-bind:src="url+item.img" alt="">
+            <div class="info">
+              <p>商品满意度</p>
+              <p class="evaluatecom">
+                <span @click="eva(item,1)" v-bind:class="{active:item.start<=5}"></span>
+                <span @click="eva(item,2)" v-bind:class="{active:item.start>=2&&item.start<=5}"></span>
+                <span @click="eva(item,3)" v-bind:class="{active:item.start>=3&&item.start<=5}"></span>
+                <span @click="eva(item,4)" v-bind:class="{active:item.start>=4&&item.start<=5}"></span>
+                <span @click="eva(item,5)" v-bind:class="{active:item.start==5}"></span>
+              </p>
+            </div>
+            </header>
+            <div class="content">
+            <div class="tectcontent" contenteditable="true" @keyup="changeData($event,item)">
+                  </div>
+                <span  v-for="(p,index) in item.imgurl" @click="del(index,item)">
+                  <img  v-bind:src="p" alt="">
+                </span>
+              <span @click="imgUp(item)">
+                <img class="defalut" src="../../image/add1.png" alt="">
+              </span>
+            </div>
+            <div class="foot">
+              <span @click="annoy(item)" v-bind:class="{active:item.isannoy==true}"></span>匿名评价
+            </div>
+          </li>
+        </ul>
+        <div class="opera" @click="sure()">
+          提交评价
+        </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
+    <script type="text/javascript">
+
+
+    apiready = function(){
+      // 融云模块
+
+      var app=new Vue({
+        el: '.evaluate',
+        data: {
+          orderDetail:[],
+          order_no:"",
+          is_edit:true,
+          url:"https://shop.kuaiyunma.com/",
+          errorImg: 'this.src="../../image/default.png"',
+          imgurl:[],
+          isannoy:true
+        },
+        ready(){
+          this.$watch('contenttext', function (newVal, oldVal) {
+    })
+        },
+        created:function(){
+          var that = this
+
+          this.init()
+        },
+      methods:{
+        del(index,obj){
+          obj.imgurl.splice(index,1)
+        },
+        sure(){
+          this.orderDetail.goods.forEach(function(item){
+            if(item.content){
+              var para={
+                      "comment":{
+                       "contents":item.content,
+                       "point":item.start,
+                       "comment_photo":item.imgurl.join(","),
+                       "is_anonym":item.isannoy
+                        }
+                     }
+              putData('/shop/comments/'+item.comment_id,function(data){
+                if(data.code==200){
+
+                  api.execScript({
+                      name: 'myorderWin',
+                      frameName: 'myorderFrame',
+                      script: 're();'
+                  });
+                  api.execScript({
+                      name: 'orderdetailWin',
+                      frameName: 'orderdetailFrame',
+                      script: 're();'
+                  });
+                  api.closeWin();
+
+
+
+                }else{
+                  api.toast({
+                      msg: '系统繁忙',
+                      duration: 2000,
+                      location: 'bottom'
+                  });
+
+                }
+              },para,{
+                'Authorization':$api.getStorage('token')
+              })
+            }
+          })
+        },
+        changeData(event,obj) {
+          obj.content = event.srcElement.innerHTML;
+      },
+        annoy(item){
+          item.isannoy=!item.isannoy
+        },
+        uploadImg(ret,obj){
+          var that = this
+          var img =ret.imgPath
+          var card=new Date().getTime()+Math.floor(Math.random()*100)
+          var name=card+ret.imgName
+          var path='/'+$api.getStorage('uid')+'/'+name
+        api.showProgress({
+            title: '努力加载中...',
+            text: '先喝杯茶...',
+            modal: false
+        });
+        upload(path,'image',ret.imgPath,function(data){
+          api.hideProgress();
+            if(data.code==200){
+              obj.imgurl.push(data.data.url)
+              //上传成功后 发送消息
+            }
+          },{"Authorization":$api.getStorage('token')},function(err){
+          })
+
+        },
+        imgUp(obj){
+          var that = this
+          api.getPicture({
+            sourceType: 'all',
+            encodingType: 'jpg',
+            mediaValue: 'pic',
+            destinationType: 'url',
+            allowEdit: true,
+            quality: 50,
+            targetWidth: 100,
+            targetHeight: 100,
+            saveToPhotoAlbum: false
+        }, function(ret, err) {
+            if (ret) {
+              if(!ret.data){
+                api.hideProgress();
+                return false
+              }
+                    ret.imgName="";
+                    var card=new Date().getTime()+Math.floor(Math.random()*100)
+                    var name=card+ret.imgName+'.png'
+                    ret.imgPath=ret.data
+                    that.uploadImg(ret,obj)
+            } else {
+            }
+        });
+        },
+        eva(obj,index){
+          obj.start=index
+        },
+        init(){
+          api.showProgress({
+          title: '努力加载中...',
+          text: '先喝杯茶...',
+          modal: false
+      });
+          var that = this
+            this.order_no=api.pageParam.order_no
+            getData('/shop/comments/'+this.order_no+'/edit',function(data){
+              api.hideProgress();
+              data.data.goods.forEach(function(item){
+                item.imgurl=[]
+                item.content=[]
+                item.isannoy=1
+                item.start=5
+              })
+              that.orderDetail=data.data
+            },{},{'Authorization':$api.getStorage('token')})
+
+        }
+
+
+
+
+
+
+      }
+      })
+
+
+  }
+  </script>
+  </html>
