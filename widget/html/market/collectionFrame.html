@@ -161,7 +161,7 @@
           ischarge:false,
           allactive:false,
           page:1,
-          url:"https://shop.kuaiyunma.com/",
+          url:shopimgUrl,
           errorImg: 'this.src="../../image/default.png"'
 
         },
@@ -235,10 +235,12 @@
           this.ischarge=!this.ischarge
         },
         allaC(){
-          this.Goods.forEach(function(item){
-            item.active=true
-
+          const that =this
+          this.allactive=!this.allactive
+          this.Goods.forEach(item=>{
+              item.active= this.allactive
           })
+
         },
         sels(obj){
           obj.active=!obj.active

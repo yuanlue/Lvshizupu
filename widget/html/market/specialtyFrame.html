@@ -45,6 +45,14 @@
               margin-left:10px;
               display: inline-block;
             }
+            @media screen  and (max-width: 320px) {
+              .goodslist ul li .info{
+                vertical-align: top;
+                width: 60%;
+                margin-left:10px;
+                display: inline-block;
+              }
+            }
           .goodslist ul li img{
             width:75px;
           }
@@ -98,7 +106,7 @@
                 <p class="price">
                   <span>￥<i>{{item.sell_price}}</i></span>
                   <del>{{item.market_price}}</del>
-                  <b style="display:none">已售 22130 件</b>
+                  <b >已售 {{item.sale}} 件</b>
                 </p>
             </div>
             </div>
@@ -120,7 +128,7 @@
       data: {
         Goods:[],
         page:1,
-        url:"https://shop.kuaiyunma.com/",
+        url:shopimgUrl,
       },
       created:function(){
         var that = this
@@ -182,7 +190,7 @@
               api.refreshHeaderLoadDone()
 
             }
-          },{'id':35,'page':1,'page_size':5},{'Authorization':$api.getStorage('token')})
+          },{'id':66,'page':1,'page_size':5},{'Authorization':$api.getStorage('token')})
         },
         loadmore(){
           var that=this
@@ -199,7 +207,7 @@
                 that.Goods.push(item)
               })
             }
-          },{'id':35,'page':that.page,'page_size':5},{'Authorization':$api.getStorage('token')})
+          },{'id':66,'page':that.page,'page_size':5},{'Authorization':$api.getStorage('token')})
         }
 
 

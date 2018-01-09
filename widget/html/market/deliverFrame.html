@@ -67,7 +67,7 @@
     	 		<img src="../../image/market/deliverIcon.png">
     	 		<div class="info">
     	 			<h1>物流信息</h1>
-    	 			<p>{{deliverInfo.name}}:{{deliverInfo.description}}</p>
+    	 			<p>{{name}}:{{delivery_code}}</p>
     	 		</div>
     	 	</div>
     	 	<div class="content">
@@ -96,7 +96,9 @@
         data: {
           traceList:[],
           deliverInfo:[],
-          url:"https://shop.kuaiyunma.com/",
+          name:"",
+          code:"",
+          url:shopimgUrl,
         },
         created:function(){
           this.init()
@@ -110,17 +112,17 @@
           modal: false
       });
           this.deliverInfo=api.pageParam.delivery_info
-          alert(JSON.stringify(api.pageParam.delivery_info))
-
+          this.name=api.pageParam.delivery_info[0].company_code
+          this.delivery_code=api.pageParam.delivery_info[0].delivery_code
             var para={
                 'order_no':api.pageParam.id,
-                'company_code':api.pageParam.delivery_infocompany_code,
-                'delivery_code':api.pageParam.delivery_info.delivery_code
+                'company_code':api.pageParam.delivery_info[0].company_code,
+                'delivery_code':api.pageParam.delivery_info[0].delivery_code
             }
             getData('/shop/kdniao',function(data){
               api.hideProgress();
               if(data.code==200){
-                that.traceList.push(data.data)
+                that.traceList.unshift(data.data)
               }
               else{
                 api.toast({

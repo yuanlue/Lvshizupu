@@ -61,7 +61,10 @@
 
   }
       apiready = function(){
-      
+
+        api.closeWin({
+            name: 'confirmOrderWin'
+        });
 
         var u = navigator.userAgent;
         var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
@@ -79,7 +82,9 @@
                 h: api.frameHeight-(50+  $('.top').height())
 
               },
-
+              pageParam:{
+                type:api.pageParam.type
+              },
               bounces: false,
               bgColor: 'rgba(0,0,0,0)',
               vScrollBarEnabled: true,

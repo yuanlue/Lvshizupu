@@ -21,6 +21,12 @@
         font-size:17px;
         color:white;
       }
+      #cloud .share{
+          width:22px;
+          position: absolute;
+          top:10px;
+          right:10px;
+      }
       #cloud .return{
         width:12px;
         position: absolute;
@@ -35,12 +41,21 @@
         <div id="cloud" class="topbar  activebar">
           <img class="return" onclick="api.closeWin()" src="../../image/return.png" alt="">
           <span></span>
+          <img onclick="share()" class="share" src="../../image/market/contentShare.png" alt="">
         </div>
     </header>
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
     <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
   <script type="text/javascript">
+  function share(){
+      api.execScript({
+          name: 'content',
+          frameName: 'contentFrame',
+          script: 'shareWeb();'
+      });
+
+  }
       apiready = function(){
               $('#cloud span').text(api.pageParam.title)
 

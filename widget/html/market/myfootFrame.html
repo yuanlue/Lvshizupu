@@ -105,7 +105,7 @@
         top:5px;
         right:0;
       }
-      .opera .active,.mcontent  .active{
+     .active{
       background: url(../../image/market/accircle.png) !important;
       background-repeat: no-repeat !important;
       background-size: cover !important;
@@ -158,10 +158,11 @@
         el: '.mcontent',
         data: {
           Goods:[],
+          page:1,
           ischarge:false,
           allactive:false,
           errorImg: 'this.src="../../image/default.png"',
-          url:"https://shop.kuaiyunma.com/",
+          url:shopimgUrl,
         },
 
         created:function(){
@@ -244,9 +245,10 @@
           this.ischarge=!this.ischarge
         },
         allaC(){
+          const that =this
+          this.allactive=!this.allactive
           this.Goods.forEach(function(item){
-            item.active=true
-
+            item.active= that.allactive
           })
         },
         sels(obj){

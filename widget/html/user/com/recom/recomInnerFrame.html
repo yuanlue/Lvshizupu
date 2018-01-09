@@ -86,11 +86,16 @@
     white-space:nowrap;
     overflow: hidden;
   }
+  .myCompany{
+    padding-bottom:50px;
+  }
 .myCompany ul li input[type='file']{
   position: absolute;
   right:0;
   z-index:9;
   line-height: 50px;
+}.myCompany .intro img{
+  width:100%;
 }
   .myCompany  .opera{
     z-index:9;
@@ -148,11 +153,20 @@
             data:"",
             imgTitle:"请上传简介图片",
             pic:"",
-            errorImg: 'this.src="../../../../image/default.png"'
+            errorImg: 'this.src="../../../../image/default.png"',
+            url:'http://116.62.170.181:8081'
+
 
           },
         created:function(){
+          var that = this
           this.init()
+          this.$nextTick(function(){
+            $('.intro img').each(function(){
+              var src=$(this).attr('src')
+              $(this).attr('src',that.url+src)
+            })
+          })
           },
         methods:{
             modify(){

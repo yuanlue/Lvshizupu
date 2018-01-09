@@ -30,12 +30,6 @@
             left:10px;
             top:13px;
           }
-          .adminstor{
-            color:white;
-            font-size:16px;
-            position: absolute;
-            right:10px;
-          }
       </style>
   </head>
   <body>
@@ -43,30 +37,13 @@
         <header>
             <div id="cloud" class="topbar  activebar">
               <img class="return" onclick="api.closeWin()" src="../../image/return.png" alt="">
-                        我的足迹
-                      <span onclick="changeC()" class="adminstor">管理</span>
-
+                        <span>搜索结果</span>
             </div>
         </header>
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
   <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
   <script type="text/javascript">
-  function changeC(){
-    if($('.adminstor').text()=='管理'){
-      $('.adminstor').text('完成')
-    }
-    else{
-      $('.adminstor').text('管理')
-
-    }
-    api.execScript({
-        name: 'myfoot',
-        frameName: 'myfootFrame',
-        script: 're();'
-    });
-
-  }
       apiready = function(){
         var u = navigator.userAgent;
         var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
@@ -75,14 +52,16 @@
           $('.top').css({'background':'white',"height":"20px"})
         }
           api.openFrame({
-              name: 'myfootFrame',
-              url: '../../html/market/myfootFrame.html',
+              name: 'refundFrame',
+              url: '../../html/market/searchresultFrame.html',
               rect: {
                 x: 0,
                 y: 50+  $('.top').height(),
                 w: 'auto',
                 h: api.frameHeight-(50+  $('.top').height())
-
+              },
+              pageParam:{
+                name:api.pageParam.name
               },
               bounces: false,
               bgColor: 'rgba(0,0,0,0)',

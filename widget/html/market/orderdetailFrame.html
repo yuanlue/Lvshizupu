@@ -6,6 +6,27 @@
       <title>title</title>
       <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
       <style>
+      .app_wechat{
+  		background: url('../../image/market/wechatpay.png');
+  		display: inline-block;
+  		width:27px;
+  		height: 27px;
+  		vertical-align: middle;
+  		display: inline-block;
+  		margin-right:5px;
+  		background-size: contain
+  	}
+  	.wap_alipay{
+  		background: url('../../image/market/paypal.png');
+  		display: inline-block;
+      width:27px;
+  		height: 27px;
+  		vertical-align: middle;
+  		display: inline-block;
+      margin-right:5px;
+  		background-size: contain
+
+  	}
           .orderdetail{
             padding-bottom: 50px;
             background-color: #f5f4f4;
@@ -322,7 +343,7 @@
   			</ul>
   			<p class="status">
           <button v-if="orderDetail.status==6" @click="seller()">申请售后</button>
-          <button v-if="orderDetail.status!=6&&orderDetail.status!=5&&orderDetail.status!=12" @click="seller()">退款</button>
+          <button v-if="orderDetail.status!=6&&orderDetail.status!=5&&orderDetail.status!=12&&orderDetail.status!=7&&orderDetail.status!=2" @click="seller()">退款</button>
           实际付款：<span><i>¥ {{orderDetail.real_amount}}</i></span></p>
   		</div>
   		<div class="orderdeinfo">
@@ -344,7 +365,7 @@
 
     <button class="cancel" v-if="orderDetail.status==2" @click="del()">取消订单</button>
     <button class="payBtn" v-if="orderDetail.status==2" @click="payWay()">付款</button>
-    <button class="payBtn" v-if="orderDetail.status==6" @click="deliver(orderDetail.delivery_info)">查看物流</button>
+    <button class="payBtn" v-if="orderDetail.status==6||orderDetail.status==3" @click="deliver(orderDetail.delivery_info)">查看物流</button>
 
     <button class="payBtn" v-if="orderDetail.status==3" @click="receive()">确认收货</button>
     <button class="payBtn" v-if="orderDetail.status==6" @click="evaluate()">评价</button>
@@ -355,7 +376,7 @@
   		</div>
       <div class="popup" @click="cancel()" v-if="payStatus">
           <ul class="paypay">
-            <li v-for="item in paywayList" @click="selPayway(item.id,item.name)">
+            <li v-for="item in paywayList" @click="selPayway(item.id,item.name,item.class_name)">
               <span v-bind:class="item.class_name"></span>
               {{item.name}}
             </li>
@@ -387,7 +408,7 @@
             order_no:"",
             orderDetail:[],
             payStatus:false,
-            url:"https://shop.kuaiyunma.com/",
+            url:shopimgUrl,
             paywayList:[],
             errorImg: 'this.src="../../image/default.png"'
 
@@ -446,7 +467,7 @@
           'Authorization':$api.getStorage('token')
         })
       },
-      selPayway(id,name){
+      selPayway(id,name,classname){
               var that = this
               var para={
                 'order_no':api.pageParam.id,
@@ -454,31 +475,71 @@
               }
               postData('/shop/orders/pay',function(data){
                   if(data.code==200){
-                    var wxPay = api.require('wxPay');
-                      wxPay.payOrder(data.data, function(ret, err) {
-                          if (ret.status) {
-                            api.toast({
-                                    msg: '支付成功',
-                                    duration:2000,
-                                    location: 'bottom'
-                                });
-                                api.execScript({
-                                    name: 'myorder',
-                                    frameName: 'myorderFrame',
-                                    script: 're();'
-                                });
-                                api.closeWin();
+                    if(classname=='wap_alipay'){
+                      var aliPayPlus = api.require('aliPayPlus');
+                      aliPayPlus.payOrder({
+                    orderInfo: data.data
+                }, function(ret, err) {
+                    if(ret.code==9000){
+                          api.toast({
+                                  msg: '支付成功',
+                                  duration:2000,
+                                  location: 'bottom'
+                              });
+                            api.openWin({
+                                name: 'paysuccessWin',
+                                url: '../../html/market/paysuccessWin.html',
 
-                          } else {
-                            api.toast({
-                                    msg: '支付失败，请重试',
-                                    duration:2000,
-                                    location: 'bottom'
-                                });
-                                that.payStatus=true
+                            });
 
-                          }
-                      });
+                    }
+                    else{
+                      api.toast({
+                              msg: '支付失败，请重试',
+                              duration:2000,
+                              location: 'bottom'
+                          });
+                    }
+                });
+                    }
+                    else if(classname=='app_wechat'){
+                      var wxPay = api.require('wxPay');
+                        wxPay.payOrder({
+                            apiKey:data.data.apiKey.toString(),
+                            orderId:data.data.orderId.toString(),
+                            mchId:data.data.mchId.toString(),
+                            nonceStr:data.data.nonceStr.toString(),
+                            timeStamp:data.data.timeStamp.toString(),
+                            package:'Sign=WXPay',
+                            sign:data.data.sign}, function(ret, err) {
+
+                            if (ret.status) {
+                              api.toast({
+                                      msg: '支付成功',
+                                      duration:2000,
+                                      location: 'bottom'
+                                  });
+                                api.openWin({
+                                    name: 'paysuccessWin',
+                                    url: '../../html/market/paysuccessWin.html',
+
+                                });
+
+                            } else {
+                              api.toast({
+                                      msg: '支付失败，请重试',
+                                      duration:2000,
+                                      location: 'bottom'
+                                  });
+                              api.openWin({
+                                  name: 'myorderWin',
+                                  url: '../../html/market/myorderWin.html',
+
+                              });
+
+                            }
+                        })
+                    }
                   }
                   else{
                     api.toast({
@@ -504,7 +565,7 @@
 
       },
       cancel(){
-        this.payStatus=true
+        this.payStatus=false
 
       },
       detail(id){

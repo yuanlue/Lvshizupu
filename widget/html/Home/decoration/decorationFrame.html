@@ -134,7 +134,7 @@
     		if(parseInt(day)<10){
     			day="0"+date.getDate().toString()
     		}
-    		if(parseInt(month<10)){
+    		if(parseInt(month)<10){
     			month="0"+(date.getMonth()+1).toString()
     		}
   		nowTime=date.getFullYear().toString()+month+day
@@ -143,7 +143,6 @@
   		      var endT=endtime.split(" ")[0];
   		      item.startTime=startT.split('-')[0]+startT.split('-')[1]+startT.split('-')[2];
   		      item.endTime=endT.split('-')[0]+endT.split('-')[1]+endT.split('-')[2];
-
   		      if(parseFloat(nowTime) < parseFloat(item.startTime)){
   		        item.ac=2
   		      }
@@ -255,7 +254,9 @@
                   pageParam:{
                     id:id,
                     ac:ac
-                  }
+                  },
+                  useWKWebView:true
+
               });
             }
         }

@@ -6,7 +6,6 @@
       <title>title</title>
       <style>
       body{
-        width:100vw;
         padding:0;
         margin: 0;
     }
@@ -94,8 +93,8 @@
     }
       </style>
   </head>
-  <body >
-    <div class="usercenter" onclick="cancel()">
+  <body onclick="cancel()">
+    <div class="usercenter">
       <div class="banner">
       </div>
       <header>
@@ -104,22 +103,22 @@
       </header>
       <ul>
         <li onclick="cart()"><img src="../../image/cart.png" alt="">购物车</li>
-        <li onclick="order('myorder')"><img src="../../image/order.png" alt="">我的订单
+        <li onclick="order('myorder','')"><img src="../../image/order.png" alt="">我的订单
           <ol>
-              <li class="paying">
+              <li class="paying"  onclick="order('myorder','paying')">
                 <span>1</span>
                 <img src="../../image/market/icon-daifukuan.png" alt="">
-                <p>代付款</p>
+                <p>待付款</p>
               </li>
-              <li class="shipping">
+              <li class="shipping"  onclick="order('myorder','shipping')">
                 <span>1</span>
                 <img src="../../image/market/icon-daifahuo.png" alt="">
                 <p>待发货</p></li>
-              <li class="incoming">
+              <li class="incoming"  onclick="order('myorder','incoming')">
                 <span>1</span>
                 <img src="../../image/market/icon-daishouhuo.png" alt="">
                 <p>待收货</p></li>
-              <li class="commenting">
+              <li class="commenting"  onclick="order('myorder','commenting')">
                 <span>1</span>
                 <img src="../../image/market/icon-daipingjia.png" alt="">
                 <p>待评价</p></li>
@@ -129,7 +128,7 @@
         <li onclick="order('collection')"><img src="../../image/Mshoucang.png" alt="">我的收藏</li>
         <li onclick="order('address')"><img src="../../image/shouhuodizhi.png" alt="">收货地址</li>
         <li style="display:none"><img src="../../image/cart.png" alt="">银行卡绑定</li>
-        <li  onclick="order('recommend')"><img src="../../image/Mgoods.png" alt="">推荐商品</li>
+        <li  onclick="order('myfoot')"><img src="../../image/Mfoot.png" alt="">我的足迹</li>
         <li onclick="opens()"><img src="../../image/mshop.png" alt="">我要开店</li>
 
 
@@ -182,11 +181,14 @@
     },{},{'Authorization':$api.getStorage('token')})
 
   }
-  function order(name){
+  function order(name,type){
     api.openWin({
         name: name,
         url: '../../html/market/'+name+'Win.html',
-        bounces:false
+        bounces:false,
+        pageParam:{
+          type:type
+        }
 
     });
   }

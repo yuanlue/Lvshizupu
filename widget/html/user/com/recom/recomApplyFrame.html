@@ -225,6 +225,49 @@
        	},
         sure(){
           var that =this
+          var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+           if(reg.test(this.idcard) === false)
+           {
+             api.toast({
+                 msg: '身份证输入不合法',
+                 duration: 2000,
+                 location: 'bottom'
+             });
+               return  false;
+           }
+           if(!that.tel){
+             api.toast({
+                 msg: '请输入手机号',
+                 duration: 2000,
+                 location: 'bottom'
+             });
+               return  false;
+           }
+           if(!that.name){
+             api.toast({
+                 msg: '请输入姓名',
+                 duration: 2000,
+                 location: 'bottom'
+             });
+               return  false;
+           }
+           if(!that.positiveI){
+             api.toast({
+                 msg: '请上传身份证正面信息',
+                 duration: 2000,
+                 location: 'bottom'
+             });
+               return  false;
+           }
+           if(!that.backI){
+             api.toast({
+                 msg: '请上传身份证发面信息',
+                 duration: 2000,
+                 location: 'bottom'
+             });
+               return  false;
+           }
+
           postData('/sms/'+that.tel+'/validate',function(data){
             if(data.code==200){
               postData('/sms/'+that.tel+'/validate',function(data){

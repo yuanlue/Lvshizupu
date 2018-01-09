@@ -180,7 +180,7 @@
     </div>
     <p class="register">点击注册，即表示您同意<span onclick="agreement()">《天下吕氏 服务协议》</span></p>
   </div>
-  <div class="other"  style="display:none" >
+  <div class="other"  >
       <p>第三方登录</p>
       <ul>
         <li onclick="wechatLogin()"><img src="../../image/wechat.png" alt=""></li>
@@ -196,7 +196,6 @@
 
   <script type="text/javascript">
   function wechatLogin(){
-      var wx = api.require('wx');
     wx.isInstalled(function(ret, err) {
         if (ret.installed) {
           wx.auth({
@@ -440,7 +439,13 @@ function agreement(){
     })
   }
       apiready = function(){
-
+        wx = api.require('wx');
+        wx.isInstalled(function(ret, err) {
+   if (ret.installed) {
+   } else {
+     $('.other').hide()
+   }
+});
       };
   </script>
   </html>

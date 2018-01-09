@@ -81,10 +81,20 @@
     }
 
     else{
+      var wxPay = api.require('wxPay');
+
       postData('/weixin/pay',function(data){
         if(data.code==200){
-          var wxPay = api.require('wxPay');
-            wxPay.payOrder(data.data, function(ret, err) {
+
+            wxPay.payOrder({
+              apiKey:data.data.apiKey.toString(),
+              orderId:data.data.orderId.toString(),
+              mchId:data.data.mchId.toString(),
+              nonceStr:data.data.nonceStr.toString(),
+              timeStamp:data.data.timeStamp.toString(),
+              package:'Sign=WXPay',
+              sign:data.data.sign
+            }, function(ret, err) {
                 if (ret.status) {
                   api.toast({
                           msg: '捐款成功，谢谢您的支持',

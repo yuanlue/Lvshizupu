@@ -12,10 +12,10 @@
       }
           .top{
             height:25px;
-            background: black;
+            background: #e85f2d;
           }
           .topbar {
-            background-image: url("../../image/status.png");
+            background-color: #e85f2d;
             background-size: cover;
             height: 50px;
             border-bottom: 1px solid #DDDFE3;
@@ -30,11 +30,11 @@
             left:10px;
             top:13px;
           }
-          .adminstor{
-            color:white;
-            font-size:16px;
+          .topbar .cart{
+            width:22px;
             position: absolute;
             right:10px;
+            top:13px;
           }
       </style>
   </head>
@@ -43,8 +43,7 @@
         <header>
             <div id="cloud" class="topbar  activebar">
               <img class="return" onclick="api.closeWin()" src="../../image/return.png" alt="">
-                        我的足迹
-                      <span onclick="changeC()" class="adminstor">管理</span>
+                        折扣专区
 
             </div>
         </header>
@@ -52,18 +51,11 @@
   <script type="text/javascript" src="../../script/api.js"></script>
   <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
   <script type="text/javascript">
-  function changeC(){
-    if($('.adminstor').text()=='管理'){
-      $('.adminstor').text('完成')
-    }
-    else{
-      $('.adminstor').text('管理')
+  function cart(){
+    api.openWin({
+        name: 'cart',
+        url: '../../html/market/cartWin.html',
 
-    }
-    api.execScript({
-        name: 'myfoot',
-        frameName: 'myfootFrame',
-        script: 're();'
     });
 
   }
@@ -72,17 +64,19 @@
         var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
         var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
         if(isiOS){
-          $('.top').css({'background':'white',"height":"20px"})
+          $('.top').css({'background':'#e85f2d',"height":"20px"})
         }
           api.openFrame({
-              name: 'myfootFrame',
-              url: '../../html/market/myfootFrame.html',
+              name: 'discountFrame',
+              url: '../../html/market/discountFrame.html',
               rect: {
                 x: 0,
                 y: 50+  $('.top').height(),
                 w: 'auto',
                 h: api.frameHeight-(50+  $('.top').height())
-
+              },
+              pageParam:{
+                order_no:api.pageParam.order_no
               },
               bounces: false,
               bgColor: 'rgba(0,0,0,0)',

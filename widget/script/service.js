@@ -1,9 +1,12 @@
+// window.baseurl="https://api.yiwenyiwen.com/"
+window.baseurl="https://wx2.kuaiyunma.com"
+window.shopimgUrl="https://shop.kuaiyunma.com/"
 function postData(para,callback,parama,header){
-  var url="https://wx2.kuaiyunma.com"
+
     $.ajax({
               type: "post",
               data:parama,
-              url: url+para,
+              url: baseurl+para,
               dataType: "json",
               headers: header,
               success: function(data){
@@ -23,11 +26,11 @@ function postData(para,callback,parama,header){
 
 }
 function getData(para,callback,parama,header){
-  var url="https://wx2.kuaiyunma.com"
+
     $.ajax({
               type: "GET",
               data:parama,
-              url: url+para,
+              url: baseurl+para,
               async:false,
                cache:false,
               dataType: "json",
@@ -37,6 +40,7 @@ function getData(para,callback,parama,header){
                         callback(data)
             },
             error:function(err){
+              alert(JSON.stringify(err))
               api.toast({
                       msg: '服务器异常',
                       duration:2000,
@@ -48,11 +52,11 @@ function getData(para,callback,parama,header){
 
 }
 function deleteData(para,callback,parama,header){
-  var url="https://wx2.kuaiyunma.com"
+
     $.ajax({
               type: "DELETE",
               data:parama,
-              url: url+para,
+              url: baseurl+para,
               async:false,
                cache:false,
               dataType: "json",
@@ -72,11 +76,11 @@ function deleteData(para,callback,parama,header){
 
 }
 function putData(para,callback,parama,header){
-  var url="https://wx2.kuaiyunma.com"
+
     $.ajax({
               type: "put",
               data:parama,
-              url: url+para,
+              url: baseurl+para,
               async:false,
                cache:false,
               dataType: "json",
@@ -97,12 +101,11 @@ function putData(para,callback,parama,header){
 
 }
 function upimg(para,callback,parama,header){
-  var url="https://wx2.kuaiyunma.com"
 
     $.ajax({
               type: "post",
               data:parama,
-              url: url+para,
+              url: baseurl+para,
               async:false,
               cache:false,
               processData:false,
@@ -123,7 +126,7 @@ function upimg(para,callback,parama,header){
 }
 function changeAvata(path,headers,callback,callbackerr){
   api.ajax({
-      url: 'https://wx2.kuaiyunma.com/users/avatar',
+      url: baseurl+'users/avatar',
       method: 'POST',
       headers:headers,
       data: {

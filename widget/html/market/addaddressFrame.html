@@ -45,6 +45,9 @@
         float: right;
         margin-right:10px;
         }
+          .addaddress .address>span{
+            float: none;
+          }
         .addaddress ul li input{
         font-size:15px;
         margin-left:10px;
@@ -101,7 +104,7 @@
        			<li class="address" @click="addA()">
        				所在地区
        				<span>
-       					{{province}}{{city}}
+                {{province}}{{city}}{{area}}{{street}}
        				</span>
        			</li>
 
@@ -202,7 +205,7 @@
 
 			postData('/shop/addresses',function(data){
         api.hideProgress();
-        
+
 				if(data.code==200){
           api.toast({
                   msg: '添加成功',

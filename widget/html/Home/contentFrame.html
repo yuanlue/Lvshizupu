@@ -104,6 +104,32 @@
   <script type="text/javascript" src="../../script/service.js"></script>
 
   <script type="text/javascript">
+  function shareWeb(){
+    var wx = api.require('wx');
+      wx.shareWebpage({
+          apiKey: '',
+          scene: 'session',
+          title: title,
+          description: '我在吕氏天下APP看'+title+',你也来看看吧！',
+          thumb: url+pic,
+          contentUrl: 'http://wx.kuaiyunma.com/#/'+api.pageParam.category+'/'+api.pageParam.id+'/content'
+      }, function(ret, err) {
+          if (ret.status) {
+            api.toast({
+                msg: '分享成功',
+                duration: 2000,
+                location: 'bottom'
+            });
+          } else {
+              api.toast({
+                  msg: '分享失败',
+                  duration: 2000,
+                  location: 'bottom'
+              });
+
+          }
+      });
+  }
   var url="http://116.62.170.181:8081"
 
       apiready = function(){
@@ -124,11 +150,12 @@
     if($api.getStorage('token')){
         getData('/'+api.pageParam.category+'/'+api.pageParam.id,function(data){
         api.hideProgress();
+        title=data.data.title
         if(api.pageParam.category=='cultures'){
         $('.content h1').html(data.data.title)
         $('.content .from').html(data.data.branch)
         $('.thumb img').attr('src',url+data.data.pic)
-
+        pic=data.data.pic
         $('.inner').html(data.data.detail)
         $('.time').html(data.data.created_at)
       }
@@ -136,6 +163,8 @@
         $('.content h1').text(data.data.name)
         $('.content .from').text(data.data.assess)
         $('.thumb img').attr('src',url+data.data.avatar)
+        pic=data.data.avatar
+
         $('.inner').html(data.data.intro)
         $('.thumb').show()
 
@@ -144,6 +173,8 @@
         $('.content h1').text(data.data.title)
         $('.content .from').html(data.data.assess)
         $('.thumb img').attr('src',url+data.data.pic)
+         pic=data.data.pic
+
         $('.inner').html(data.data.detail)
 
         $('.neirong').append('<p class="act">开始时间：'+data.data.start_at+'</p>')
@@ -164,6 +195,7 @@
         $('.content h1').text(data.data.name)
         $('.content .from').text(data.data.tag)
         $('.thumb img').attr('src',url+data.data.avatar)
+        pic=data.data.avatar
         $('.inner').html(data.data.intro)
         $('.thumb').show()
 
@@ -174,6 +206,8 @@
           $('.content h1').text(data.data.title)
         $('.inner').html(data.data.content)
           $('.thumb img').attr('src',url+data.data.pic)
+          pic=data.data.pic
+
       }
         },{},{"Authorization":$api.getStorage('token')})
       }

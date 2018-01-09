@@ -86,6 +86,7 @@
     }
     .allCate .container ul li {
       width:33%;
+      vertical-align: middle;
       text-align: center;
       display: inline-block;
       background-color: white;
@@ -143,12 +144,24 @@
     [v-cloak]{
       display: none;
     }
+    .empty{
+      margin-top:20px;
+
+      font-size:14px;
+      text-align: center;
+    }
+    .empty p{
+      margin-top:10px;
+    }
+    .empty img{
+      width:100px;
+    }
       </style>
   </head>
   <body>
     <div class="allCate" v-cloak>
     	<div class="search">
-    		<input type="text" placeholder="请输入商品/店铺名">
+    		<input @click="search()" type="text" placeholder="请输入商品/店铺名">
     	</div>
        <div class="tab">
          <ul>
@@ -169,6 +182,10 @@
 
 
          </ul>
+         <div class="empty" v-if="sonCategory.length<1">
+           <img src="../../image/market/empty.png" alt="">
+           <p>暂无数据</p>
+         </div>
        </div>
      </div>
   </body>
@@ -183,7 +200,7 @@
       data: {
         categoryList:[],
       manList:[],
-      url:"https://shop.kuaiyunma.com/",
+      url:shopimgUrl,
       selectIndex:0,
       acT:"",
       errorImg: 'this.src="../../image/default.png"',
@@ -219,11 +236,9 @@
                 getData("/shop/categories",function(data){
                   api.hideProgress();
 
-                  data.data.forEach(function(item){
-                    item.goods=[]
-                    getData('/shop/categories/category_goods',function(res){
-                        item.goods=res.data
-
+                  data.data.forEach(item=>{
+                    getData('/shop/categories',function(res){
+                      item.goods=res.data
                     },{'id':item.id},{'Authorization':$api.getStorage('token')})
                   })
                   that.sonCategory=data.data
@@ -233,14 +248,68 @@
         },
         detail(id){
           api.openWin({
-              name: 'goodsInner',
-              url: '../../html/market/goodsInnerWin.html',
+              name: 'allGoodsWin',
+              url: '../../html/market/allGoodsWin.html',
               pageParam: {
-                  id: id
+                  id: id,
+                  type:'all'
               }
           });
 
   },
+      search(){
+        var UISearchBar = api.require('UISearchBar');
+          UISearchBar.open({
+              placeholder: '请输入搜索关键字',
+              historyCount: 10,
+              showRecordBtn: false,
+              texts: {
+                  cancelText: '取消',
+                  clearText: '清除搜索记录'
+              },
+              styles: {
+                  navBar: {
+                      bgColor: '#9e2932',
+                      borderColor: '#ccc'
+                  },
+                  searchBox: {
+                      bgImg: '',
+                      color: '#000',
+                      height: 40
+                  },
+                  cancel: {
+                      bg: 'rgba(0,0,0,0)',
+                      color: '#fff',
+                      size: 16
+                  },
+                  list: {
+                      color: '#696969',
+                      bgColor: '#FFFFFF',
+                      borderColor: '#eee',
+                      size: 16
+                  },
+                  clear: {
+                      color: '#9e2932',
+                      borderColor: '#ccc',
+                      size: 16
+                  }
+              }
+          }, function(ret, err) {
+              if (ret) {
+                if(ret.eventType=="search"||ret.eventType=="history"){
+                  api.openWin({
+                      name: 'searchresultWin',
+                      url: '../../html/market/searchresultWin.html',
+                      pageParam: {
+                          name: ret.text
+                      }
+                  });
+                }
+              } else {
+
+              }
+          });
+      },
         check(obj){
           var that = this
           this.acT=obj.id
@@ -251,30 +320,20 @@
               modal: false
           });
           getData('/shop/categories',function(data){
-              api.hideProgress();
+            api.hideProgress();
 
-            if(!data.data||data.data.length<1){
-              data.data=[{
-                'name':obj.name
-              }]
-              getData('/shop/categories/category_goods',function(res){
-                  data.data[0].goods=res.data
+            if(data.code==200){
 
-              },{'id':obj.id},{'Authorization':$api.getStorage('token')})
+                getData("/shop/categories",function(data){
+
+                  data.data.forEach(item=>{
+                    getData('/shop/categories',function(res){
+                      item.goods=res.data
+                    },{'id':item.id},{'Authorization':$api.getStorage('token')})
+                  })
+                  that.sonCategory=data.data
+                },{'id':that.acT,'page_size':100},{'Authorization':$api.getStorage('token')})
             }
-            else{
-              data.data.forEach(function(item){
-                item.goods=[]
-                getData('/shop/categories/category_goods',function(res){
-
-                    item.goods=res.data
-
-                },{'id':item.id},{'Authorization':$api.getStorage('token')})
-              })
-            }
-              that.sonCategory=data.data
-
-
           },{'page_size':100,'id':obj.id},{'Authorization':$api.getStorage('token')})
 
 

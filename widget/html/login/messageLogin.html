@@ -141,7 +141,7 @@
     </div>
     <p class="register">还未注册，点击<span onclick="regis()">立即注册</span></p>
   </div>
-  <div class="other"  style="display:none"  >
+  <div class="other"  >
       <p>第三方登录</p>
       <ul>
         <li onclick="wechatLogin()"><img src="../../image/wechat.png" alt=""></li>
@@ -158,7 +158,6 @@
 
   <script type="text/javascript">
   function wechatLogin(){
-      var wx = api.require('wx');
     wx.isInstalled(function(ret, err) {
         if (ret.installed) {
           wx.auth({
@@ -166,6 +165,7 @@
           }, function(ret, err) {
             if (ret.status) {
                 getData('/weixin/oauth2_callback',function(data){
+
                   if(data.code==200){
                     if(data.data.exist==true){
                       api.toast({
@@ -222,6 +222,13 @@
                     });
                   }
 
+                  }
+                  else{
+                    api.toast({
+                      msg: data.message,
+                      duration: 2000,
+                      location: 'bottom'
+                  });
                   }
                 },{'code':ret.code},{'Authorization':$api.getStorage('token')})
             } else {
@@ -333,7 +340,13 @@
     }})
   }
       apiready = function(){
-
+        wx = api.require('wx');
+        wx.isInstalled(function(ret, err) {
+   if (ret.installed) {
+   } else {
+     $('.other').hide()
+   }
+});
         if(api.pageParam.tel){
           $('#userName').val(api.pageParam.tel)
         }

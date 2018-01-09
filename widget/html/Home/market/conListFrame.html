@@ -94,13 +94,42 @@
           el: '.conListFrame',
           data: {
             searchText:"",
-             list:[]
+             list:[],
+             page:1
           },
           created:function(){
+            var that = this
               this.init()
+              api.addEventListener({
+                name: 'scrolltobottom'
+              }, function(ret, err){
 
+                that.loadmore()
+
+                });
           },
         methods:{
+          loadmore(){
+            var that = this
+            that.page++
+            api.showProgress({
+                style: 'default',
+                animationType: 'fade',
+                title: '努力加载中...',
+                text: '先喝杯茶...',
+                modal: false
+            });
+
+            getData('/companies',function(data){
+              api.hideProgress();
+
+              if(data.code==200){
+                data.data.forEach(function(item){
+                that.list.push(item)
+                })
+              }
+            },{'name':that.searchText,'page':that.page,'page_size':10},{'Authorization':$api.getStorage('token')})
+          },
           search(){
             var that = this
             api.showProgress({
@@ -114,7 +143,7 @@
           if(data.code==200){
             that.list=data.data
           }
-        },{'name':that.searchText},{'Authorization':$api.getStorage('token')})
+        },{'name':that.searchText,'page':that.page,'page_size':10},{'Authorization':$api.getStorage('token')})
   },
           init(){
             var that = this

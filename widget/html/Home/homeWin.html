@@ -15,8 +15,9 @@
         #footer {
             width: 100%;
             text-align: center;
-            height: 56px;
-            line-height: 55px;
+            height: 52px;
+            box-sizing: border-box;
+            line-height: 52px;
             background-color: #fff;
             border-top:1px solid #dbdbdb;
         }
@@ -235,8 +236,11 @@ function menu(){
   var footer_h = $api.offset($footer).h;
 
   var rect_h = body_h - header_h - footer_h;
-  var y=43+  $('.top').height()
-  rect_h=rect_h-5
+  var y=50+  $('.top').height()
+  if(!isiOS){
+    rect_h=rect_h-25
+
+  }
   api.openFrame({
       name: 'marketMenu',
       url: '../../html/market/menuWin.html',
@@ -362,29 +366,12 @@ function message(){
         exitApp()
       var u = navigator.userAgent;
       var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
-      var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+       isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
       if(isiOS){
         $('.top').hide()
       }
 
-      // function getNewMessage(){
-      //   rong.setOnReceiveMessageListener(function (ret, err) {
-      //
-      //                   api.sendEvent({
-      //                            name :'getNewMessage',
-      //                            extra : {
-      //                               data : ret.result.message
-      //                            }
-      //                    })
-      //
-      // })
-      // }
-      var UIChatBox = api.require('UIChatBox');
-      // rong.init(function(ret, err){
-      //     if (ret.status == 'error')
-      //         api.toast({ msg: err.code });
-      // });
-  // getNewMessage()
+
   var $header = $api.dom('header');
   $api.fixIos7Bar($header);
   var $body = $api.dom('body');
@@ -394,8 +381,9 @@ function message(){
   var footer_h = $api.offset($footer).h;
 
   var rect_h = body_h - header_h - footer_h;
-   y=43+  $('.top').height()
-  rect_h=rect_h-5
+   y=45+  $('.top').height()
+
+  if(!isiOS){rect_h=rect_h-25;   y=50+  $('.top').height()}
   api.openFrame({
       name: 'home',
       url: '../../html/Home/main.html',
@@ -466,6 +454,7 @@ function message(){
     // 随意切换按钮
     function randomSwitchBtn(obj, name, index) {
       var $header = $api.dom('header');
+      $api.fixIos7Bar($header);
       var $body = $api.dom('body');
       var $footer = $api.byId('footer');
       var header_h = $api.offset($header).h;
@@ -473,8 +462,8 @@ function message(){
       var footer_h = $api.offset($footer).h;
 
       var rect_h = body_h - header_h - footer_h;
-      var y=43+  $('.top').height()
-      rect_h=rect_h-5
+      var y=45+  $('.top').height()
+      if(!isiOS){rect_h=rect_h-25;   y=50+  $('.top').height()}
 
       if(name=='cloud'){
         api.openFrame({

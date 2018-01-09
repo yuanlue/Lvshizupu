@@ -221,7 +221,7 @@
     app=new Vue({
       el: '.myorder',
       data: {
-        url:"https://shop.kuaiyunma.com/",
+        url:shopimgUrl,
             loading:false,
       	    page:1,
             orderList:[],
@@ -230,6 +230,9 @@
 
       },
       created:function(){
+        api.closeWin({
+            name: 'confirmOrderWin'
+        });
         var that = this
         this.init()
         api.addEventListener({
@@ -242,6 +245,9 @@
       },
     methods:{
         init(){
+          if(api.pageParam.type){
+            this.active=api.pageParam.type
+          }
           api.closeWin({
               name: 'refundWin'
           });
@@ -258,7 +264,7 @@
                   that.orderList=data.data
 
                 }
-              },{'page':1,'page_size':3},{'Authorization':$api.getStorage('token')})
+              },{'page':1,'page_size':3,'status':that.active},{'Authorization':$api.getStorage('token')})
         },
         loadmore(){
           var that = this

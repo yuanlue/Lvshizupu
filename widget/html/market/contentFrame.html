@@ -12,7 +12,6 @@
 
       }
       .mcontent>ul{
-        margin-top:50px;
         padding:0 10px;
         font-size:0;
       }
@@ -86,6 +85,13 @@
         color:#9e2931;
         border-bottom:2px solid #9e2931;
       }
+      .mcontent>ul li .saleNum{
+        line-height: 1;
+        font-weight: normal;
+        margin-top:0 !important;
+        font-size:12px;
+        color:#ccc;
+      }
       del{
         color:#999;
       }
@@ -93,16 +99,7 @@
   </head>
   <body>
     <div class="mcontent" v-cloak>
-      <div class="tab">
-          <ul>
-            <li @click="navchange(4)" v-bind:class="{active:active==4}">综合</li>
-            <li @click="navchange(2)" v-bind:class="{active:active==2}">销量</li>
-            <li @click="navchange(3)" v-bind:class="{active:active==3}">新品</li>
-            <li @click="navchange(1)" v-bind:class="{active:active==1}">价格
-              <img src="../../image/market/rank.png" alt="">
-            </li>
-          </ul>
-      </div>
+
       <ul>
         <li v-for="item in Goods" @click="inner(item.id)">
               <div>
@@ -111,6 +108,7 @@
             <p>{{item.name}}</p>
             <span><i>￥</i>{{item.sell_price}}</span>
             <del>{{item.market_price}}</del>
+            <p class="saleNum">销量:{{item.sale}}</p>
           </li>
       </ul>
     </div>
@@ -128,8 +126,14 @@
           Goods:[],
           active:4,
           page:1,
-          url:"https://shop.kuaiyunma.com/",
-          errorImg: 'this.src="../../image/default.png"'
+          url:shopimgUrl,
+          errorImg: 'this.src="../../image/default.png"',
+          requestUrl:'/shop/goods/promotions/commend_goods',
+          para:{
+                'commend_id':1,
+                'page':1,
+                'page_size':4
+          }
 
         },
         created:function(){
@@ -162,7 +166,8 @@
           text: '先喝杯茶...',
           modal: false
       });
-          getData('/shop/goods/promotions/commend_goods',function(data){
+        that.para.page=that.page
+          getData(that.requestUrl,function(data){
             api.hideProgress();
             if(data.code==200){
               data.data.forEach(function(item){
@@ -170,20 +175,9 @@
               })
               api.hideProgress();
             }
-          },{'commend_id':that.active,'page':that.page,'page_size':4},{'Authorization':$api.getStorage('token')})
+          },that.para,{'Authorization':$api.getStorage('token')})
         },
-        navchange(index){
-          var that = this
-          this.active=index
-          that.page=1
-          getData('/shop/goods/promotions/commend_goods',function(data){
-            api.hideProgress();
-            if(data.code==200){
-              that.Goods=data.data
-              api.hideProgress();
-            }
-          },{'commend_id':that.active,'page':that.page,'page_size':4},{'Authorization':$api.getStorage('token')})
-        },
+
           init(){
             var that = this
             api.showProgress({
@@ -191,13 +185,23 @@
             text: '先喝杯茶...',
             modal: false
         });
-            getData('/shop/goods/promotions/commend_goods',function(data){
+        if(api.pageParam.type=='discount'){
+          //折扣
+          that.requestUrl='/shop/goods/promotions/discount_goods'
+          that.para={
+            id:api.pageParam.id,
+            page:that.page,
+            page_size:4
+          }
+        }
+      
+            getData(that.requestUrl,function(data){
               if(data.code==200){
                 that.Goods=data.data
                 api.hideProgress();
 
               }
-            },{'commend_id':1,'page':1,'page_size':4},{'Authorization':$api.getStorage('token')})
+            },that.para,{'Authorization':$api.getStorage('token')})
           }
 
 

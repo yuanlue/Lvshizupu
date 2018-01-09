@@ -7,6 +7,8 @@
       <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
       <style>
       body{
+        min-height: 100vh;
+        box-sizing: border-box;
         background: #eeeeee
       }
       .shopintro header{
@@ -70,7 +72,7 @@
           border-bottom:2px solid #9e2931;
         }
         .shopintro>ul{
-          margin-top:140px;
+          margin-top:50px;
           padding:0 10px;
           font-size:0;
         }
@@ -129,14 +131,7 @@
   <body>
       <div class="shopintro" v-cloak>
         <div class="topinfo">
-        <header>
-          <img src="../../image/logo.png" alt="">
-          <div class="intro">
-            <p class="name">{{sallerInfo.true_name}}</p>
-            <p class="status"><img src="../../image/renzheng.png" alt="">已认证</p>
-          </div>
 
-        </header>
         <div class="tab">
             <ul>
               <li @click="navchange('visit desc')" v-bind:class="{active:active=='visit desc'}">综合</li>
@@ -215,7 +210,7 @@
         text: '先喝杯茶...',
         modal: false
     });
-        getData('/shop/goods/seller_goods',function(data){
+        getData('/shop/categories/category_goods',function(data){
           api.hideProgress();
           if(data.code==200){
             data.data.forEach(function(item){
@@ -236,7 +231,7 @@
         else{
           that.isdesc=true
         }
-        getData('/shop/goods/seller_goods',function(data){
+        getData('/shop/categories/category_goods',function(data){
           api.hideProgress();
           if(data.code==200){
             that.Goods=data.data
@@ -254,27 +249,13 @@
       });
 
 
-      getData('/shop/sellers/'+api.pageParam.id,function(data){
+      getData('/shop/categories/category_goods',function(data){
         if(data.code==200){
-          that.sallerInfo=data.data
-          getData('/shop/goods/seller_goods',function(data){
-            if(data.code==200){
-              that.Goods=data.data
-              api.hideProgress();
-
-            }
-          },{'id':api.pageParam.id,'page':1,'page_size':4,'orders':'visit desc'},{'Authorization':$api.getStorage('token')})
-        }
-        else{
-          api.toast({
-              msg: '参数错误',
-              duration: 2000,
-              location: 'bottom'
-          });
+          that.Goods=data.data
+          api.hideProgress();
 
         }
-
-      },{},{'Authorization':$api.getStorage('token')})
+      },{'id':api.pageParam.id,'page':1,'page_size':4,'orders':'visit desc'},{'Authorization':$api.getStorage('token')})
 
         }
 

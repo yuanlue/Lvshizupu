@@ -45,6 +45,9 @@
         float: right;
         margin-right:10px;
         }
+          .addaddress .address>span{
+            float: none;
+          }
         .addaddress ul li input{
         font-size:15px;
         margin-left:10px;
@@ -101,12 +104,12 @@
        			<li class="address" @click="addA()">
        				所在地区
        				<span>
-       					{{province}}{{city}}{{area}}
+                {{province}}{{city}}{{area}}{{street}}
        				</span>
        			</li>
 
        			<li class="info">
-       				<input type="text" placeholder="详细地址" v-model="address">
+       				详细地址：<input type="text" placeholder="详细地址" v-model="address">
        			</li>
        		</ul>
        		<div class="opera" @click="sure()">

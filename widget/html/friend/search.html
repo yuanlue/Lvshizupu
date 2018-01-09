@@ -59,7 +59,7 @@
         width:21px;
       }
       .serachInput{
-        width:70%;
+        width:80%;
 
         height:30px;
         vertical-align: top;
@@ -74,7 +74,7 @@
           <img class="return" onclick="api.closeWin()" src="../../image/return.png" alt="">
           <div class="searchinner">
               <img src="../../image/res_search.png" alt="">
-              <input class="serachInput" type="text">
+              <input class="serachInput" type="search" onsearch="search()">
           </div>
           <span class="search" onclick="search()">搜索</span>
         </div>
@@ -88,9 +88,42 @@
   <script type="text/javascript" src="../../script/service.js"></script>
 
   <script type="text/javascript">
+  function loadmore(){
+    cur++
+    getData('/clan_users?name='+$('.serachInput').val(),function(data){
+      data.data.forEach(function(item){
+        item.title=item.name
+        item.subTitle=item.nationality+item.province+item.city
+        if(item.avatar==null){
+          item.imgPath="widget://image/male.png"
+        }
+        else{
+        item.imgPath=item.avatar.split('!')[0]
+        }
+      })
+      UIListView.appendData({
+          data: data.data
+      }, function(ret, err) {
+          if (ret) {
+          } else {
+          }
+      });
+    },{'page':cur,'page_size':10},{'authorization':$api.getStorage('token')})
+
+  }
   function search(){
+    api.showProgress({
+        style: 'default',
+        animationType: 'fade',
+        title: '努力加载中...',
+        text: '先喝杯茶...',
+        modal: false
+    });
+
     //请求 刷新
     getData('/clan_users?name='+$('.serachInput').val(),function(data){
+      api.hideProgress();
+
       if(data.data.length<1){
         api.toast({
                 msg: '搜索结果为空',
@@ -110,7 +143,7 @@
               x: 0,
               y: 50+  $('.top').height()+43,
               w: api.winWidth,
-              h:api.frameHeight-(50+  $('.top').height()+40)
+              h:api.screenHeight-(50+  $('.top').height()+40)
           },
           data: data.data,
 
@@ -169,9 +202,30 @@
           } else {
           }
       });
+      UIListView.setRefreshFooter({
+      loadingImg: 'widget://res/UIListView_arrow.png',
+      bgColor: '#F5F5F5',
+      textColor: '#8E8E8E',
+      textUp: '上拉加载更多...',
+      textDown: '松开开始加载...',
+      showTime: true
+    }, function(ret, err) {
+      if (ret) {
+          loadmore()
+      } else {
+          api.toast({
+              msg: '已经是所有数据了',
+              duration: 2000,
+              location: 'bottom'
+          });
+
+
+      }
+    });
     },{},{"Authorization":$api.getStorage('token')})
   }
   apiready = function(){
+    cur=1
     var u = navigator.userAgent;
 
     var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
