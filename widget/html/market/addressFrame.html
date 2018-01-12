@@ -188,82 +188,43 @@
           });
         return false
         }
-        var dialogBox = api.require('dialogBox');
+        api.confirm({
+          title: '提示',
+          msg: '确定要删除该收货地址吗？',
+          buttons: ['确定', '取消']
+      }, function(ret, err) {
+          var ac = ret.buttonIndex;
+          if(ac==1){
+            deleteData('/shop/addresses/'+obj.id,function(data){
 
-        dialogBox.alert({
-            texts: {
-                content: '确定要删除该收货地址吗？',
-                leftBtnTitle: '取消',
-                rightBtnTitle: '确认'
-            },
-            styles: {
-                bg: '#fff',
-                w: 300,
+              if(data.code==200){
+                api.toast({
+                        msg: '删除成功',
+                        duration:5000,
+                        location: 'bottom'
+                    })
 
-                content: {
-                    color: '#000',
-                    size: 14
-                },
-                left: {
-                    marginB: 7,
-                    marginL: 20,
-                    w: 130,
-                    h: 35,
-                    corner: 2,
-                    color:'#fff',
-
-                    bg: '#c2262b',
-                    size: 12
-                },
-                right: {
-                    marginB: 7,
-                    marginL: 10,
-                    w: 130,
-                    h: 35,
-                    corner: 2,
-                    color:'#fff',
-                    bg: '#c2262b',
-                    size: 12
-                }
-            }
-        }, function(ret) {
-            if (ret.eventType == 'left') {
-                dialogBox.close({
-                    dialogName: 'alert'
+                that.addressList.splice(index,1)
+                api.execScript({
+                    name: 'confirmOrderWin',
+                    frameName: 'confirmOrderFrame',
+                    script: 're();'
                 });
+              }
+              else{
+                api.toast({
+                        msg:data.message,
+                        duration:5000,
+                        location: 'bottom'
+                    })
+              }
+            },{},{'Authorization':$api.getStorage('token'),
+              'Content-Type':'application/json'
+            })
+          }
+      });
 
-            }
-            else{
-              deleteData('/shop/addresses/'+obj.id,function(data){
-                dialogBox.close({
-                    dialogName: 'alert'
-                });
-                if(data.code==200){
-                  api.toast({
-                          msg: '删除成功',
-                          duration:5000,
-                          location: 'bottom'
-                      })
-
-                  that.addressList.splice(index,1)
-                  api.execScript({
-                      name: 'confirmOrderWin',
-                      frameName: 'confirmOrderFrame',
-                      script: 're();'
-                  });
-                }
-                else{
-                  api.toast({
-                          msg:data.message,
-                          duration:5000,
-                          location: 'bottom'
-                      })
-                }
-              },{},{'Authorization':$api.getStorage('token'),
-                'Content-Type':'application/json'
-              })
-            }
-        });
+        
 
   },
       setdef(obj){

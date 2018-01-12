@@ -12,10 +12,10 @@
       }
           .top{
             height:25px;
-            background: #41906d;
+            background: black;
           }
           .topbar {
-            background-color:#41906d;
+            background-image: url("../../image/status.png");
             background-size: cover;
             height: 50px;
             border-bottom: 1px solid #DDDFE3;
@@ -30,12 +30,6 @@
             left:10px;
             top:13px;
           }
-          .topbar .cart{
-            width:22px;
-            position: absolute;
-            right:10px;
-            top:13px;
-          }
       </style>
   </head>
   <body>
@@ -43,31 +37,26 @@
         <header>
             <div id="cloud" class="topbar  activebar">
               <img class="return" onclick="api.closeWin()" src="../../image/return.png" alt="">
-                        土特产专区
-
+                        <span>投诉卖家</span>
             </div>
         </header>
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
   <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
   <script type="text/javascript">
-  function cart(){
-    api.openWin({
-        name: 'cart',
-        url: '../../html/market/cartWin.html',
-
-    });
-  }
       apiready = function(){
+        $('#cloud span').text(api.pageParam.name)
+
         var u = navigator.userAgent;
         var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
         var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
         if(isiOS){
           $('.top').css({'background':'white',"height":"20px"})
         }
+        if(!api.pageParam.complaintList){
           api.openFrame({
-              name: 'specialtyFrame',
-              url: '../../html/market/specialtyFrame.html',
+              name: 'complaintWin',
+              url: '../../html/market/complaintFrame.html',
               rect: {
                 x: 0,
                 y: 50+  $('.top').height(),
@@ -75,13 +64,37 @@
                 h: api.frameHeight-(50+  $('.top').height())
 
               },
-              customRefreshHeader: 'UIPullRefreshFlash',
-
+              pageParam:{
+                  order_no:api.pageParam.order_no
+              },
               bounces: false,
               bgColor: 'rgba(0,0,0,0)',
               vScrollBarEnabled: true,
               hScrollBarEnabled: true
           });
+        }
+        else{
+          api.openFrame({
+              name: 'complaintListFrame',
+              url: '../../html/market/complaintListFrame.html',
+              rect: {
+                x: 0,
+                y: 50+  $('.top').height(),
+                w: 'auto',
+                h: api.frameHeight-(50+  $('.top').height())
+
+              },
+              pageParam:{
+                  order_no:api.pageParam.order_no,
+                  complaintList:api.pageParam.complaintList
+              },
+              bounces: false,
+              bgColor: 'rgba(0,0,0,0)',
+              vScrollBarEnabled: true,
+              hScrollBarEnabled: true
+          });
+        }
+
 
       };
   </script>

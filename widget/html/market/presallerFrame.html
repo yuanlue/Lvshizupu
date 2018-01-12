@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/swiper-3.4.2.min.css"/>
+
+      <style>
+          body,html{
+          min-height:100vh;
+          background-color: #f3f1f1;
+          }
+
+
+
+            .List{
+              margin-top:10px;
+            }
+            .List  li>div{
+              padding:15px 10px;
+            }
+            i{
+              font-style:normal;
+            }
+              .List  li{
+                background-color: white;
+                border-bottom:1px solid #eee;
+              }
+            .List  li .info{
+              vertical-align: top;
+              width: 70%;
+              margin-left:10px;
+              display: inline-block;
+            }
+            @media screen  and (max-width: 320px) {
+              .List  li .info{
+                vertical-align: top;
+                width: 60%;
+                margin-left:10px;
+                display: inline-block;
+              }
+            }
+          .List  li img{
+            width:75px;
+          }
+          .List  li>div>span{
+            display: inline-block;
+            width: 75px;
+            height:75px;
+            overflow: hidden;
+          }
+          .List  li .name{
+            font-size:15px;
+            line-height:25px
+          }
+          .List  li .time{
+            margin-top:10px;
+            display: block;
+            width:120px;
+            font-size:10px;
+            color:#9e2931;
+            background: #fff4f5
+          }
+            .List  li .price{
+              margin-top:15px;
+            }
+            .List  li .price>span{
+              font-size:12px;
+              color:#ef5737;
+            }
+            .List  li .price del{
+              font-size:12px;
+              color:#999;
+
+            }
+            .List  li .price>span i{
+              font-size: 16px;
+            }
+            .List  li .price button {
+              font-size: 13px;
+              border-radius: 5px;
+              color:white;
+              background-color: #9e2931;
+              padding:10px 15px;
+              font-weight: normal;
+              float: right;
+            }
+            .empty{
+              text-align: center;
+            }
+            [v-cloak]{
+              display: none;
+            }
+
+      </style>
+  </head>
+  <body>
+    <div class="presaller" v-cloak>
+      <ul class="List">
+        <li v-for="item in aclist" @click="inner(item.id)">
+          <div>
+              <span><img v-bind:src="url+item.img" alt=""></span>
+                <div class="info">
+                    <p class="name">{{item.name}}</p>
+                    <p class="time">预售结束时间{{item.presale.end_at}}</p>
+                    <p class="price">
+                      <span>￥<i>{{item.sell_price}}</i></span>
+                      <del>{{item.market_price}}</del>
+                      <button>立即抢购</button>
+                    </p>
+                </div>
+                </div>
+        </li>
+      </ul>
+      <div class="empty" v-if="aclist.length<1">
+        <p>暂无数据</p>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/swiper-3.4.2.min.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
+
+    <script type="text/javascript">
+    apiready = function(){
+      // 融云模块
+      var app=new Vue({
+        el: '.presaller',
+        data: {
+          aclist:[],
+          page:1,
+          url:shopimgUrl,
+          errorImg: 'this.src="../../image/default.png"'
+
+        },
+        created:function(){
+          var that=this
+          getData('/shop/goods/promotions/presale',(data)=>{
+              if(data.code==200){
+                this.speList=data.data
+              }
+              else{
+                api.toast({
+                    msg: data.messaga,
+                    duration: 2000,
+                    location: 'bottom'
+                });
+
+              }
+          },{},{'Authorization':$api.getStorage('token')})
+
+          api.addEventListener({
+            name: 'scrolltobottom'
+          }, function(ret, err){
+
+            that.loadmore()
+
+            });
+
+          this.init()
+        },
+      methods:{
+        loadmore(){
+          var that=this
+          this.page++
+          this.init()
+        },
+        content(id){
+          api.openWin({
+              name: 'goodsInner',
+              url: '../../html/market/goodsInnerWin.html',
+              pageParam: {
+                  id: id
+              }
+          });
+
+        },
+        init(){
+          var  that =this
+          api.showProgress({
+              style: 'default',
+              animationType: 'fade',
+              title: '努力加载中...',
+              text: '先喝杯茶...',
+              modal: false
+          });
+            getData('/shop/goods/promotions/presale',function(data){
+              api.hideProgress();
+              if(data.code==200){
+                data.data.forEach(item=>{
+                  that.aclist.push(item)
+                })
+              }
+              else{
+                api.toast({
+                    msg: data.message,
+                    duration: 2000,
+                    location: 'bottom'
+                });
+
+              }
+            },{'type':4,'page':that.page,'page_size':10},{'Authorization':$api.getStorage('token')})
+        },
+        inner(id){
+          api.openWin({
+              name: 'goodsInner',
+              url: '../../html/market/goodsInnerWin.html',
+              pageParam: {
+                  id: id
+              }
+          });
+        }
+
+      },
+      filters: {
+               formatDate: function (value) {
+                  console.log(value)
+                  var date=new Date(value)
+                  var year=date.getFullYear().toString()
+                  var month=(date.getMonth()+1).toString()
+                  var day=date.getDate()
+
+                  return  year+"-"+month+"-"+day
+               },
+           }
+      })
+
+
+  }
+
+  </script>
+  </html>

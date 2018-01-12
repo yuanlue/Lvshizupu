@@ -86,7 +86,7 @@
     }
     .allCate .container ul li {
       width:33%;
-      vertical-align: middle;
+      vertical-align: t
       text-align: center;
       display: inline-block;
       background-color: white;
@@ -144,24 +144,12 @@
     [v-cloak]{
       display: none;
     }
-    .empty{
-      margin-top:20px;
-
-      font-size:14px;
-      text-align: center;
-    }
-    .empty p{
-      margin-top:10px;
-    }
-    .empty img{
-      width:100px;
-    }
       </style>
   </head>
   <body>
     <div class="allCate" v-cloak>
     	<div class="search">
-    		<input @click="search()" type="text" placeholder="请输入商品/店铺名">
+    		<input type="text" placeholder="请输入商品/店铺名"  @click="search()">
     	</div>
        <div class="tab">
          <ul>
@@ -172,7 +160,7 @@
        <div class="container">
          <ul v-for="item in sonCategory">
          	<header>{{item.name}}</header>
-         	<li @click="detail(p.id)" v-for="p in item.goods">
+         	<li @click="detail(p.id,p.name)" v-for="p in item.goods">
          		<div>
                      <img v-bind:src="url+'/'+p.img" alt="" :onerror="errorImg">
                  </div>
@@ -182,10 +170,6 @@
 
 
          </ul>
-         <div class="empty" v-if="sonCategory.length<1">
-           <img src="../../image/market/empty.png" alt="">
-           <p>暂无数据</p>
-         </div>
        </div>
      </div>
   </body>
@@ -218,45 +202,6 @@
         });
 
       },
-        init(){
-          var that =this
-          api.showProgress({
-              style: 'default',
-              title: '努力加载中...',
-              text: '先喝杯茶...',
-              modal: false
-          });
-          getData('/shop/categories',function(data){
-            if(data.code==200){
-              that.categoryList=data.data
-              if(data.data.length<1){
-                return false
-              }
-              that.acT=data.data[0].id
-                getData("/shop/categories",function(data){
-                  api.hideProgress();
-
-                  data.data.forEach(item=>{
-                    getData('/shop/categories',function(res){
-                      item.goods=res.data
-                    },{'id':item.id},{'Authorization':$api.getStorage('token')})
-                  })
-                  that.sonCategory=data.data
-                },{'id':that.acT,'page_size':100},{'Authorization':$api.getStorage('token')})
-            }
-          },{'page_size':100},{'Authorization':$api.getStorage('token')})
-        },
-        detail(id){
-          api.openWin({
-              name: 'allGoodsWin',
-              url: '../../html/market/allGoodsWin.html',
-              pageParam: {
-                  id: id,
-                  type:'all'
-              }
-          });
-
-  },
       search(){
         var UISearchBar = api.require('UISearchBar');
           UISearchBar.open({
@@ -310,6 +255,46 @@
               }
           });
       },
+        init(){
+          var that =this
+          api.showProgress({
+              style: 'default',
+              title: '努力加载中...',
+              text: '先喝杯茶...',
+              modal: false
+          });
+          getData('/shop/categories',function(data){
+            if(data.code==200){
+              that.categoryList=data.data
+              if(data.data.length<1){
+                return false
+              }
+              that.acT=data.data[0].id
+                getData("/shop/categories",function(data){
+                  api.hideProgress();
+
+                  data.data.forEach(function(item){
+                    item.goods=[]
+                    getData('/shop/categories/',function(res){
+                        item.goods=res.data
+
+                    },{'id':item.id},{'Authorization':$api.getStorage('token')})
+                  })
+                  that.sonCategory=data.data
+                },{'id':that.acT,'page_size':100},{'Authorization':$api.getStorage('token')})
+            }
+          },{'page_size':100},{'Authorization':$api.getStorage('token')})
+        },
+        detail(id,name){
+          api.openWin({
+              name: 'allgoods',
+              url: '../../html/market/allGoodsWin.html',
+              pageParam: {
+                  id: id
+              }
+          });
+
+  },
         check(obj){
           var that = this
           this.acT=obj.id
@@ -320,20 +305,30 @@
               modal: false
           });
           getData('/shop/categories',function(data){
-            api.hideProgress();
+              api.hideProgress();
 
-            if(data.code==200){
+            if(!data.data||data.data.length<1){
+              data.data=[{
+                'name':obj.name
+              }]
+              getData('/shop/categories/category_goods',function(res){
+                  data.data[0].goods=res.data
 
-                getData("/shop/categories",function(data){
-
-                  data.data.forEach(item=>{
-                    getData('/shop/categories',function(res){
-                      item.goods=res.data
-                    },{'id':item.id},{'Authorization':$api.getStorage('token')})
-                  })
-                  that.sonCategory=data.data
-                },{'id':that.acT,'page_size':100},{'Authorization':$api.getStorage('token')})
+              },{'id':obj.id},{'Authorization':$api.getStorage('token')})
             }
+            else{
+              data.data.forEach(function(item){
+                item.goods=[]
+                getData('/shop/categories/',function(res){
+
+                    item.goods=res.data
+
+                },{'id':item.id},{'Authorization':$api.getStorage('token')})
+              })
+            }
+              that.sonCategory=data.data
+
+
           },{'page_size':100,'id':obj.id},{'Authorization':$api.getStorage('token')})
 
 

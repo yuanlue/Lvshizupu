@@ -336,7 +336,17 @@
   }
   function login(){
         //短信登录验证
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '努力加载中...',
+            text: '先喝杯茶...',
+            modal: false
+        });
+
         postData('/users/login',function(data){
+          api.hideProgress();
+
           if(data.code==200){
             api.toast({
                     msg: '登录成功',

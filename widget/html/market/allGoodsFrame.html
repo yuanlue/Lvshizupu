@@ -126,6 +126,13 @@
         [v-cloak]{
           display: none;
         }
+        .shopintro>ul li  .saleNum{
+         line-height: 1;
+         font-weight: normal !important;
+         margin-top:0 !important;
+         font-size:12px;
+         color:#ccc;
+       }
       </style>
   </head>
   <body>
@@ -154,8 +161,10 @@
               <p>{{item.name}}</p>
               <span><i>￥</i>{{item.sell_price}}</span>
               <del>{{item.market_price}}</del>
+              <p class="saleNum">销量：{{item.sale}}</p>
             </li>
         </ul>
+        
       </div>
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>

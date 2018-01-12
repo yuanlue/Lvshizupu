@@ -12,10 +12,10 @@
       }
           .top{
             height:25px;
-            background: #41906d;
+            background: black;
           }
           .topbar {
-            background-color:#41906d;
+            background-image: url("../../image/status.png");
             background-size: cover;
             height: 50px;
             border-bottom: 1px solid #DDDFE3;
@@ -43,7 +43,7 @@
         <header>
             <div id="cloud" class="topbar  activebar">
               <img class="return" onclick="api.closeWin()" src="../../image/return.png" alt="">
-                        土特产专区
+                        预售专区
 
             </div>
         </header>
@@ -51,13 +51,7 @@
   <script type="text/javascript" src="../../script/api.js"></script>
   <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
   <script type="text/javascript">
-  function cart(){
-    api.openWin({
-        name: 'cart',
-        url: '../../html/market/cartWin.html',
 
-    });
-  }
       apiready = function(){
         var u = navigator.userAgent;
         var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
@@ -66,8 +60,8 @@
           $('.top').css({'background':'white',"height":"20px"})
         }
           api.openFrame({
-              name: 'specialtyFrame',
-              url: '../../html/market/specialtyFrame.html',
+              name: 'preSallerFrame',
+              url: '../../html/market/presallerFrame.html',
               rect: {
                 x: 0,
                 y: 50+  $('.top').height(),
@@ -75,7 +69,6 @@
                 h: api.frameHeight-(50+  $('.top').height())
 
               },
-              customRefreshHeader: 'UIPullRefreshFlash',
 
               bounces: false,
               bgColor: 'rgba(0,0,0,0)',

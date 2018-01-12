@@ -45,11 +45,38 @@
   <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
   <script type="text/javascript">
       apiready = function(){
+        if(api.pageParam.name){
+          $('#cloud span').text(api.pageParam.name)
+
+        }
         var u = navigator.userAgent;
         var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
         var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
         if(isiOS){
           $('.top').css({'background':'white',"height":"20px"})
+        }
+        if(api.pageParam.index){
+          $('.topbar').css({'background':'#197cb0'})
+          $('.top').css({'background':'#197cb0',"height":"20px"})
+          api.openFrame({
+              name: 'allShopDetailFrame',
+              url: '../../html/market/allShopDetailFrame.html',
+              rect: {
+                x: 0,
+                y: 50+  $('.top').height(),
+                w: 'auto',
+                h: api.frameHeight-(50+  $('.top').height())
+              },
+              pageParam:{
+                id:api.pageParam.id,
+                index:api.pageParam.index
+              },
+              bounces: false,
+              bgColor: 'rgba(0,0,0,0)',
+              vScrollBarEnabled: true,
+              hScrollBarEnabled: true
+          });
+          return
         }
           api.openFrame({
               name: 'allGoodsFrame',

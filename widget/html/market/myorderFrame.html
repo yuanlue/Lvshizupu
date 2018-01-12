@@ -193,7 +193,9 @@
        					<button v-if="item.status==2" class="cancel" >取消订单</button>
        					<button  v-if="item.status==2" class="pay">付款</button>
                 <button  v-if="item.status==3" class="pay">确认收货</button>
+                <button  v-if="item.status==6||item.status==3" >查看物流</button>
                 <button  v-if="item.status==6" class="pay">去评价</button>
+
        				</div>
        			</li>
 
@@ -216,7 +218,6 @@
   }
   apiready = function(){
     // 融云模块
-    var dialogBox = api.require('dialogBox');
 
     app=new Vue({
       el: '.myorder',

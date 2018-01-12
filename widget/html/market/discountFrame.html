@@ -48,6 +48,7 @@
           }
           .discountArea .tab ul>.active{
             border-bottom:2px solid #e85f2d;
+            color:#e85f2d;
           }
           .discountArea .tab ul>li p{
             line-height: 32px;
@@ -292,37 +293,26 @@
     <div class="discountArea" v-cloak>
       <div class="banner swiper-container">
           <div class="swiper-wrapper">
-              <div class="swiper-slide single">
-                <img src="../../image/market/discount_banner.png" alt="">
-              </div>
-              <div class="swiper-slide single">
-                <img src="../../image/market/discount_banner.png" alt="">
-              </div>
-              <div class="swiper-slide single">
-                <img src="../../image/market/discount_banner.png" alt="">
-              </div>
-               <div class="swiper-slide single">
-                 <img src="../../image/market/discount_banner.png" alt="">
-                </div>
+
           </div>
       </div>
       <div class="tab">
         <ul>
           <li @click="navchange('brand')" v-bind:class="{active:active=='brand'}">
-            <img v-if="active=='brand'" src="../../image/market/dBrand.png" alt="">
-            <img v-if="active!='brand'" src="../../image/market/adBrand.png" alt="">
+            <img v-if="active!='brand'" src="../../image/market/dBrand.png" alt="">
+            <img v-if="active=='brand'" src="../../image/market/adBrand.png" alt="">
 
             <p>品牌折扣</p>
           </li>
           <li @click="navchange('discount')" v-bind:class="{active:active=='discount'}">
-            <img v-if="active=='discount'" src="../../image/market/aDiscount.png" alt="">
-            <img v-if="active!='discount'" src="../../image/market/adDiscount.png" alt="">
+            <img v-if="active!='discount'" src="../../image/market/aDiscount.png" alt="">
+            <img v-if="active=='discount'" src="../../image/market/adDiscount.png" alt="">
 
             <p>折扣活动</p>
           </li>
           <li @click="navchange('special')" v-bind:class="{active:active=='special'}">
-            <img v-if="active=='special'" src="../../image/market/aSpecial.png" alt="">
-            <img v-if="active!='special'" src="../../image/market/adSpecial.png" alt="">
+            <img v-if="active!='special'" src="../../image/market/aSpecial.png" alt="">
+            <img v-if="active=='special'" src="../../image/market/adSpecial.png" alt="">
 
             <p>特价商品</p>
           </li>
@@ -399,14 +389,27 @@
         created:function(){
           var that=this
 
-          this.$nextTick(function(){
-            var mySwiper = new Swiper('.swiper-container',{
-            effect : 'slip',
-            slidesPerView: 1,
-            autoplay:3000,
-            centeredSlides: true
-          } )
-          })
+          getData('/shop/ad_manages',function(data){
+
+            that.$nextTick(function(){
+              if(data.data.imgs&&data.data.imgs!='undefined'){
+                data.data.imgs.forEach(item=>{
+                  $('.swiper-wrapper').append('<div class="swiper-slide single">'
+                        +'<img src="'+that.url+item.img+'" alt="">'
+                    +'</div>')
+                })
+                var mySwiper = new Swiper('.swiper-container',{
+                effect : 'slip',
+                slidesPerView: 1,
+                autoplay:2000,
+                loop:true,
+                centeredSlides: true
+              } )
+              }
+
+
+            })
+          },{'name':"折扣专区广告"},{'Authorization':$api.getStorage('token')})
           api.addEventListener({
             name: 'scrolltobottom'
           }, function(ret, err){

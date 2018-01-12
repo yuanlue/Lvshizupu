@@ -182,6 +182,7 @@
                margin-top:5px;
                border-radius: 20px;
                padding:10px 15px;
+               margin-right:5px;
                font-size:14px;
                color:#9e2931;
                border:1px solid #9e2931;
@@ -343,6 +344,8 @@
   			</ul>
   			<p class="status">
           <button v-if="orderDetail.status==6" @click="seller()">申请售后</button>
+          <button v-if="orderDetail.status==6" @click="complaint()">投诉</button>
+
           <button v-if="orderDetail.status!=6&&orderDetail.status!=5&&orderDetail.status!=12&&orderDetail.status!=7&&orderDetail.status!=2" @click="seller()">退款</button>
           实际付款：<span><i>¥ {{orderDetail.real_amount}}</i></span></p>
   		</div>
@@ -555,6 +558,32 @@
 
 
     },
+    complaint(){
+      getData('/shop/seller_complains',function(data){
+        if(data.data){
+          api.openWin({
+              name: 'complaintWin',
+              url: '../../html/market/complaintWin.html',
+              pageParam: {
+                  order_no: api.pageParam.id,
+                  complaintList:data.data
+              }
+          });
+
+        }
+        else{
+          api.openWin({
+              name: 'complaintWin',
+              url: '../../html/market/complaintWin.html',
+              pageParam: {
+                  order_no: api.pageParam.id
+              }
+          });
+        }
+      },{'order_no':api.pageParam.id},{'Authorization':$api.getStorage('token')})
+
+
+    },
       payWay(){
         var that = this
           this.payStatus=true
@@ -619,7 +648,6 @@
         pay(){
           postData('/shop/orders/pay',function(data){
             var wxPay = api.require('wxPay');
-            alert(JSON.stringify(data))
               wxPay.payOrder(data.data, function(ret, err) {
                   if (ret.status) {
                     api.toast({
@@ -648,75 +676,39 @@
         del(){
 
           var that = this
-          dialogBox.alert({
-              texts: {
-                  content: '确定要删除该订单吗？',
-                  leftBtnTitle: '取消',
-                  rightBtnTitle: '确认'
-              },
-              styles: {
-                  bg: '#fff',
-                  w: 300,
-
-                  content: {
-                      color: '#000',
-                      size: 14
-                  },
-                  left: {
-                      marginB: 7,
-                      marginL: 20,
-                      w: 130,
-                      h: 35,
-                      corner: 2,
-                      color:'#fff',
-
-                      bg: '#c2262b',
-                      size: 12
-                  },
-                  right: {
-                      marginB: 7,
-                      marginL: 10,
-                      w: 130,
-                      h: 35,
-                      corner: 2,
-                      color:'#fff',
-                      bg: '#c2262b',
-                      size: 12
-                  }
-              }
-          }, function(ret) {
-              if (ret.eventType == 'left') {
-                  dialogBox.close({
-                      dialogName: 'alert'
-                  });
-
-              }
-              else{
-                postData('/shop/orders/cancel',function(data){
-                  dialogBox.close({
-                      dialogName: 'alert'
-                  });
-                  if(data.code==200){
-                    api.toast({
-                            msg: '取消订单成功',
-                            duration:5000,
-                            location: 'bottom'
-                        })
-                        api.execScript({
-                            name: 'myorder',
-                            frameName: 'myorderFrame',
-                            script: 're();'
-                        });
-                        api.closeWin();
+          api.confirm({
+            title: '提示',
+            msg: '确定要删除该订单吗？',
+            buttons: ['确定', '取消']
+        }, function(ret, err) {
+            var ac = ret.buttonIndex;
+            if(ac==1){
+              postData('/shop/orders/cancel',function(data){
+                dialogBox.close({
+                    dialogName: 'alert'
+                });
+                if(data.code==200){
+                  api.toast({
+                          msg: '取消订单成功',
+                          duration:5000,
+                          location: 'bottom'
+                      })
+                      api.execScript({
+                          name: 'myorder',
+                          frameName: 'myorderFrame',
+                          script: 're();'
+                      });
+                      api.closeWin();
 
 
-                  }
-                },{'order_no':api.pageParam.id},{
-                  'Authorization':$api.getStorage('token')
-                })
+                }
+              },{'order_no':api.pageParam.id},{
+                'Authorization':$api.getStorage('token')
+              })
 
-              }
-          });
+            }
+        });
+
 
         }
 

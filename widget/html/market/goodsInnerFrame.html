@@ -158,6 +158,12 @@
   color:#ef5737;
   font-size:18px;
 }
+.goodsdetail .goodsinfo>p .presaller{
+  font-size:10px;
+  display: inline-block;
+  color:#9e2931;
+  background: #fff4f5
+}
 .goodsdetail .goodsinfo ul{
   width:100%;
   display: table
@@ -573,6 +579,7 @@
               </h1>
               <p>
               <span class="price"><i>¥</i>{{goodsDetail.sell_price}}</span>
+              <span v-if="goodsDetail.presale" class="presaller">{{goodsDetail.presale.desc}}</span>
               </p>
               <ul>
               <li>销量：{{goodsDetail.sale}}次</li>
@@ -908,6 +915,14 @@
       })
     },
     addtoCart(){
+      if(this.goodsDetail.presale){
+        api.toast({
+            msg: '预售商品不能加入购物车',
+            duration: 2000,
+            location: 'bottom'
+        });
+      return false
+      }
       var that = this
   		var para={
 		  "cart": {

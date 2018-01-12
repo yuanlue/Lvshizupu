@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+          body{
+
+          }
+          ul li{
+            padding:0 15px;
+
+          }
+          ul li>div{
+            width:85%;
+            padding:10px 0;
+            margin-left:15px;
+            display: inline-block;
+            box-sizing: content-box;
+            border-bottom:1px solid #eee;
+          }
+          ul li>div .time{
+            color:#999;
+            font-size:12px;
+          }
+          .correct:before{
+            content:"";
+            display: inline-block;
+            width:20px;
+            height:20px;
+            background: url('../../image/market/successDeal.png') no-repeat;
+            background-size: contain;
+          }
+          .dealing:before{
+            content:"";
+            display: inline-block;
+            width:20px;
+            height:20px;
+            background: url('../../image/market/Dealing.png') no-repeat;
+            background-size: contain;
+          }
+          .face:before{
+            content:"";
+            display: inline-block;
+            width:20px;
+            height:20px;
+            background: url('../../image/market/successFace.png') no-repeat;
+            background-size: contain;
+          }
+          [v-cloak]{
+            display: none;
+          }
+          .thumb{
+            margin-top:10px;
+          }
+          .thumb img{
+            max-width:100px;
+          }
+      </style>
+  </head>
+  <body>
+    <div class="complaintList" v-cloak>
+      <ul>
+        <li v-bind:class="{dealing:item.parent_id!=1,successFace:item.parent_id==1}" v-for="item in list">
+          <div>
+            <p class="info">{{item.reason}}(投诉处理中)</p>
+            <p class="time">{{item.create_time | formatDate}}</p>
+          </div>
+          <p class="thumb"><img @click="check(item.imgs,index)" v-for="(p,index) in item.imgs" v-bind:src="p" alt=""></p>
+        </li>
+      </ul>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
+    <script type="text/javascript">
+  apiready = function(){
+    // 融云模块
+    var app=new Vue({
+      el: '.complaintList',
+      data: {
+        list:[],
+        url:shopimgUrl
+      },
+      created:function(){
+        this.init()
+
+      },
+    methods:{
+        check(img,index){
+          var arr=[]
+          img.forEach(item=>{
+            arr.push(item.split('!')[0])
+          })
+          api.openWin({
+              name: 'imgWin',
+              url: '../../html/Home/imgWin.html',
+              pageParam: {
+                  imgarr: arr,
+                  index:index
+              },
+              bgColor:"#000"
+          });
+        },
+        init(){
+        this.list=api.pageParam.complaintList
+        },
+
+
+
+
+    },
+    filters: {
+             formatDate: function (value) {
+                console.log(value)
+                var date=new Date(value)
+                var year=date.getFullYear().toString()
+                var month=(date.getMonth()+1).toString()
+                var day=date.getDate()
+
+                return  year+"-"+month+"-"+day
+             },
+         }
+    })
+
+
+}
+  </script>
+  </html>

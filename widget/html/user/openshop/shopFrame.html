@@ -77,10 +77,12 @@
           <p>设置您的店铺头像</p>
       </div>
         <ul>
-          <li>店铺名称<input @focus="change()" v-on:blur="schange()" type="text" v-model="true_name" placeholder="请输入店铺名称"></li>
-          <li>登录用户名<input @focus="change()" v-on:blur="schange()" type="text" v-model="seller_name" placeholder="请输入用户名"></li>
-          <li>密码<input type="password" @focus="change()" v-on:blur="schange()" v-model="password" placeholder="请输入密码"></li>
-          <li>确认密码<input @focus="change()" v-on:blur="schange()" type="password" v-model="again" placeholder="请确认密码"></li>
+          <li>店铺名称<input   type="text" v-model="true_name" placeholder="请输入店铺名称"></li>
+          <li>登录用户名<input  type="text" v-model="seller_name" placeholder="请输入用户名"></li>
+          <li>密码<input type="password"  v-model="password" placeholder="请输入密码"></li>
+          <li>确认密码<input type="password" v-model="again" placeholder="请确认密码"></li>
+          <li style="visibility:hidden">确认密码<input type="password"  placeholder="请确认密码"></li>
+          <li style="visibility:hidden">确认密码<input type="password" placeholder="请确认密码"></li>
 
         </ul>
       <div class="opera" @click="sure()" v-if="ischange">

@@ -248,7 +248,7 @@
             <img src="../../image/quanzi.png" alt="">
             <span>圈子<i></i></span>
           </li>
-          <li  style="display:none"  onclick="navchange('decoration')"><img src="../../image/mujuan.png" alt=""><span>募捐</span></li>
+          <li  onclick="navchange('decoration')"><img src="../../image/mujuan.png" alt=""><span>爱心</span></li>
           <li onclick="navchange('market')"><img src="../../image/shangmao.png" alt=""><span>商贸</span></li>
       </ul>
     </div>
@@ -267,7 +267,7 @@
 
   </div>
 
-    <div class="mujuan"  style="display:none">
+    <div class="mujuan" >
       <div class="header" onclick="navchange('decoration')"><img src="../../image/mujuan.png" alt="">爱心募捐</div>
 
     </div>
@@ -365,11 +365,10 @@ function decorationInner(id,ac){
             });
 }
 function mujuan(){
-
   api.openWin({
-      name: 'content',
+      name: 'decoration',
       url: '../../html/decoration/decoration.html',
-
+      useWKWebView:true
   });
 }
 function init(){
@@ -417,81 +416,99 @@ function init(){
 
   },{"page":"1","page_size":"1"},{'Authorization':$api.getStorage('token')})
   getData('/actives',function(data){
-    if(data.data.length<=0){
+    if(data.code==200){
+      if(data.data.length<=0){
+        $('.activity').hide()
+        return false;
+      }
+      var startTime=new Date(data.data[0].start_at.split(' ')[0]).getTime()
+      var endTime=new Date(data.data[0].end_at.split(' ')[0]).getTime()
+      var nowTime=new Date().getTime()
+      if(nowTime<=endTime&&nowTime>=nowTime){
+          $('.content .label').addClass('being')
+        $('.content .label').text('活动进行中')
+      }
+      else if(nowTime>endTime){
+          $('.content .label').addClass('over')
+        $('.content .label').text('活动已经结束')
+      }
+      else if(nowTime<startTime){
+          $('.content .label').addClass('over')
+        $('.content .label').text('活动尚未开始')
+
+      }
+      $('.activity .content').click(function(){
+        inner(data.data[0].id,'活动详情','actives')
+      })
+      $('.content img').attr('src',url+data.data[0].pic)
+      $('.content h1').text(data.data[0].title)
+      $('.content p').text(data.data[0].created_at)
+    }
+    else{
       $('.activity').hide()
-      return false;
-    }
-    var startTime=new Date(data.data[0].start_at.split(' ')[0]).getTime()
-    var endTime=new Date(data.data[0].end_at.split(' ')[0]).getTime()
-    var nowTime=new Date().getTime()
-    if(nowTime<=endTime&&nowTime>=nowTime){
-        $('.content .label').addClass('being')
-      $('.content .label').text('活动进行中')
-    }
-    else if(nowTime>endTime){
-        $('.content .label').addClass('over')
-      $('.content .label').text('活动已经结束')
-    }
-    else if(nowTime<startTime){
-        $('.content .label').addClass('over')
-      $('.content .label').text('活动尚未开始')
 
     }
-    $('.activity .content').click(function(){
-      inner(data.data[0].id,'活动详情','actives')
-    })
-    $('.content img').attr('src',url+data.data[0].pic)
-    $('.content h1').text(data.data[0].title)
-    $('.content p').text(data.data[0].created_at)
+
   },{ 'page': '1', 'page_size': '1' },{'Authorization':$api.getStorage('token')})
   $('.start .swiper-wrapper').html("")
   getData('/star_actives',function(data){
-    if(data.data.length<=0){
-      $('.start').hide()
-      return false;
+    if(data.code==200){
+      if(data.data.length<=0){
+        $('.start').hide()
+        return false;
 
+      }
+      data.data.forEach(function(item){
+        $('.start .swiper-wrapper').append('<div onclick="inner('+item.id+',&quot;明星活动&quot;,&quot;star_actives&quot;)" class="startSingle swiper-slide">'
+            +'<div class="thumb">'
+              +'<img src="'+url+item.pic+'" alt="">'
+            +'</div>'
+              +'<h1>'+item.title+'</h1>'
+            +'</div>')
+      })
+      var mySwiper = new Swiper ('.swiper-container', {
+        direction: 'horizontal',
+        loop: true,
+        autoplay:false,
+        speed:1000
+
+        // 如果需要分页器
+
+      })
     }
-    data.data.forEach(function(item){
-      $('.start .swiper-wrapper').append('<div onclick="inner('+item.id+',&quot;明星活动&quot;,&quot;star_actives&quot;)" class="startSingle swiper-slide">'
-          +'<div class="thumb">'
-            +'<img src="'+url+item.pic+'" alt="">'
-          +'</div>'
-            +'<h1>'+item.title+'</h1>'
-          +'</div>')
-    })
-    var mySwiper = new Swiper ('.swiper-container', {
-      direction: 'horizontal',
-      loop: true,
-      autoplay:false,
-      speed:1000
+    else{
+        $('.start').hide()
+    }
 
-      // 如果需要分页器
-
-    })
   },{ 'page': '1', 'page_size': '3' },{'Authorization':$api.getStorage('token')})
   getData('/cultures',function(data){
-    if(data.data.length<=0){
-      $('.culture').hide()
-      return false;
-    }
-    obj=$('.culture ul')
-    obj.html('')
-    if(data.data.length>3){
-      for(var i=0;i<3;i++){
-        if(data.data[i].title.length>=12){
-          data.data[i].title=data.data[i].title.substring(0,12)+'...'
-        }
-      obj.append("<li onclick='inner("+data.data[i].id+",&quot;文化&quot;,&quot;cultures&quot;)'><img src='"+url+data.data[i].pic+"' onerror='errHandle(this)'  ><p>"+data.data[i].title+"</p></li>")
+    if(data.code==200){
+      if(data.data.length<=0){
+        $('.culture').hide()
+        return false;
       }
-    }
-      else{
-        for(var i=0;i<data.data.length;i++){
+      obj=$('.culture ul')
+      obj.html('')
+      if(data.data.length>3){
+        for(var i=0;i<3;i++){
           if(data.data[i].title.length>=12){
             data.data[i].title=data.data[i].title.substring(0,12)+'...'
           }
         obj.append("<li onclick='inner("+data.data[i].id+",&quot;文化&quot;,&quot;cultures&quot;)'><img src='"+url+data.data[i].pic+"' onerror='errHandle(this)'  ><p>"+data.data[i].title+"</p></li>")
         }
       }
+        else{
+          for(var i=0;i<data.data.length;i++){
+            if(data.data[i].title.length>=12){
+              data.data[i].title=data.data[i].title.substring(0,12)+'...'
+            }
+          obj.append("<li onclick='inner("+data.data[i].id+",&quot;文化&quot;,&quot;cultures&quot;)'><img src='"+url+data.data[i].pic+"' onerror='errHandle(this)'  ><p>"+data.data[i].title+"</p></li>")
+          }
+        }
+    }else{
+      $('.culture').hide()
+    }
+
   },{ 'page': '1', 'page_size': '3' },{'Authorization':$api.getStorage('token')})
 }
 function navchange(obj){

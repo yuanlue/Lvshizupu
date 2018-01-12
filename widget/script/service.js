@@ -1,6 +1,8 @@
 // window.baseurl="https://api.yiwenyiwen.com/"
 window.baseurl="https://wx2.kuaiyunma.com"
 window.shopimgUrl="https://shop.kuaiyunma.com/"
+// window.shopimgUrl="https://shop.yiwenyiwen.com/"
+
 function postData(para,callback,parama,header){
 
     $.ajax({
@@ -40,7 +42,7 @@ function getData(para,callback,parama,header){
                         callback(data)
             },
             error:function(err){
-              alert(JSON.stringify(err))
+
               api.toast({
                       msg: '服务器异常',
                       duration:2000,
@@ -157,6 +159,8 @@ function upload(path,type,file,callback,header,callbackerr){
           }
       }
   },function(data, err){
+    api.hideProgress();
+    
       if (data) {
       callback(data)
       } else {

@@ -130,7 +130,7 @@
           <li v-for="item in orderDetail.goods">
             <p class="pname">{{item.goods_array.name}}</p>
           <header>
-            <img v-bind:src="url+item.img" alt="">
+            <img v-bind:src="url+item.img" alt="" :onerror="errorImg">
             <div class="info">
               <p>商品满意度</p>
               <p class="evaluatecom">
@@ -194,7 +194,16 @@
         },
       methods:{
         del(index,obj){
-          obj.imgurl.splice(index,1)
+          api.confirm({
+            title: '提示',
+            msg: '确定要删除该图片吗？',
+            buttons: ['删除', '取消']
+        }, function(ret, err) {
+            var ac = ret.buttonIndex;
+            if(ac==1){
+              obj.imgurl.splice(index,1)
+            }
+        });
         },
         sure(){
           this.orderDetail.goods.forEach(function(item){

@@ -78,81 +78,43 @@
 
   }
   function clearS(){
-    var dialogBox = api.require('dialogBox');
+    api.confirm({
+      title: '提示',
+      msg: '清除缓存聊天记录也将会清除，确定清除吗？',
+      buttons: ['确定', '取消']
+  }, function(ret, err) {
+      var ac = ret.buttonIndex;
+      if(ac==1){
+        $api.clearStorage();
 
-    dialogBox.alert({
-        texts: {
-            content: '清除缓存聊天记录也将会清除，确定清除吗？',
-            leftBtnTitle: '取消',
-            rightBtnTitle: '确认'
-        },
-        styles: {
-            bg: '#fff',
-            w: 300,
 
-            content: {
-                color: '#000',
-                size: 14
-            },
-            left: {
-                marginB: 7,
-                marginL: 20,
-                w: 130,
-                h: 35,
-                corner: 2,
-                color:'#fff',
+        api.execScript({
+            name: 'root',
+            frameName: 'home',
+            script: 'init();'
+        });
 
-                bg: '#c2262b',
-                size: 12
-            },
-            right: {
-                marginB: 7,
-                marginL: 10,
-                w: 130,
-                h: 35,
-                corner: 2,
-                color:'#fff',
-                bg: '#c2262b',
-                size: 12
-            }
-        }
-    }, function(ret) {
-        if (ret.eventType == 'left') {
-            dialogBox.close({
-                dialogName: 'alert'
+        api.execScript({
+            name: 'root',
+            frameName: 'user',
+            script: 're();'
+        });
+        api.toast({
+                msg: '注销成功',
+                duration:2000,
+                location: 'bottom'
+            });
+            api.openWin({
+                name: 'login',
+                url: '../../../html/login/login.html',
+                useWKWebView:false,
+                historyGestureEnabled:false,
+                slidBackEnabled:false
             });
 
-        }
-        else{
-          $api.clearStorage();
+      }
+  });
 
-
-          api.execScript({
-              name: 'root',
-              frameName: 'home',
-              script: 'init();'
-          });
-
-          api.execScript({
-              name: 'root',
-              frameName: 'user',
-              script: 're();'
-          });
-          api.toast({
-                  msg: '注销成功',
-                  duration:2000,
-                  location: 'bottom'
-              });
-              api.openWin({
-                  name: 'login',
-                  url: '../../../html/login/login.html',
-                  useWKWebView:false,
-                  historyGestureEnabled:false,
-                  slidBackEnabled:false
-              });
-
-        }
-    });
   }
   function message(){
     api.openWin({
@@ -170,90 +132,63 @@
 
   }
   function again(){
-    $api.clearStorage();
+    api.confirm({
+      title: '提示',
+      msg: '确定要重新登录吗？',
+      buttons: ['确定', '取消']
+  }, function(ret, err) {
+      var ac = ret.buttonIndex;
+      if(ac==1){
+        $api.clearStorage();
 
 
-    api.closeWin({
-        name: 'home'
-    });
-
-
-    api.execScript({
-        name: 'home',
-        frameName: 'user',
-        script: 're();'
-    });
-    api.execScript({
-        name: 'home',
-        frameName: 'home',
-        script: 're();'
-    });
-    api.toast({
-            msg: '注销成功',
-            duration:2000,
-            location: 'bottom'
+        api.closeWin({
+            name: 'home'
         });
-        api.openWin({
-            name: 'login',
-            url: '../../../html/login/login.html',
-            useWKWebView:false,
-            historyGestureEnabled:false,
-            slidBackEnabled:false
+
+
+        api.execScript({
+            name: 'home',
+            frameName: 'user',
+            script: 're();'
         });
+        api.execScript({
+            name: 'home',
+            frameName: 'home',
+            script: 're();'
+        });
+        api.toast({
+                msg: '注销成功',
+                duration:2000,
+                location: 'bottom'
+            });
+            api.openWin({
+                name: 'login',
+                url: '../../../html/login/login.html',
+                useWKWebView:false,
+                historyGestureEnabled:false,
+                slidBackEnabled:false
+            });
+      }
+  });
+
   }
   function exit(){
-    var dialogBox = api.require('dialogBox');
-dialogBox.alert({
-    texts: {
-        content: '确定要退出该应用吗？',
-        leftBtnTitle: '取消',
-        rightBtnTitle: '确认'
-    },
-    styles: {
-        bg: '#fff',
-        w: 300,
+    api.confirm({
+      title: '提示',
+      msg: '确定要退出该应用吗？',
+      buttons: ['确定', '取消']
+  }, function(ret, err) {
+      var ac = ret.buttonIndex;
+      if(ac==1){
+        api.closeWidget({
+                id: 'A6050245549832',  //填写自己的id
+                retData: {name:'closeWidget'},
+                silent:true
+            });
+      }
+  });
 
-        content: {
-            color: '#000',
-            size: 14
-        },
-        left: {
-            marginB: 7,
-            marginL: 20,
-            w: 130,
-            h: 35,
-            corner: 2,
-            color:'#fff',
-
-            bg: '#c2262b',
-            size: 12
-        },
-        right: {
-            marginB: 7,
-            marginL: 10,
-            w: 130,
-            h: 35,
-            corner: 2,
-            color:'#fff',
-            bg: '#c2262b',
-            size: 12
-        }
-    }
-}, function(ret) {
-    if (ret.eventType == 'left') {
-        dialogBox.close({
-            dialogName: 'alert'
-        });
-
-    }
-    else{
-      api.closeWidget({
-              id: 'A6050245549832',  //填写自己的id
-              retData: {name:'closeWidget'},
-              silent:true
-          });
-    }
-});
   }
       apiready = function(){
 

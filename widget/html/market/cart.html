@@ -425,98 +425,60 @@
                     });
                 return false
               }
-          dialogBox.alert({
-              texts: {
-                  content: '确定要将该商品从购物车清除吗？',
-                  leftBtnTitle: '取消',
-                  rightBtnTitle: '确认'
-              },
-              styles: {
-                  bg: '#fff',
-                  w: 300,
+              api.confirm({
+                title: '提示',
+                msg: '确定要将该商品从购物车清除吗？',
+                buttons: ['确定', '取消']
+            }, function(ret, err) {
+                var ac = ret.buttonIndex;
+                if(ac==1){
+                  arr.forEach(p=>{
+                              postData('/shop/carts/remove',function(data){
+                                if(data.code==200){
+                                  dialogBox.close({
+                                      dialogName: 'alert'
+                                  });
+                                  api.toast({
+                                          msg: '删除成功',
+                                          duration:5000,
+                                          location: 'bottom'
+                                      });
+                                  postData('/shop/carts',function(data){
+                                    api.hideProgress();
 
-                  content: {
-                      color: '#000',
-                      size: 14
-                  },
-                  left: {
-                      marginB: 7,
-                      marginL: 20,
-                      w: 130,
-                      h: 35,
-                      corner: 2,
-                      color:'#fff',
+                                    if(data.code==200){
+                                      data.data.goods.forEach(function(item){
+                                        item.active=true
+                                      })
 
-                      bg: '#c2262b',
-                      size: 12
-                  },
-                  right: {
-                      marginB: 7,
-                      marginL: 10,
-                      w: 130,
-                      h: 35,
-                      corner: 2,
-                      color:'#fff',
-                      bg: '#c2262b',
-                      size: 12
-                  }
-              }
-          }, function(ret) {
-              if (ret.eventType == 'left') {
-                  dialogBox.close({
-                      dialogName: 'alert'
-                  });
+                                      data.data.goods=that.adData(data.data.goods)
+                                      that.goods=data.data
 
-              }
-              else{
-                arr.forEach(p=>{
-                            postData('/shop/carts/remove',function(data){
-                              if(data.code==200){
-                                dialogBox.close({
-                                    dialogName: 'alert'
-                                });
-                                api.toast({
-                                        msg: '删除成功',
-                                        duration:5000,
-                                        location: 'bottom'
-                                    });
-                                postData('/shop/carts',function(data){
-                                  api.hideProgress();
+                                      that.allactive=true
 
-                                  if(data.code==200){
-                                    data.data.goods.forEach(function(item){
-                                      item.active=true
-                                    })
+                                    }
+                                    else{
+                                      api.toast({
+                                              msg: '服务器错误',
+                                              duration:5000,
+                                              location: 'bottom'
+                                          });
 
-                                    data.data.goods=that.adData(data.data.goods)
-                                    that.goods=data.data
+                                    }
 
-                                    that.allactive=true
+                                  },JSON.stringify(parm),{
+                                    'Authorization':$api.getStorage('token'),
+                                    'Content-Type':'application/json'
+                                  })
+                                }
+                              },JSON.stringify(p),{
+                                'Authorization':$api.getStorage('token'),
+                                'Content-Type':'application/json'
+                              })
+                      })
+                }
+            });
 
-                                  }
-                                  else{
-                                    api.toast({
-                                            msg: '服务器错误',
-                                            duration:5000,
-                                            location: 'bottom'
-                                        });
-                                        dialogBox.close({
-                                            dialogName: 'alert'
-                                        });
-                                  }
-
-                                },JSON.stringify(parm),{
-                                  'Authorization':$api.getStorage('token'),
-                                  'Content-Type':'application/json'
-                                })
-                              }
-                            },JSON.stringify(p),{
-                              'Authorization':$api.getStorage('token'),
-                              'Content-Type':'application/json'
-                            })
-                    })
-              }
-          });
         },
         init(){
           this.execproduct=[]
@@ -730,121 +692,54 @@
             para.cart.goods_id=obj.product_id
           }
           if(obj.goods_nums==1){
+            api.confirm({
+              title: '提示',
+              msg: '您确定将'+obj.name+'从您的购物车中删除吗？',
+              buttons: ['确定', '取消']
+          }, function(ret, err) {
+              var ac = ret.buttonIndex;
+              if(ac==1){
+                postData('/shop/carts/remove',function(data){
+                  if(data.code==200){
+                    
+                    api.toast({
+                            msg: '删除成功',
+                            duration:5000,
+                            location: 'bottom'
+                        });
+                        postData('/shop/carts',function(data){
+                          api.hideProgress();
 
-            dialogBox.alert({
-                texts: {
-                    content: '您确定将'+obj.name+'从您的购物车中删除吗？',
-                    leftBtnTitle: '取消',
-                    rightBtnTitle: '确认'
-                },
-                styles: {
-                    bg: '#fff',
-                    w: 300,
+                          if(data.code==200){
 
-                    content: {
-                        color: '#000',
-                        size: 14
-                    },
-                    left: {
-                        marginB: 7,
-                        marginL: 20,
-                        w: 130,
-                        h: 35,
-                        corner: 2,
-                        color:'#fff',
+                            data.data.goods.forEach(function(item){
+                              item.active=true
+                            })
 
-                        bg: '#c2262b',
-                        size: 12
-                    },
-                    right: {
-                        marginB: 7,
-                        marginL: 10,
-                        w: 130,
-                        h: 35,
-                        corner: 2,
-                        color:'#fff',
-                        bg: '#c2262b',
-                        size: 12
-                    }
-                }
-            }, function(ret) {
-                if (ret.eventType == 'left') {
-                  postData('/shop/carts',function(data){
-                    api.hideProgress();
+                            data.data.goods=that.adData(data.data.goods)
+                            that.goods=data.data
 
-                    if(data.code==200){
-                      data.data.goods.forEach(function(item){
-                        if(item.type==obj.type&&item.obj_id==obj.obj_id){
-                            obj.goods_nums=item.goods_nums
-                            obj.real_price=item.real_price
-                        }
+                          }
+                          else{
+                            api.toast({
+                                      msg: '服务器错误',
+                                      duration:5000,
+                                      location: 'bottom'
+                                  });
+                          }
+
+                        },JSON.stringify(parm),
+                        {'Authorization':$api.getStorage('token'),
+                        'Content-Type':'application/json'
                       })
-                      that.goods.count=data.data.count
-                      that.goods.goods_price=data.data.goods_price
-                      that.goods.real_price=data.data.real_price
-                      that.goods.delivery_price=data.data.delivery_price
-                      that.goods.real_delivery_price=data.data.real_delivery_price
-                    }
-                    else{
-                      api.toast({
-                                msg: '服务器错误',
-                                duration:5000,
-                                location: 'bottom'
-                            });
-                    }
-
-                  },JSON.stringify(parm),
-                  {'Authorization':$api.getStorage('token'),
+                  }
+                },JSON.stringify(para),{
+                  'Authorization':$api.getStorage('token'),
                   'Content-Type':'application/json'
                 })
-                    dialogBox.close({
-                        dialogName: 'alert'
-                    });
+              }
+          });
 
-                }
-                else{
-                              postData('/shop/carts/remove',function(data){
-                                if(data.code==200){
-                                  dialogBox.close({
-                                      dialogName: 'alert'
-                                  });
-                                  api.toast({
-                                          msg: '删除成功',
-                                          duration:5000,
-                                          location: 'bottom'
-                                      });
-                                      postData('/shop/carts',function(data){
-                                        api.hideProgress();
-
-                                        if(data.code==200){
-
-                                          data.data.goods.forEach(function(item){
-                                            item.active=true
-                                          })
-
-                                          data.data.goods=that.adData(data.data.goods)
-                                          that.goods=data.data
-
-                                        }
-                                        else{
-                                          api.toast({
-                                                    msg: '服务器错误',
-                                                    duration:5000,
-                                                    location: 'bottom'
-                                                });
-                                        }
-
-                                      },JSON.stringify(parm),
-                                      {'Authorization':$api.getStorage('token'),
-                                      'Content-Type':'application/json'
-                                    })
-                                }
-                              },JSON.stringify(para),{
-                                'Authorization':$api.getStorage('token'),
-                                'Content-Type':'application/json'
-                              })
-                }
-            });
             return false
           }
           var num=-1
