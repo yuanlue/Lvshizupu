@@ -617,7 +617,7 @@ display: -webkit-box;
   </ul>
 
 </div>
-  <span class="activity-redbag" @click="getred()">
+  <span style="display:none" class="activity-redbag" @click="getred()">
     <img class="img-redbag" src="../../image/market/redbug.png" alt="">
     <img class="img-redslide" src="../../image/market/redbagSlide.png" alt="">
   </span>
@@ -690,6 +690,7 @@ display: -webkit-box;
           this.init()
           getData('/shop/categories',(data)=>{
             let arr=[]
+
             data.data.forEach((item,index)=>{
               if(index<=5){
                 fetch({
@@ -700,9 +701,6 @@ display: -webkit-box;
                   item.ads=res.data.imgs
                     arr.push(item)
                 })
-
-
-
               }
             })
               this.sortList=arr
