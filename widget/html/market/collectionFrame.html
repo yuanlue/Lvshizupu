@@ -37,6 +37,7 @@
         padding-bottom:50px;
       }
       .mcontent ul li>div{
+        position: relative;
         overflow: hidden;
         height:145px;
         padding:10px;
@@ -122,15 +123,47 @@
         font-size: 15px;
         text-align: center;
       }
+      .mcontent>ul li .label{
+        font-size:0;
+        position: absolute;
+        left:0;
+        top:0;
+      }
+    .mcontent>ul li  .discountLabel{
+      margin:0;
+
+      font-size:12px;
+       padding: 4px 8px;
+       color:#fff;
+       background: #ef5737;
+    }
+    .mcontent>ul li  .specialCount{
+      background:#dab611
+    }
+    .mcontent>ul li .presallerLabel{
+      background: #a88462;
+    }
+    .mcontent>ul li  .litmitLabel{
+      background: #9e2831
+    }
+
       </style>
   </head>
   <body>
     <div class="mcontent" v-cloak>
       <ul>
         <li v-for="item in Goods" @click="inner(item.id)">
+
            <span @click="sels(item)" class="sel" v-bind:class="{active:item.active==true}" v-show="ischarge">
            </span>
               <div>
+                <div class="label">
+                <span class="discountLabel litmitLabel" v-if="item.flash_type==1">限时抢购</span>
+                <span class="discountLabel specialCount" v-if="item.other_type==2">分类特价</span>
+                <span class="discountLabel specialCount" v-if="item.other_type==3">单品特价</span>
+                <span class="discountLabel specialCount" v-if="item.other_type==4">品牌特价</span>
+                <span class="discountLabel presallerLabel" v-if="item.presale">预售</span>
+                </div>
             <img v-bind:src="url+item.img" alt="" :onerror="errorImg">
             </div>
             <p>{{item.name}}</p>
@@ -195,13 +228,12 @@
               modal: false
           });
           getData('/shop/goods/favorites',function(data){
+              api.hideProgress();
             if(data.code==200){
               data.data.forEach(function(item){
                 item.active=false
                 that.Goods.push(item)
               })
-              api.hideProgress();
-
             }
           },{'page':that.page,'page_size':6},{'Authorization':$api.getStorage('token')})
         },
@@ -261,12 +293,13 @@
             modal: false
         });
             getData('/shop/goods/favorites',function(data){
+                api.hideProgress();
               if(data.code==200){
                 data.data.forEach(function(item){
                   item.active=false
                 })
                 that.Goods=data.data
-                api.hideProgress();
+
 
               }
             },{'page':1,'page_size':6},{'Authorization':$api.getStorage('token')})

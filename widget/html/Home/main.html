@@ -258,7 +258,7 @@
     <div class="header" onclick="navchange('activity')"><img src="../../image/huodong.jpg" alt="">宗亲活动</div>
         <div class="content">
           <div class="acThumb">
-            <span class="label"></span>
+            <span class="label" style="display:none"></span>
             <img src="" alt="">
           </div>
           <h1></h1>
@@ -489,8 +489,8 @@ function init(){
       }
       obj=$('.culture ul')
       obj.html('')
-      if(data.data.length>3){
-        for(var i=0;i<3;i++){
+      if(data.data){
+        for(var i=0;i<data.data.length;i++){
           if(data.data[i].title.length>=12){
             data.data[i].title=data.data[i].title.substring(0,12)+'...'
           }
@@ -509,7 +509,7 @@ function init(){
       $('.culture').hide()
     }
 
-  },{ 'page': '1', 'page_size': '3' },{'Authorization':$api.getStorage('token')})
+  },{ 'page': '1', 'page_size': '6' },{'Authorization':$api.getStorage('token')})
 }
 function navchange(obj){
   api.openWin({
@@ -606,7 +606,8 @@ function chatInit(){
                 notify: {
                     title:'天下吕氏',
                     content: '有新消息啦',
-                    updateCurrent: true
+                    updateCurrent: true,
+                    extra:JSON.parse(evt.data)
                 }
             }, function(ret, err) {
                 var id = ret.id;

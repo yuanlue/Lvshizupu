@@ -79,6 +79,7 @@
               font-style:normal;
             }
               .specialList  li{
+                position: relative;
                 background-color: white;
                 border-bottom:1px solid #eee;
               }
@@ -190,6 +191,29 @@
             overflow: hidden;
 
           }
+          .discountArea  ul li .label{
+            font-size:0;
+            position: absolute;
+            left:0;
+            top:0;
+          }
+        .discountArea ul li  .discountLabel{
+          margin:0;
+
+          font-size:12px;
+           padding: 4px 8px;
+           color:#fff;
+           background: #ef5737;
+        }
+        .discountArea ul li  .specialCount{
+          background:#dab611
+        }
+        .discountArea ul li .presallerLabel{
+          background: #a88462;
+        }
+        .discountArea ul li  .litmitLabel{
+          background: #9e2831
+        }
       </style>
   </head>
   <body>
@@ -214,6 +238,13 @@
 
       <ul class="specialList" >
         <li v-for="item in aclist" @click="inner(item.id)">
+          <div class="label">
+            <span class="discountLabel litmitLabel" v-if="item.type==1">限时抢购</span>
+            <span class="discountLabel specialCount" v-if="item.type==2">分类特价</span>
+            <span class="discountLabel specialCount" v-if="item.type==3">单品特价</span>
+            <span class="discountLabel specialCount" v-if="item.type==4">品牌特价</span>
+            <span class="discountLabel presallerLabel" v-if="item.presale">预售</span>
+          </div>
           <div>
               <img v-bind:src="url+item.img" alt="">
                 <div class="info">
@@ -239,6 +270,33 @@
   <script type="text/javascript" src="../../script/vue.js"></script>
 
     <script type="text/javascript">
+    function activityInner(id,type){
+      let name
+      switch (type) {
+        case 1:////"1" =>店铺
+          name="shopintro"
+          break;
+        case 2: ////"2" =>商品分类
+          name="allGoods"
+          break;
+        case 3:
+          name="goodsInner"
+          break; //"3" =>商品单品
+        case 4: //"4" =>商品品牌
+          break
+        case 5: ////"5" =>营销活动
+          name="litmitGoods"
+          break
+      }
+      api.openWin({
+          name: name,
+          url: '../../html/market/'+name+'Win.html',
+          pageParam: {
+              id: id
+          }
+      });
+
+    }
     apiready = function(){
       // 融云模块
       var app=new Vue({
@@ -247,6 +305,7 @@
           active:"",
           aclist:[],
           page:1,
+          cateList:[],
           url:shopimgUrl,
           speList:"",
           errorImg: 'this.src="../../image/default.png"'
@@ -254,26 +313,13 @@
         },
         created:function(){
           var that=this
-          getData('/shop/categories',(data)=>{
-              if(data.code==200){
-                this.cateList=data.data
-                this.active=this.cateList[0].id || "67"
-              }
-              else{
-                api.toast({
-                    msg: data.messaga,
-                    duration: 2000,
-                    location: 'bottom'
-                });
 
-              }
-          },{id:api.pageParam.id},{'Authorization':$api.getStorage('token')})
           getData('/shop/ad_manages',function(data){
 
             that.$nextTick(function(){
               if(data.data.imgs&&data.data.imgs!='undefined'){
                 data.data.imgs.forEach(item=>{
-                  $('.swiper-wrapper').append('<div class="swiper-slide single">'
+                  $('.swiper-wrapper').append('<div class="swiper-slide single" onclick="activityInner('+item.link_target_id+','+item.link_target_type+')">'
                         +'<img src="'+that.url+item.img+'" alt="">'
                     +'</div>')
                 })
@@ -300,6 +346,7 @@
           this.init()
         },
       methods:{
+
         loadmore(){
           var that=this
           this.page++
@@ -334,22 +381,39 @@
               text: '先喝杯茶...',
               modal: false
           });
-            getData('/shop/categories/category_goods',function(data){
-              api.hideProgress();
+          getData('/shop/categories',(data)=>{
               if(data.code==200){
-                data.data.forEach(item=>{
-                  that.aclist.push(item)
-                })
+                this.cateList=data.data
+                this.active=this.cateList[0]?this.cateList[0].id:67
+                getData('/shop/categories/category_goods',function(data){
+                  api.hideProgress();
+                  if(data.code==200){
+                    data.data.forEach(item=>{
+                      that.aclist.push(item)
+                    })
+                  }
+                  else{
+                    alert(data.message)
+                    api.toast({
+                        msg: data.message,
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+
+                  }
+                },{'id':that.active,'page':that.page,'page_size':10},{'Authorization':$api.getStorage('token')})
+
               }
               else{
                 api.toast({
-                    msg: data.message,
+                    msg: data.messaga,
                     duration: 2000,
                     location: 'bottom'
                 });
 
               }
-            },{'id':that.active,'page':that.page,'page_size':10},{'Authorization':$api.getStorage('token')})
+          },{id:api.pageParam.id},{'Authorization':$api.getStorage('token')})
+
         },
         inner(id){
           api.openWin({
@@ -375,7 +439,7 @@
 
           getData('/shop/categories/category_goods',(res)=>{
             api.hideProgress();
-            
+
             if(res.code==200){
               this.aclist=res.data
             }

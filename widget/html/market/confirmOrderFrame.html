@@ -316,7 +316,18 @@
        <span v-if="!deliverwayName">请选择配送方式</span>
        <span v-if="deliverwayName">{{deliverwayName}}</span>
      </li>
-     <li style="display:none">店铺优惠<span>省100：满2998减100元</span></li>
+     <li class="buymessage" v-for="item in info.coupons">
+
+       <b v-if="item.seller_id==0">平台优惠：</b>
+        <b v-if="item.seller_id!=0">{{item.name}}：</b>
+       省{{item.amount}}：满{{item.condition}}减{{item.amount}}元
+     </li>
+     <li class="buymessage" v-for="item in info.red_packets">
+       <b v-if="item.seller_id==0">平台优惠：</b>
+        <b v-if="item.seller_id!=0">{{item.name}}：</b>
+       省{{item.amount}}：满{{item.condition}}减{{item.amount}}元
+     </li>
+
      <li class="buymessage">买家留言<input type="text" placeholder="选填：填写内容已和卖家协商" v-model="messgae"></li>
    </ul>
    <p>共{{info.count}}件商品<span>小计：<i>¥ {{info.real_price}}</i></span></p>
@@ -435,6 +446,7 @@
               postData('/shop/orders/build',function(data){
                   if(data.code==200){
                     that.info=data.data
+                    console.log(JSON.stringify(that.info))
                   }
           },JSON.stringify(para),{
             'Authorization':$api.getStorage('token'),
@@ -529,6 +541,14 @@
 
         },
         payWay(){
+          if(!this.accept_name){
+            api.toast({
+                    msg: '请至少添加一个收货地址',
+                    duration:2000,
+                    location: 'bottom'
+                });
+            return false
+          }
           var that = this
 
           var par=JSON.parse(that.para)
@@ -548,8 +568,8 @@
           }
           postData('/shop/orders',function(data){
             that.order_nums=data.data.order_no
-
             if(data.code==200){
+
               getData('/shop/payments',function(data){
                 that.paywayList=data.data
               },{'client_type':'app'},{'Authorization':$api.getStorage('token')})
@@ -607,6 +627,19 @@
             postData('/shop/orders/pay',function(data){
               api.hideProgress();
                 if(data.code==200){
+                  if(that.info.real_price==0){
+                    api.toast({
+                            msg: '支付成功',
+                            duration:2000,
+                            location: 'bottom'
+                        });
+                      api.openWin({
+                          name: 'paysuccessWin',
+                          url: '../../html/market/paysuccessWin.html',
+
+                      });
+                      return 
+                  }//验证是不是免费的
                   if(className=='wap_alipay'){
                     var aliPayPlus = api.require('aliPayPlus');
                     aliPayPlus.payOrder({
@@ -632,7 +665,7 @@
                             location: 'bottom'
                         });
                     api.openWin({
-                        name: 'myorderWin',
+                        name: 'myorder',
                         url: '../../html/market/myorderWin.html',
                         pageParam:{
                           type:'paying'

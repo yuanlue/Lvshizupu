@@ -106,6 +106,12 @@
   color:#fef7d5;
   font-size:16px;
 }
+.goodsdetail>.opera .btn .nostart{
+  background: #ccc;
+    font-size:16px;
+    color:#fff;
+
+}
 .goodsdetail .cart{
   background: rgba(0,0,0,0.5);
   width:30px;
@@ -127,16 +133,18 @@
 }
 
 .goodsdetail>.banner{
-  margin-top:5px;
   text-align: center;
+  font-size:0;
     background-color: white;
     position: relative;
+    min-height:100px;
+
     width: 100%;
-    height:145px;
 }
 .goodsdetail>.banner img{
-    height:145px;
-    width:auto;
+    height:auto;
+    min-height:100px;
+    width:100%;
 }
 .goodsdetail .inner{
   padding:10px;
@@ -531,6 +539,7 @@
     background: rgba(0,0,0,0.5);
     position: fixed;;
     top:0;
+    overflow: hidden;
     width:100vw;
     height:100vh;
   }
@@ -555,21 +564,78 @@
   background: url('../../image/market/evaluate.png');
   background-size: cover;
 }
+.goodsdetail .Litmit{
+  padding-left: 10px;
+  width:100%;
+  box-sizing: border-box;
+  background: #ef5737;
+  line-height: 50px;
+  text-align: left;
+  color:white;
+  font-size:12px;
+  bottom:0;
+}
+.goodsdetail .Litmit i{
+  font-style: normal;
+  font-size:18px;
+}
+.goodsdetail .Litmit>span{
+  padding-top:5px;
+  width:130px;
+  color:#333;
+  font-size:12px;
+  text-align: center;
+  background: #fef7d5;
+  display: inline-block;
+  height:51px;
+  box-sizing: border-box;
+  line-height:20px;
+  float: right;
+}
+.goodsdetail .Litmit>span i{
+  margin-right:2px;
+  text-align: center;
+  display: inline-block;
+  padding:0 2px;;
+  min-width:18px;
+  font-size:12px;
+  border-radius: 5px;
+  background: #ef5737;
+  color:white;
+}
+[v-cloak]{
+  display: none;
+}
       </style>
   </head>
   <body>
 
-    <div class="goodsdetail" v-cloak>
-
+    <div v-cloak class="goodsdetail" v-cloak v-bind:class="{popup:gVisble||paraVisble}">
                <div  id="product" class="swiper-container banner">
                    <div class="swiper-wrapper">
-                     <div class="swiper-slide" v-for="item in goodsDetail.photos">
-                         <img v-bind:src="url+item" alt="" :onerror="errorde">
+                     <div class="swiper-slide" v-for="(item,index) in goodsDetail.photos">
+                         <img @click="preViewArr(index)" v-bind:src="url+item" alt="" :onerror="errorde">
                      </div>
                    </div>
-
                    <div class="swiper-pagination"></div>
 
+              </div>
+              <div class="Litmit"  v-if="goodsDetail.promotion_data&&goodsDetail.promotion_data.start_time">
+                 秒杀价格￥<i>{{goodsDetail.sell_price}}</i>
+                 <span>
+                   <b  v-if="this.isSell==1">距离结束还剩：</b>
+                   <b  v-if="this.isSell==2">距离开始还剩：</b>
+                  <p v-if="this.isSell==1">
+                    <i>{{goodsDetail.promotion_data.disEndTime | dateLimit | gethour}}</i>：
+                    <i>{{goodsDetail.promotion_data.disEndTime | dateLimit | getMinute}}</i>：
+                    <i>{{goodsDetail.promotion_data.disEndTime | dateLimit | getSecond}}</i>
+                  </p>
+                  <p v-if="this.isSell==2">
+                    <i>{{goodsDetail.promotion_data.disStartTime | dateLimit | gethour}}</i>：
+                    <i>{{goodsDetail.promotion_data.disStartTime | dateLimit | getMinute}}</i>：
+                    <i>{{goodsDetail.promotion_data.disStartTime | dateLimit | getSecond}}</i>
+                  </p>
+                 </span>
               </div>
               <div class="goodsinfo" >
               <h1>{{goodsDetail.name}}
@@ -578,13 +644,12 @@
                   <p>点击分享</p></span>
               </h1>
               <p>
-              <span class="price"><i>¥</i>{{goodsDetail.sell_price}}</span>
+              <span class="price"><i>¥</i>{{sell_price}}</span>
               <span v-if="goodsDetail.presale" class="presaller">{{goodsDetail.presale.desc}}</span>
               </p>
               <ul>
               <li>销量：{{goodsDetail.sale}}次</li>
-              <li >快递：包邮</li>
-
+              <li>快递：包邮</li>
               <li>库存：{{goodsDetail.store_nums}}{{goodsDetail.unit}}</li>
               </ul>
               </div>
@@ -630,13 +695,13 @@
                <button @click="allevaluate()">查看全部评价</button>
               </div>
               </div>
-              <div class="shop">
+              <div class="shop" v-if="saller">
               <img v-if="saller" v-bind:src="saller.logo" :onerror="errorImg" alt="">
               <img v-if="!saller" src="../../image/logo.png" alt="">
 
-              <div class="shopinfo">
+              <div class="shopinfo" >
                <p class="shopname" v-if="saller" @click="shopinner()">{{saller.true_name}}</p>
-               <p class="shopname" v-if="!saller">自营商家</p>
+              <p class="shopname" v-if="!saller">自营商家</p>
 
                <p class="shopauth"></p>
               </div>
@@ -651,8 +716,8 @@
               <div class="opera">
               <div class="classify">
                <ul>
-                 <li style="display:none"><img src="../../image/market/client.png" alt=""></li>
-                 <li @click="shopinner()"><img src="../../image/market/shop.png" alt=""></li>
+                 <li @click="contact()"><img src="../../image/market/client.png" alt=""></li>
+                 <li @click="shopinner()"><img src="../../image/market/shop.png" alt="" ></li>
                  <li @click="collect()">
                    <img v-if="acollect==true" src="../../image/market/activeshoucang.png" alt="">
                    <img v-if="acollect==false" src="../../image/market/shoucang.png" alt="">
@@ -661,7 +726,11 @@
               </div>
               <div class="btn">
                <button class="addcart" @click="addtoCart()">加入购物车</button>
-               <button class="imbuy" @click="buy()">立即购买</button>
+               <button v-if="isSell==1&&goodsDetail.store_nums>0" class="imbuy" @click="buy()">立即购买</button>
+               <button v-if="isSell==1&&goodsDetail.store_nums<=0" class="nostart" >库存不足</button>
+               <button v-if="isSell==2" class="nostart" >尚未开始</button>
+               <button v-if="isSell==3" class="nostart" >尚未开始</button>
+
               </div>
               </div>
               <div class="popup" v-if="paraVisble">
@@ -676,6 +745,8 @@
             			<li>计量单位<span>{{goodsDetail.unit}}</span></li>
             			<li>上架时间<span>{{goodsDetail.up_time | formatDate}}</span></li>
             			<li>重量<span>{{goodsDetail.weight}}</span></li>
+                  <li>属性:<span v-for="item in goodsDetail.attributes">{{item.name}}:{{item.value}}</span></li>
+
             			<li class="size">描述<span>{{goodsDetail.description}}</span>
             					</li>
 
@@ -685,10 +756,10 @@
               <div class="popup"  v-show="gVisble">
                 <div slot="" class="gride">
 		<div class="grideInfo">
-					<img v-bind:src="url+goodsDetail.img" alt="" :onerror="errorde">
+					<img @click="preview()" v-bind:src="url+shopImg" alt="" :onerror="errorde">
 					<div class="gridedetail">
 						<h1>{{goodsDetail.name}}</h1>
-						<p>￥<span>{{goodsDetail.sell_price}}</span></p>
+						<p>￥<span>{{sell_price}}</span></p>
 					</div>
 					<b @click="close()">x</b>
 		</div>
@@ -698,11 +769,11 @@
             			<ul >
             				<li   v-for="item in size"  >
             					<b>{{item.name}}:</b>
-            				 <label @click="guiSe(item.id)" v-for="p in item.value"   >
+            				 <label @click="guiSe(item.id,p.name)" v-for="p in item.value"   >
             				 	<input  v-bind:id="item.id" type="radio" v-bind:name="item.name" v-bind:value="p.name"/>
             					<span>
             						<p v-if="!p.isImg">{{p.name}}</p>
-                        <img v-if="p.isImg" v-bind:src="url+p.name" alt="">
+                        <img  v-if="p.isImg" v-bind:src="url+p.name" alt="">
             					</span>
             				 </label>
 
@@ -728,7 +799,9 @@
 
 
    <script type="text/javascript">
-
+  function updateTime(time){
+    app.disTime=time
+  }
    function locationc(name){
     $("html,body").animate({scrollTop:$("#"+name).offset().top+20},500)
    }
@@ -743,11 +816,15 @@
          		paraVisble:false,
          		goodsDetail:[],
          		saller:[],
+            disTime:"",
             url:shopimgUrl,
          		sactive:"",
          		size:[],
+            isSell:1,
+            shopImg:"",
             acollect:false,
          		sizeW:[],
+            nowTime:"",
             evaluateList:[],
          		guigeDetail:[],
             errorImg: 'this.src="../../image/logo.png"',
@@ -760,13 +837,15 @@
   		   }
       },
       created:function(){
+      var that = this
         var u = navigator.userAgent;
         var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
         var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
         if(isiOS){
           $('.top').css({'background':'white',"height":"20px"})
         }
-         var that = this
+
+
         $(window).scroll(function(){
 
        var scrollBottom = $(document).height() - $(window).height() - $(window).scrollTop();
@@ -811,6 +890,81 @@
         })
       },
     methods:{
+      formData(data){
+          if(data.goods.promotion_data){
+            if(!data.goods.promotion_data.start_time){
+              return data
+            }
+            let endTime=parseInt(new Date(data.goods.promotion_data.end_time).getTime())
+            data.goods.promotion_data.disEndTime=parseInt(endTime)
+            let startTime=parseInt(new Date(data.goods.promotion_data.start_time).getTime())
+            data.goods.promotion_data.disStartTime=parseInt(startTime)
+
+            if(this.nowTime>=startTime&&this.nowTime<=endTime){
+              this.isSell=1//可以抢购
+            }
+            else if(this.nowTime<startTime){
+              this.isSell=2 //未开始
+            }
+            else if(this.nowTime>endTime){
+              this.isSell=3 //已经结束
+            }
+          }
+
+
+        return data
+      },
+
+      contact(){
+        let that = this
+        let id=0;
+        let avata="https://shop.yiwenyiwen.com/upload/2017/12/23/20171223153558578.png"
+        let name="自营商铺"
+        if(that.saller){
+          id=that.saller.id
+          that.saller.logo?avata=that.saller.logo:avata="https://shop.yiwenyiwen.com/upload/2017/12/23/20171223153558578.png"
+          that.saller.true_name?name=that.saller.true_name:name="自营商铺"
+        }
+        api.openWin({
+            name: 'clientContactWin',
+            url: '../../html/friend/clientContactWin.html',
+            pageParam: {
+                id: id,
+                avata:avata,
+                name:name,
+                goodsId:api.pageParam.id
+            }
+        });
+
+      },
+      preViewArr(index){
+        let imgArr=[]
+        this.goodsDetail.photos.forEach(item=>{
+          item=this.url+item
+          imgArr.push(item)
+        })
+        api.openWin({
+            name: 'imgWin',
+            url: '../../html/Home/imgWin.html',
+            pageParam: {
+                imgarr: imgArr,
+                index:index
+            },
+            bgColor:"#000"
+        });
+      },
+      preview(arr){
+        let img=this.url+this.shopImg
+        api.openWin({
+            name: 'imgWin',
+            url: '../../html/Home/imgWin.html',
+            pageParam: {
+                imgarr: [img],
+                index:0
+            },
+            bgColor:"#000"
+        });
+      },
       share(){
         var that = this
         var wx = api.require('wx');
@@ -819,7 +973,7 @@
               title: that.goodsDetail.name,
               description: '我在天下吕氏平台正在看'+that.goodsDetail.name+"你也来看看吧！",
               thumb: that.url+that.goodsDetail.img,
-              contentUrl: 'http://wx.kuaiyunma.com/#/goodsdetail?id='+api.pageParam.id
+              contentUrl: 'http://wx.kuaiyunma.com/goodsdetail?id='+api.pageParam.id
           }, function(ret, err) {
             if (ret.status) {
               api.toast({
@@ -862,7 +1016,7 @@
           return false
         }
         api.openWin({
-            name: 'shopintroWin',
+            name: 'shopintro',
             url: '../../html/market/shopintroWin.html',
             pageParam: {
                 id:that.saller.id
@@ -909,19 +1063,35 @@
                   location: 'bottom'
             })
         }
-      },{'id':api.pageParam.id},
+      },{'ids':api.pageParam.id},
       {
         'Authorization':$api.getStorage('token')
       })
     },
     addtoCart(){
+      if(this.isSell!=1){
+        api.toast({
+            msg: '秒杀活动尚未开始',
+            duration: 2000,
+            location: 'bottom'
+        });
+        return
+      }
+      if(this.goodsDetail.promotion_data.disEndTime){
+        api.toast({
+            msg: '秒杀活动商品不能添加到购物车',
+            duration: 2000,
+            location: 'bottom'
+        });
+        return
+      }
       if(this.goodsDetail.presale){
         api.toast({
             msg: '预售商品不能加入购物车',
             duration: 2000,
             location: 'bottom'
         });
-      return false
+      return
       }
       var that = this
   		var para={
@@ -939,12 +1109,12 @@
                 duration:5000,
                 location: 'bottom'
             });
+            this.gVisble=true
 
 				return false
 			}
 		}
   			postData("/shop/carts/add",function(res){
-  			console.log(res)
   			if(res.code==200){
           api.toast({
                   msg: '添加购物车成功',
@@ -966,6 +1136,15 @@
       })
     },
         init(){
+          this.isSell=1
+          var that = this
+          this.nowTime=new Date().getTime()
+          api.execScript({
+              name: 'litmitGoodsWin',
+              frameName: 'litmitGoodsFrame',
+              script: 're();'
+          });
+
           api.closeWin({
               name: 'paysuccessWin'
           });
@@ -1012,8 +1191,15 @@
         },{'goods_id':api.pageParam.id,'page':1,'page_size':3},{'Authorization':$api.getStorage('token')})
           getData("/shop/products/"+api.pageParam.id,function(data){
             api.hideProgress();
+            console.log(JSON.stringify(data.data))
+            that.goodsDetail=that.formData(data.data).goods;
+            that.shopImg=that.goodsDetail.img
+            if(that.goodsDetail.promotion_data&&that.goodsDetail.promotion_data.type==1){
+            timer = setInterval(function(){
+                that.$forceUpdate()
 
-            that.goodsDetail=data.data.goods;
+              }, 1000);
+            }
             that.$nextTick(function(){
               var mySwiper = new Swiper ('.swiper-container', {
                   direction: 'horizontal',
@@ -1079,10 +1265,11 @@
       			para.order.type='product'
             if(that.para.specs.length<1||!this.sell_price||!this.goodsDetail.spec_array){
               api.toast({
-                      msg: '请先选择商品规格',
+                      msg: '请选择商品规格',
                       duration:5000,
                       location: 'bottom'
                   })
+                  this.gVisble=true
       				return false
       			}
       		}
@@ -1100,8 +1287,13 @@
           });
 
         },
-        guiSe(id){
+        guiSe(id,imgurl){
+          var partten = /\w(.JPEG|.JPG|.jpg|.GIF|.gif|.BMP|.bmp|.PNG|.png)$/;
 
+          if(partten.test(imgurl)){
+            this.shopImg=imgurl
+
+          }
               var that = this
 
               var dataForm=$('form').serializeArray()
@@ -1122,6 +1314,7 @@
                 })
               })
               that.para.specs=dataForm
+
               api.showProgress({
                   title: '努力加载中...',
                   text: '先喝杯茶...',
@@ -1143,15 +1336,42 @@
 
 },
 filters: {
-         formatDate: function (value) {
-            console.log(value)
-            var date=new Date(value)
-            var year=date.getFullYear().toString()
-            var month=(date.getMonth()+1).toString()
-            var day=date.getDate()
+  formatDate: function (value) {
+     console.log(value)
+     var date=new Date(value)
+     var year=date.getFullYear().toString()
+     var month=(date.getMonth()+1).toString()
+     var day=date.getDate()
 
-            return  year+"-"+month+"-"+day
+     return  year+"-"+month+"-"+day
+  },
+         dateLimit: function (value) {
+            let date=value
+            let nowTime = new Date().getTime()
+            let gapTime=parseInt(date)-parseInt(nowTime)
+            if(gapTime >= 0){
+                  day = Math.floor(gapTime/1000/60/60/24);
+                  hour = Math.floor(gapTime/1000/60/60%24)+day*24
+                  minute = Math.floor(gapTime/1000/60%60);
+                  second = Math.floor(gapTime/1000%60);
+              }
+            else{
+              app.init()
+              clearInterval(timer);
+            }
+            let time_sec = Math.floor(gapTime/1000);
+            return    hour + ":" + minute + ":" + second ;
          },
+         gethour:function(value){
+           return value.split(':')[0]
+         },
+         getMinute:function(value){
+           return value.split(':')[1]
+         },
+         getSecond:function(value){
+           return value.split(':')[2]
+         }
+
      }
     })
 

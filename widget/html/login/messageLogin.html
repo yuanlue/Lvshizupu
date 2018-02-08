@@ -296,6 +296,24 @@
     });
   }
   function login(){
+    var partten = /^1[34578]\d{9}$/;
+    if(!partten.test($('#userName').val())){
+      api.toast({
+          msg: '手机号码格式错误',
+          duration: 2000,
+          location: 'bottom'
+      });
+      return false
+
+    }
+    if(!$('#auth').val()){
+      api.toast({
+          msg: '密码不能为空',
+          duration: 2000,
+          location: 'bottom'
+      });
+      return false
+    }
     api.showProgress({
         style: 'default',
         animationType: 'fade',
@@ -306,7 +324,7 @@
 
     postData('/users/login',function(data){
       api.hideProgress();
-      
+
       if(data.code==200){
         api.toast({
                 msg: '登录成功',

@@ -376,6 +376,33 @@
   <script type="text/javascript" src="../../script/vue.js"></script>
 
     <script type="text/javascript">
+    function activityInner(id,type){
+      let name
+      switch (type) {
+        case 1:////"1" =>店铺
+          name="shopintro"
+          break;
+        case 2: ////"2" =>商品分类
+          name="allGoods"
+          break;
+        case 3:
+          name="goodsInner"
+          break; //"3" =>商品单品
+        case 4: //"4" =>商品品牌
+          break
+        case 5: ////"5" =>营销活动
+          name="litmitGoods"
+          break
+      }
+      api.openWin({
+          name: name,
+          url: '../../html/market/'+name+'Win.html',
+          pageParam: {
+              id: id
+          }
+      });
+
+    }
     apiready = function(){
       // 融云模块
       var app=new Vue({
@@ -394,7 +421,7 @@
             that.$nextTick(function(){
               if(data.data.imgs&&data.data.imgs!='undefined'){
                 data.data.imgs.forEach(item=>{
-                  $('.swiper-wrapper').append('<div class="swiper-slide single">'
+                  $('.swiper-wrapper').append('<div class="swiper-slide single" onclick="activityInner('+item.link_target_id+','+item.link_target_type+')">'
                         +'<img src="'+that.url+item.img+'" alt="">'
                     +'</div>')
                 })
@@ -421,6 +448,7 @@
           this.init()
         },
       methods:{
+
         loadmore(){
           var that=this
           this.page++

@@ -293,6 +293,11 @@
                     vertical-align: middle;
                     width:27px;
                   }
+                  .remarkImg img{
+                    vertical-align: middle;
+
+                    max-height:50px;
+                  }
       </style>
   </head>
   <body>
@@ -318,7 +323,11 @@
   				<img v-bind:src="url+item.img" :onerror="errorImg">
   				<div class="detailO">
   					<h1>{{item.goods_array.name}}</h1>
-  					<p class="remark"><span>{{item.goods_array.value}}</span></p>
+  					<p class="remark">
+              <span v-if="!item.isimg">{{item.goods_array.value}}</span>
+              <span   class="remarkImg" v-if="item.isimg">{{item.goods_array.value.split(':')[0]}}:<img v-bind:src="url+item.goods_array.value.split(':')[1]" alt=""></span>
+
+            </p>
   					<p class="price">
   						<span><i>￥</i>{{item.goods_price}}</span>
   						<span class="num">
@@ -390,7 +399,8 @@
   <script type="text/javascript" src="../../script/api.js"></script>
   <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
   <script type="text/javascript" src="../../script/service.js"></script>
-  <script type="text/javascript" src="../../script/vue.js"></script>  <script type="text/javascript">
+  <script type="text/javascript" src="../../script/vue.js"></script>
+  <script type="text/javascript">
   function re(){
     app.init()
     api.toast({
@@ -401,6 +411,8 @@
   }
   apiready = function(){
     // 融云模块
+    partten = /\w(.JPEG|.JPG|.jpg|.GIF|.gif|.BMP|.bmp|.PNG|.png)$/;
+
     var dialogBox = api.require('dialogBox');
 
     var clipBoard = api.require('clipBoard');
@@ -616,7 +628,12 @@
             this.order_no=api.pageParam.id
             getData('/shop/orders/'+this.order_no,function(data){
               api.hideProgress();
-
+              data.data.goods.forEach(item=>{
+                item.isimg=false
+                if(partten.test(item.goods_array.value)){
+                  item.isimg=true
+                }
+              })
               that.orderDetail=data.data
             },{},{'Authorization':$api.getStorage('token')})
         },

@@ -13,13 +13,14 @@
           }
           iframe{
             width:100%;
-            float: left;
           }
-          .content h1{
+          .content>h1{
+            border-bottom:1px solid #eee;
             color:#9e2931;
             font-size:16px;
             text-align: center;
             margin-top:20px;
+            line-height: 30px;
           }
           .content .from{
             font-size:12px;
@@ -112,7 +113,7 @@
           title: title,
           description: '我在吕氏天下APP看'+title+',你也来看看吧！',
           thumb: url+pic,
-          contentUrl: 'http://wx.kuaiyunma.com/#/'+api.pageParam.category+'/'+api.pageParam.id+'/content'
+          contentUrl: 'http://wx.kuaiyunma.com/'+api.pageParam.category+'/content?from=single&id='+api.pageParam.id
       }, function(ret, err) {
           if (ret.status) {
             api.toast({

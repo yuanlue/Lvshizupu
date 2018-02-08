@@ -148,6 +148,10 @@
          .empty p{
            margin-top:10px;
          }
+         .remarkImg img{
+           vertical-align: middle;
+             max-height:50px;
+         }
       [v-cloak]{
         display: none;
       }
@@ -181,7 +185,8 @@
        						<p>{{p.goods_array.name}}</p>
        					</div>
        					<p>
-       						<span>{{p.goods_array.value}}</span>
+       						<span v-if="!p.isimg">{{p.goods_array.value}}</span>
+                  <span class="remarkImg" v-if="p.isimg">{{p.goods_array.value.split(':')[0]}}:<img v-bind:src="url+p.goods_array.value.split(':')[1]" alt=""></span>
        						<span>{{p.goods_price}}&nbsp;x&nbsp;{{p.goods_nums}}</span>
        					</p>
        				</div>
@@ -218,6 +223,7 @@
   }
   apiready = function(){
     // 融云模块
+    partten = /\w(.JPEG|.JPG|.jpg|.GIF|.gif|.BMP|.bmp|.PNG|.png)$/;
 
     app=new Vue({
       el: '.myorder',
@@ -252,6 +258,9 @@
           api.closeWin({
               name: 'refundWin'
           });
+          api.closeWin({
+              name: 'goodsInner'
+          });
           var that = this
           that.page=1;
           api.showProgress({
@@ -262,6 +271,14 @@
               getData('/shop/orders',function(data){
                 api.hideProgress();
                 if(data.code==200){
+                  data.data.forEach(item=>{
+                    item.goods.forEach(p=>{
+                      p.isimg=false
+                      if(partten.test(p.goods_array.value)){
+                        p.isimg=true
+                      }
+                    })
+                  })
                   that.orderList=data.data
 
                 }
@@ -279,6 +296,12 @@
                 api.hideProgress();
                 if(data.code==200){
                   data.data.forEach(function(item){
+                    item.goods.forEach(p=>{
+                      p.isimg=false
+                      if(partten.test(p.goods_array.value)){
+                        p.isimg=true
+                      }
+                    })
                     that.orderList.push(item)
 
                   })
@@ -375,7 +398,16 @@
       });
           getData('/shop/orders',function(data){
             api.hideProgress();
+
             if(data.code==200){
+              data.data.forEach(item=>{
+                item.goods.forEach(p=>{
+                  p.isimg=false
+                  if(partten.test(p.goods_array.value)){
+                    p.isimg=true
+                  }
+                })
+              })
               that.orderList=data.data
 
             }

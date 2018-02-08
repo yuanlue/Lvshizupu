@@ -25,6 +25,7 @@
               font-style:normal;
             }
               .List  li{
+                position: relative;
                 background-color: white;
                 border-bottom:1px solid #eee;
               }
@@ -45,7 +46,7 @@
           .List  li img{
             width:75px;
           }
-          .List  li>div>span{
+          .List  li>.preInfo>span{
             display: inline-block;
             width: 75px;
             height:75px;
@@ -88,19 +89,52 @@
               float: right;
             }
             .empty{
+              margin-top:50px;
               text-align: center;
+            }
+            .empty img{
+              width:100px;
             }
             [v-cloak]{
               display: none;
             }
+            .presaller>.List li .label{
+              font-size:0;
+              position: absolute;
+              right:0;
+              top:0;
+            }
+          .presaller>.List li  .discountLabel{
+            margin:0;
 
+            font-size:12px;
+             padding: 4px 8px;
+             color:#fff;
+             background: #ef5737;
+          }
+          .presaller>.List li  .specialCount{
+            background:#dab611
+          }
+          .presaller>.List li .presallerLabel{
+            background: #a88462;
+          }
+          .presaller> .List li  .litmitLabel{
+            background: #9e2831
+          }
       </style>
   </head>
   <body>
     <div class="presaller" v-cloak>
-      <ul class="List">
+      <ul class="List" v-if="aclist.length>0">
         <li v-for="item in aclist" @click="inner(item.id)">
-          <div>
+          <div class="label">
+            <span class="discountLabel litmitLabel" v-if="item.flash_type==1">限时抢购</span>
+            <span class="discountLabel specialCount" v-if="item.other_type==2">分类特价</span>
+            <span class="discountLabel specialCount" v-if="item.other_type==3">单品特价</span>
+            <span class="discountLabel specialCount" v-if="item.other_type==4">品牌特价</span>
+            <span class="discountLabel presallerLabel" v-if="item.presale">预售</span>
+          </div>
+          <div class="preInfo">
               <span><img v-bind:src="url+item.img" alt=""></span>
                 <div class="info">
                     <p class="name">{{item.name}}</p>
@@ -115,6 +149,7 @@
         </li>
       </ul>
       <div class="empty" v-if="aclist.length<1">
+        <img src="../../image/market/empty.png" alt="">
         <p>暂无数据</p>
       </div>
     </div>
@@ -133,25 +168,14 @@
         data: {
           aclist:[],
           page:1,
+          speList:[],
           url:shopimgUrl,
           errorImg: 'this.src="../../image/default.png"'
 
         },
         created:function(){
           var that=this
-          getData('/shop/goods/promotions/presale',(data)=>{
-              if(data.code==200){
-                this.speList=data.data
-              }
-              else{
-                api.toast({
-                    msg: data.messaga,
-                    duration: 2000,
-                    location: 'bottom'
-                });
 
-              }
-          },{},{'Authorization':$api.getStorage('token')})
 
           api.addEventListener({
             name: 'scrolltobottom'

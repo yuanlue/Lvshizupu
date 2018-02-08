@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      .content h1{
+        margin-top:30px;
+          font-size:15px;
+        }
+        .content p{
+          font-size:12px;
+          color:#666666;
+        }
+        .content table {
+          margin-top: 30px;
+          width:100%;
+        }
+        .content table thead tr{
+        background: #e4e7ea
+        }
+        .content table  td{
+          width: 100px;
+          line-height: 30px;
+          text-align: center;
+        }
+        .content table {
+          color:#666;
+          font-size:12px;
+        }
+      .content h2{
+        font-size:13px;
+      }
+          body{
+            padding:0 15px;
+          }
+      </style>
+  </head>
+  <body>
+    <div class="content">
+        <h1>等级会员介绍</h1>
+        <h2>积分来源为购物消费金额后获取按比例的积分</h2>
+        <p>1、等级分为6级（1-6或者新手、铜牌、银牌、金牌、铂金、钻石），每级别到达规定积分后自动晋级
+2、等级不固定，按上一年度消费累计积分情况确定下一年度的会员等级及享受的会员权益。</p>
+        <h1>积分说明</h1>
+        <h2>成长值为购物实际付款金额同比例核算。积分相应按照100元换算1积分，即100:1核算，积分后续可当钱花。</h2>
+        <table>
+          <thead>
+              <td>等级</td>
+              <td>成长植范围</td>
+              <td>会员有效期</td>
+          </thead>
+          <tbody>
+            <tr>
+              <td>注册会员</td>
+              <td>无，注册成功即是</td>
+              <td>永久有效</td>
+            </tr>
+            <tr>
+              <td>铜牌会员</td>
+              <td>1-1999</td>
+              <td>会员有效期1年，1年后扣除999成长值，根据剩余成长值重新计算级别</td>
+            </tr>
+            <tr>
+              <td>银牌会员</td>
+              <td>2000-9999</td>
+              <td>会员有效期1年，1年后扣除1999成长值，根据剩余成长值重新计算级别</td>
+            </tr>
+            <tr>
+              <td>金牌会员</td>
+              <td>10000-29999</td>
+              <td>依据上面类推，减少9999</td>
+            </tr>
+            <tr>
+              <td>铂金会员</td>
+              <td>30000-59999</td>
+              <td>依据上面类推，减少19999</td>
+            </tr>
+            <tr>
+              <td>钻石会员</td>
+              <td>60000以上</td>
+              <td>依据上面类推，减少39999</td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+
+      };
+  </script>
+  </html>

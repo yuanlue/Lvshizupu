@@ -6,111 +6,204 @@
       <title>title</title>
       <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
       <style>
-      body{
-        min-height: 100vh;
-        background-color: #f5f4f4;
-
+      body,html{
+      min-height:100vh;
+      background-color: #f3f1f1;
       }
-      .mcontent>ul{
-        padding:0 10px;
-        font-size:0;
-      }
-      .mcontent>ul li img{
+        .List{
+          overflow: auto;
+          padding-top:65px;
+        }
+        .List  li>div{
+          padding:15px 10px;
+        }
+        i{
+          font-style:normal;
+        }
+          .List  li{
+            background-color: white;
+            border-bottom:1px solid #eee;
+          }
+        .List  li .info{
+          vertical-align: top;
+          width: 55%;
+          margin-left:10px;
+          display: inline-block;
+        }
+        @media screen  and (max-width: 320px) {
+          .List  li .info{
+            vertical-align: top;
+            width: 55%;
+            margin-left:10px;
+            display: inline-block;
+          }
+        }
+      .List  li img{
         width:100%;
-        height:100%;
       }
-
-      .mcontent>ul li{
-        vertical-align: middle;
+      .List  li>div>span{
+        position: relative;
         display: inline-block;
-        width:48%;
-        margin:10px 1% 0;
-        color:#333333;
-        height:250px;
-        background-color: white;
-        box-sizing:border-box;
-        border-collapse: collapse;
-        font-size:13px;
-      }
-      .mcontent>ul li>div{
+        width: 135px;
+        min-height:100px;
         overflow: hidden;
-        height:145px;
-        padding:10px;
       }
-      .mcontent>ul li p{
-        overflow : hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-        font-weight: bold;
-        padding:0 10px;
-        line-height: 20px;
-        height:40px;
-      }
-      i{
-        font-style: normal;
-      }
-     .mcontent>ul li span{
-        color:#ef5737;
-        margin-left:10px;
+      .List  li .name{
         font-size:15px;
+        line-height:25px
       }
-      [v-cloak]{
-        display: none;
+      .List  li .time{
+        margin-top:10px;
+        display: block;
+        width:120px;
+        font-size:10px;
+        color:#9e2931;
+        background: #fff4f5
+      }
+        .List  li .price{
+          margin-top:15px;
+        }
+        .List  li .price>span{
+          font-size:12px;
+          color:#ef5737;
+        }
+        .List  li .price del{
+          font-size:12px;
+          color:#999;
+
+        }
+        .List  li .price>span i{
+          font-size: 16px;
+        }
+        .List  li .price button {
+          font-size: 13px;
+          border-radius: 5px;
+          color:white;
+          background-color: #9e2931;
+          padding:10px 15px;
+          font-weight: normal;
+          float: right;
+        }
+      .List  li .price  .nostart{
+          background: #fef7d5;
+          color:#333;
+        }
+        .empty{
+          margin-top:150px;
+          text-align: center;
+        }
+        .empty img{
+          width:100px;
+        }
+        [v-cloak]{
+          display: none;
+        }
+      .tab ul{
+        font-size:0;
+        width:100%;
       }
       .tab{
+        z-index:9;
+        height:60px;
         position: fixed;
         top:0;
         width:100%;
-        height: 50px;
-        border-bottom:1px solid #eee;
-        background: white;
       }
-      .tab ul{
-        width:100%;
-        display: table
+      .tab ul>.active::after{
+        content:"";
+        display: inline-block;
+        position: absolute;
+        width: 0;
+        left:calc(50% - 10px);
+     height: 0;
+     border-top: 15px solid #ef5737;
+     border-right: 15px solid transparent;
+     border-left: 15px solid transparent;
+
+
+        bottom:-8px;
       }
-      .tab ul li{
-        text-align:center;
-        display: table-cell;
+      .tab ul>li{
+        position: relative;
+        display: inline-block;
+        width:50%;
+        text-align: center;
         line-height: 50px;
-        font-size:14px;
+        background-color: #fef7d5;
+        font-size:15px;
       }
-      .tab ul li img{
-        vertical-align: middle;
-        width:7px;
+      .tab ul>.active{
+        background: #ef5737;
+        color:white;
       }
-      .tab ul .active{
-        color:#9e2931;
-        border-bottom:2px solid #9e2931;
+      .label{
+        font-weight: bold;
+        padding:5px;
+        font-size:10px;
+        width:100%;
+        background-color: #fef7d5;
+        position: absolute;
+        bottom:0;
+        line-height: 20px;
       }
-      .mcontent>ul li .saleNum{
-        line-height: 1;
-        font-weight: normal;
-        margin-top:0 !important;
-        font-size:12px;
-        color:#ccc;
+      .label i{
+        margin-right:2px;
+        text-align: center;
+        display: inline-block;
+        padding:0 2px;;
+        min-width:18px;
+        border-radius: 5px;
+        background: #ef5737;
+        color:white;
       }
       del{
         color:#999;
       }
+
       </style>
   </head>
   <body>
-    <div class="mcontent" v-cloak>
+    <div class="presaller" v-cloak>
+      <div class="tab">
+        <ul>
+          <li @click="navchange(1)" v-bind:class={active:active==1}>抢购中</li>
+          <li @click="navchange(2)"  v-bind:class={active:active==2} >即将开始</li>
+        </ul>
+      </div>
+      <ul class="List" v-if="aclist.length>0">
+        <li v-for="item in aclist " v-if="item.isSell==active">
+          <div>
+              <span>
+                <img v-bind:src="url+item.img" :onerror="errorImg" alt="">
+                <p class="label" v-if="item.isSell==1">距结束：
+                  <i>{{item.disEndTime | dateLimit | gethour}}</i>:
+                  <i>{{item.disEndTime | dateLimit | getMinute}}</i>:
+                  <i>{{item.disEndTime | dateLimit | getSecond}}</i></p>
+                <p class="label" v-if="item.isSell==2">
+                  距开抢：<i>{{item.disStartTime | dateLimit | gethour}}</i>:
+                    <i>{{item.disStartTime | dateLimit | getMinute}}</i>:
+                    <i>{{item.disStartTime | dateLimit | getSecond}}</i>
 
-      <ul>
-        <li v-for="item in Goods" @click="inner(item.id)">
-              <div>
-            <img v-bind:src="url+item.img" alt="" :onerror="errorImg">
-            </div>
-            <p>{{item.name}}</p>
-            <span><i>￥</i>{{item.sell_price}}</span>
-            <del>{{item.market_price}}</del>
-            <p class="saleNum">销量:{{item.sale}}</p>
-          </li>
+                </p>
+
+              </span>
+                <div class="info">
+                    <p class="name">{{item.name}}</p>
+                    <p class="price">
+                      <span>￥<i>{{item.award_value}}</i></span>
+                      <del>{{item.market_price}}</del>
+                      <button v-if="item.isSell==1"  @click="inner(item.id,item.disEndTime,item.isSell)">立即抢购</button>
+                      <button v-if="item.isSell==3">已经结束</button>
+                      <button class="nostart" v-if="item.isSell==2"  @click="inner(item.id,item.disStartTime,item.isSell)" >尚未开始</button>
+                    </p>
+                </div>
+                </div>
+        </li>
       </ul>
+      <div class="empty" v-if="aclist.length<1">
+        <img src="../../image/market/empty.png" alt="">
+        <p>暂无数据</p>
+      </div>
     </div>
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
@@ -118,80 +211,131 @@
   <script type="text/javascript" src="../../script/service.js"></script>
   <script type="text/javascript" src="../../script/vue.js"></script>
     <script type="text/javascript">
+    function re(){
+      app.init()
+    }
     apiready = function(){
       // 融云模块
-      var app=new Vue({
-        el: '.mcontent',
+       app=new Vue({
+        el: '.presaller',
         data: {
           Goods:[],
-          active:4,
+          active:1,
           page:1,
+          aclist:[],
+            errorImg: 'this.src="../../image/logo.png"',
+          nowTime:"",
           url:shopimgUrl,
           errorImg: 'this.src="../../image/default.png"',
 
         },
         created:function(){
           var that = this
-          api.addEventListener({
-            name: 'scrolltobottom'
-          }, function(ret, err){
 
-            that.loadmore()
+          api.showProgress({
+              style: 'default',
+              animationType: 'fade',
+              title: '努力加载中...',
+              text: '先喝杯茶...',
+              modal: false
+          });
 
-            });
           this.init()
         },
+
       methods:{
-        inner(id){
+        navchange(name){
+          this.active=name
+        },
+        inner(id,time,sell){
+          let that = this
           api.openWin({
               name: 'goodsInner',
               url: '../../html/market/goodsInnerWin.html',
               pageParam: {
-                  id: id
+                  id: id,
+                  time:this.dateLimit(time),
+                  sell:sell
+
+
               }
           });
 
         },
-        loadmore(){
-          var that = this
-          that.page++
-          api.showProgress({
-          title: '努力加载中...',
-          text: '先喝杯茶...',
-          modal: false
-      });
-          getData('/shop/goods/promotions/flash_sale',function(data){
-            api.hideProgress();
-            if(data.code==200){
-              data.data.forEach(function(item){
-                that.Goods.push(item)
-              })
-              api.hideProgress();
+        formData(data){
+          data.data.forEach(item=>{
+            let endTime=parseInt(new Date(item.end_time).getTime())
+            item.disEndTime=parseInt(endTime)
+            let startTime=parseInt(new Date(item.start_time).getTime())
+            item.disStartTime=parseInt(startTime)
+
+            if(this.nowTime>=startTime&&this.nowTime<=endTime){
+              item.isSell=1//可以抢购
             }
-          },{'page':this.page,'page_size':10},{'Authorization':$api.getStorage('token')})
+            else if(this.nowTime<startTime){
+              item.isSell=2 //未开始
+            }
+            else if(this.nowTime>endTime){
+              item.isSell=3 //已经结束
+            }
+          })
+          return data
         },
 
+        dateLimit(value){
+          let date=value
+          let nowTime = new Date().getTime()
+          let gapTime=parseInt(date)-parseInt(nowTime)
+          let time_sec = Math.floor(gapTime/1000);
+          return  gapTime
+        },
           init(){
             var that = this
-            api.showProgress({
-            title: '努力加载中...',
-            text: '先喝杯茶...',
-            modal: false
-        });
-
-            getData('/shop/goods/promotions/flash_sale',function(data){
+            setInterval(function(){
+              that.aclist.forEach(item=>{
+              that.$forceUpdate()
+              })
+            }, 1000);
+          this.nowTime=parseInt(new Date().getTime())
+            getData('/shop/goods/promotions/flash_sale',data=>{
               if(data.code==200){
-                that.Goods=data.data
+                arr=this.formData(data).data
+                 that.aclist=arr
                 api.hideProgress();
-
               }
-            },{'page':this.page,'page_size':10},{'Authorization':$api.getStorage('token')})
+            },{'page':1,'page_size':9999},{'Authorization':$api.getStorage('token')})
           }
+      },
 
+      filters: {
+               dateLimit: function (value) {
+                  let date=value
+                  let nowTime = new Date().getTime()
+                  let gapTime=parseInt(date)-parseInt(nowTime)
+                  if(gapTime >= 0){
+                        day = Math.floor(gapTime/1000/60/60/24);
+                        hour = Math.floor(gapTime/1000/60/60%24)+day*24
+                        minute = Math.floor(gapTime/1000/60%60);
+                        second = Math.floor(gapTime/1000%60);
+                    }
+                  else{
+                    app.init()
+                  }
+                  let time_sec = Math.floor(gapTime/1000);
+                  return    hour + ":" + minute + ":" + second ;
+               },
+               gethour:function(value){
+                 return value.split(':')[0]
+               },
+               getMinute:function(value){
+                 return value.split(':')[1]
+               },
+               getSecond:function(value){
+                 return value.split(':')[2]
+               }
 
+           }
 
-
-      }
       })
 
 

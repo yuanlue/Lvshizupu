@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <style>
+          body{
+            margin:0;
+            width:100%;
+            top:0;
+              background-color: rgba(0,0,0,0.5);
+              min-height:100vh;
+              padding:150px 44px;
+              box-sizing: border-box;
+              position: fixed;
+          }
+          @media screen and (max-width: 320px) {
+            body{
+              margin:0;
+              width:100%;
+              top:0;
+                background-color: rgba(0,0,0,0.5);
+                min-height:100vh;
+                padding:30% 44px;
+                box-sizing: border-box;
+                position: fixed;
+            }
+          }
+          .redbag{
+            position: relative;
+            text-align: center;
+            border-radius: 5px;
+            min-height:400px;
+            box-shadow: -2px 3px 3px #333;
+            width:100%;
+            background-color: #db0028;
+          }
+          .redbag .redbagInfo{
+            position: relative;
+            padding-top:30px;
+            background-image: url('../../image/market/fa.png');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            height:225px;
+          }
+          .redbag .redbagInfo>img{
+            width: 37px;
+          }
+          .redbag .redbagInfo>p{
+            margin-top:10px;
+            font-size:12px;
+            color:#ffcb8c;
+          }
+          .redbag .redbagInfo:after{
+            transition: All 0.4s ease-in-out;
+
+            width:140px;
+            height:140px;
+            border-radius: 50%;
+            z-index:1;
+            background: -webkit-linear-gradient(right,#f9f1d5,#f2a906);;
+            position: absolute;
+            bottom:-37px;
+            -webkit-transform:rotateY(360deg);
+            left:calc(50% - 75px)
+          }
+          *:focus{outline: none}
+          @-webkit-keyframes spin { /*兼容性写法。spin是关键帧的动画名称*/
+             from { /*动画起始状态*/
+               -webkit-transform: rotateY(0deg);
+             }
+             to { /*动画结束状态*/
+               -webkit-transform: rotateY(360deg);
+             }
+           }
+           .animation{
+             -webkit-animation: spin 1s linear infinite;
+           }
+          .redbag .redbagInfo>button{
+            transition: All 0.4s ease-in-out;
+            width:125px;
+            border:none;
+            z-index:2;
+            height:125px;
+            font-size:24px;
+            color:#c40326;
+            border-radius: 50%;
+            background: #ffd6a3;
+            position: absolute;
+            bottom:-30px;
+            left:calc(50% - 67px)
+          }
+          .redbag .remark{
+            width:100%;
+            font-size:10px;
+            position: absolute;
+            bottom:20px;
+            text-align: center;
+            color:#7f0000;
+          }
+          .redClose{
+            position: absolute;
+            right:10px;
+            top:-35px;
+            z-index:9;
+          }
+          .redClose img{
+            width:25px;
+          }
+          [v-cloak]{
+            display: none;
+          }
+      </style>
+  </head>
+  <body>
+        <div class="redbag" v-cloak>
+          <span class="redClose" @click="close()">
+            <img src="../../image/market/red-close.png" alt="">
+          </span>
+            <div class="redbagInfo">
+              <img src="../../image/logo.png" alt="">
+              <p v-if="redInfo.red_packet_name">{{redInfo.red_packet_name}}</p>
+              <p v-if="money!='拆红包'">满{{redInfo.condition}}即减{{money}}</p>
+              <button @click="open()" v-bind:class="{animation:isLoading}">{{money}}</button>
+            </div>
+            <p @click="voucher()" class="remark">到卡劵包查看此红包></p>
+        </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
+    <script type="text/javascript">
+  apiready = function(){
+    // 融云模块
+    app=new Vue({
+      el: '.redbag',
+      data: {
+        redInfo:[],
+        isLoading:false,
+        money:"拆红包"
+      },
+      created:function(){
+        this.init()
+
+      },
+    methods:{
+      voucher(){
+        api.openWin({
+            name: 'myVoucher',
+            url: '../../html/market/myVoucherWin.html'
+
+        });
+
+      },
+        open(obj){
+          if(this.money!='拆红包'){
+            return
+          }
+          if(this.redInfo.count - this.redInfo.taken_count<=0){
+            api.toast({
+                msg: '对不起，红包已经被抢光啦！',
+                duration: 2000,
+                location: 'bottom'
+            });
+            return
+          }
+
+          if(this.redInfo.taken){
+            api.toast({
+                msg: '您已经领取过该红包',
+                duration: 2000,
+                location: 'bottom'
+            });
+            this.money=this.redInfo.amount
+            return
+          }
+            this.isLoading=true
+          postData(`/shop/red_packets/${this.redInfo.id}/take`,res=>{
+            if(res.code!=200){
+              api.toast({
+                  msg: res.message,
+                  duration: 2000,
+                  location: 'bottom'
+              });
+              return
+            }
+            api.toast({
+                msg: '领取成功！',
+                duration: 2000,
+                location: 'middle'
+            });
+            this.isLoading = false
+            this.money=this.redInfo.amount
+
+          },{},{'Authorization':$api.getStorage('token')})
+
+        },
+        init(){
+          this.redInfo=api.pageParam.redBagInfo
+          console.log(JSON.stringify(this.redInfo))
+        },
+        close(){
+          api.closeFrame();
+
+        }
+
+
+
+
+    }
+    })
+
+
+}
+  </script>
+  </html>

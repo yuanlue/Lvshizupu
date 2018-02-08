@@ -29,6 +29,7 @@
     }
     .userBanner .pic img{
         width:60px;
+        height:60px;
         border-radius: 50%;
     }
     .userBanner .name{
@@ -199,7 +200,7 @@ function errHandle(obj){
         $('.info').show()
         $('.invate').show()
       }
-        $api.attr(imgobj,'src',$api.getStorage('avata'));
+        $api.attr(imgobj,'src',$api.getStorage('avata').split('!')[0]);
 errHandle()
 
 }

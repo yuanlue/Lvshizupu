@@ -368,6 +368,35 @@ function agreement(){
 
   }
   function login(){
+    var partten = /^1[34578]\d{9}$/;
+    if(!partten.test($('#tel').val())){
+      api.toast({
+          msg: '手机号码格式错误',
+          duration: 2000,
+          location: 'bottom'
+      });
+      return false
+
+    }
+
+    if(!$('#message').val()){
+      api.toast({
+          msg: '验证码不能为空',
+          duration: 2000,
+          location: 'bottom'
+      });
+      return false
+
+    }
+    if(!$('#password').val()){
+      api.toast({
+          msg: '密码不能为空',
+          duration: 2000,
+          location: 'bottom'
+      });
+          return false
+
+    }
     //验证是否已经注册
     postData('/users/is_registered',function(data){
         if(data.code!='-1'){
@@ -410,7 +439,7 @@ function agreement(){
                 }
                 else{
                   api.toast({
-                          msg: '注册失败',
+                          msg: data.message,
                           duration:2000,
                           location: 'bottom'
                       });

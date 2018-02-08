@@ -2,7 +2,26 @@
 window.baseurl="https://wx2.kuaiyunma.com"
 window.shopimgUrl="https://shop.kuaiyunma.com/"
 // window.shopimgUrl="https://shop.yiwenyiwen.com/"
-
+function fetch(obj){
+  return new Promise((resolve,reject)=>{
+      $.ajax({
+          type:obj.method,
+          data:obj.params,
+          url:baseurl+obj.url,
+          dataType:"json",
+          async:true,
+          header:{
+            'Authorization':$api.getStorage('token')
+          },
+          success:function(data){
+            resolve(data)
+          },
+          error:function(err){
+            reject(err)
+          }
+      })
+  })
+}
 function postData(para,callback,parama,header){
 
     $.ajax({
@@ -11,12 +30,13 @@ function postData(para,callback,parama,header){
               url: baseurl+para,
               dataType: "json",
               headers: header,
+              async: true,
               success: function(data){
                         callback(data)
             },
 
             error:function(err){
-              alert(JSON.stringify(err))
+              console.log(JSON.stringify(err))
               api.toast({
                       msg: '服务器异常',
                       duration:2000,
@@ -27,13 +47,13 @@ function postData(para,callback,parama,header){
 
 
 }
-function getData(para,callback,parama,header){
+function getData(para,callback,parama,header,isasync){
 
     $.ajax({
               type: "GET",
               data:parama,
               url: baseurl+para,
-              async:false,
+              async:isasync,
                cache:false,
               dataType: "json",
               headers: header,
@@ -42,7 +62,7 @@ function getData(para,callback,parama,header){
                         callback(data)
             },
             error:function(err){
-
+              console.log(JSON.stringify(err))
               api.toast({
                       msg: '服务器异常',
                       duration:2000,
@@ -67,6 +87,7 @@ function deleteData(para,callback,parama,header){
                         callback(data)
             },
             error:function(err){
+
               api.toast({
                       msg: '服务器异常',
                       duration:2000,
@@ -91,7 +112,7 @@ function putData(para,callback,parama,header){
                         callback(data)
             },
             error:function(err){
-              alert(JSON.stringify(err))
+              console.log(JSON.stringify(err))
               api.toast({
                       msg: '服务器异常',
                       duration:2000,
@@ -128,7 +149,7 @@ function upimg(para,callback,parama,header){
 }
 function changeAvata(path,headers,callback,callbackerr){
   api.ajax({
-      url: baseurl+'users/avatar',
+      url: baseurl+'/users/avatar',
       method: 'POST',
       headers:headers,
       data: {
@@ -140,6 +161,8 @@ function changeAvata(path,headers,callback,callbackerr){
       if (data) {
       callback(data)
       } else {
+        api.hideProgress();
+
       callbackerr(err)
       }
   });
@@ -160,7 +183,7 @@ function upload(path,type,file,callback,header,callbackerr){
       }
   },function(data, err){
     api.hideProgress();
-    
+
       if (data) {
       callback(data)
       } else {

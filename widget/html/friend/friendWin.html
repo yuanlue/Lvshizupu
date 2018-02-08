@@ -303,6 +303,18 @@ function contact(obj){
       },{'page':cur,'page_size':10},{'authorization':$api.getStorage('token')})
 
     }
+    function upitem(data,index){
+    
+      UIListView.updateItem({
+        index: index,
+        data: JSON.parse(data),
+}, function(ret, err) {
+    if (ret) {
+    } else {
+        alert(JSON.stringify(err));
+    }
+});
+    }
     apiready = function(){
       cur=1
 
@@ -394,17 +406,9 @@ function contact(obj){
           index:ret.index
           }, function(ret, err) {
               if (ret) {
-                var tar=ret
                 ret.data.remark=""
-            UIListView.updateItem({
-              index: index,
-              data: tar.data,
-      }, function(ret, err) {
-          if (ret) {
-          } else {
-              alert(JSON.stringify(err));
-          }
-      });
+                var tar=ret
+
       var hadRead=[];
       var signRead=[]
       var isold=false
@@ -450,6 +454,7 @@ function contact(obj){
             frameName: 'home',
             script: 're();'
         });
+
                 api.openWin({
                     name: 'friendDetail',
                     url: '../../html/friend/friendDetail.html',
@@ -457,7 +462,9 @@ function contact(obj){
                     pageParam:{
                       'id':ret.data.uid,
                       'title':ret.data.title,
-                      'avatar':ret.data.imgPath
+                      'avatar':ret.data.imgPath,
+                      'data':tar.data,
+                      'index':index
                     },
                     bounces: false,
                     bgColor: 'rgba(0,0,0,0)',
@@ -466,7 +473,6 @@ function contact(obj){
                     showScrollBar:true
                 });
               } else {
-                  (JSON.stringify(err));
               }
       });
 

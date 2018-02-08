@@ -7,31 +7,33 @@
       <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
       <style>
           body{
-            background-color: #eeeeee;
+            background-color: #eee;
             min-height: 100vh;
           }
-          ul{
-            padding-top: 20px;
-            padding-bottom:30px;
+          .tab  ul {
+
             background-color: white;
             width:100%;
+            display: table;
             font-size: 0;
 
           }
-          ul li{
-            display: inline-block;
-            width:100%;
+        .tab  ul li{
+          padding-top: 20px;
+          padding-bottom:30px;
+            display: table-cell;;
+
             text-align: center;
           }
 
-          ul .message img{
+        .tab  ul .message img{
             width:35px
           }
-          ul .info img{
+        .tab  ul .info img{
             width:32px;
           }
 
-          ul li>span{
+        .tab  ul li>span{
             padding-top:10px;
             background-color:#f6eecd;
             width:60px;
@@ -39,7 +41,10 @@
             height:60px;
             border-radius: 50%;
           }
-          ul li p{
+          .tab ul .active{
+            color:#9e2831;
+          }
+        .tab  ul li p{
             font-size:15px;
             margin-top:15px;
           }
@@ -72,6 +77,33 @@
             font-size:12px;
             color:#999999;
           }
+          .clientList>ul{
+            background: white;
+          }
+          .clientList>ul>li{
+            margin-top:10px;
+            padding:10px;
+          }
+          .clientList>ul>li:active{
+            background: #eee;
+          }
+          .clientList>ul>li>span{
+            max-width:80%;
+            padding-left:10px;
+            display: inline-block;
+            word-wrap:break-word;
+          }
+          .clientList>ul>li>span>img{
+            margin-left:5px;
+            border:5px solid #9e2831;
+            width:100px;
+            vertical-align: middle;
+          }
+          .clientList>ul>li>img{
+            display: inline-block;
+            vertical-align: middle;
+            width:50px;
+          }
           [v-cloak]{
             display: none;
           }
@@ -81,20 +113,39 @@
   <div class="info" v-cloak>
     <div class="tab">
       <ul>
-        <li  class="info" >
+        <li @click="navchange('通知消息')" v-bind:class="{active:active=='通知消息'}" class="info" >
           <span><img src="../../image/iconInform.png" alt="">
-          </span><p>通知消息</p></li>
+          </span><p>通知消息</p>
+        </li>
+        <li @click="navchange('客服消息')" v-bind:class="{active:active=='客服消息'}"  class="info" >
+          <span><img src="../../image/iconInform.png" alt="">
+          </span><p>客服消息</p>
+        </li>
+
       </ul>
     </div>
     <div class="infoM" >
-      通知消息<span @click="clear()">清空</span>
+      {{active}}<span @click="clear()">清空</span>
     </div>
-
-
-    <div v-if="info" class="frienInfo infoList">
+    <div v-if="active=='通知消息'"  class="frienInfo infoList">
       <ol v-for="item in chatList">
         <li>{{item.split(',')[0]}}<span>{{item.split(',')[1]}}</span></li>
       </ol>
+    </div>
+    <div v-if="active=='客服消息'"  class="frienInfo clientList">
+      <ul>
+        <li v-for="item in clientList.reverse()" @click="contact(item.sender_id,item.data.split(',')[0],item.data.split(',')[1])">
+          <img v-if="item.data.split(',')[0]" v-bind:src="item.data.split(',')[0]" alt="">
+          <img v-if="!item.data.split(',')[0]" src="../../image/logo.png" alt="">
+
+          <span v-if="item.message_type=='text'">{{item.data.split(',')[1]}}:{{item.content}}</span>
+          <span v-if="item.message_type=='image'">{{item.data.split(',')[1]}}:
+            <img v-if="item.data.split(',')[1]" v-bind:src="item.content" />
+            <img v-if="!item.data.split(',')[1]" src="../../image/clientImg.png" alt="">
+          </span>
+
+        </li>
+      </ul>
     </div>
   </div>
   </body>
@@ -103,47 +154,107 @@
   <script type="text/javascript" src="../../script/service.js"></script>
   <script type="text/javascript" src="../../script/vue.js"></script>
   <script type="text/javascript">
+  function getClient(){
+    app.getClient()
+  }
+  function getInfo(){
+    app.getInfo()
+
+  }
   function clear(){
     alert('clear')
   }
       apiready = function(){
 
 
-        var app=new Vue({
+         app=new Vue({
           el: '.info',
           data: {
             info:true,
-            chatList:[]
+            active:"通知消息",
+            chatList:[],
+            clientList:[]
           },
           created:function(){
             var that=this
             if($api.getStorage('sysInfo')){
               this.chatList=$api.getStorage('sysInfo')
-
             }
+          this.getClient()
           },
           methods:{
-          infoChange:function(mes){
+            contact(id,avata,name){
+              api.openWin({
+                  name: 'clientContactWin',
+                  url: '../../html/friend/clientContactWin.html',
+                  pageParam: {
+                      id: id,
+                      avata:avata,
+                      name:name
+                  }
+              });
 
+            },
+          infoChange:function(mes){
+          },
+          getInfo(){
+            if($api.getStorage('sysInfo')){
+              this.chatList=$api.getStorage('sysInfo')
+            }
+          },
+          getClient(){
+            var arr=[]
+            if($api.getStorage('clientMessage')){
+              $api.getStorage('clientMessage').forEach(item=>{
+                item=JSON.parse(item)
+                arr.push(item)
+
+              })
+            }
+            this.clientList=arr.reverse()
+
+          },
+          navchange(name){
+            this.active=name
           },
           clear:function(){
             var time = new Date()
-            this.chatList=[];
-            $api.rmStorage('sysInfo');
-            $api.setStorage('sysCTime', time.getTime());
+            if(this.active=='通知消息'){
+              this.chatList=[];
+              $api.rmStorage('sysInfo');
+              $api.setStorage('sysCTime', time.getTime());
 
-            var str="re()";
-            api.cancelNotification({
-                  id: -1
+              var str="re('info')";
+              api.cancelNotification({
+                    id: -1
+                });
+                  api.execScript({
+                  name: 'home',
+                  script: str
               });
-                api.execScript({
-                name: 'home',
-                script: str
-            });
+            }
+            else if(this.active=='客服消息'){
+              this.clientList=[];
+              $api.rmStorage('clientMessage');
+              $api.setStorage('clientTime', time.getTime());
+
+              var str="re('client')";
+              api.cancelNotification({
+                    id: -1
+                });
+                  api.execScript({
+                  name: 'home',
+                  script: str
+              });
+            }
+
 
           }
 
-        }
+        },
+        watch:{
+　　　　　　　　
+　　　　　　},
         })
       };
   </script>

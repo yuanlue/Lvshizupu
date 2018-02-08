@@ -58,9 +58,12 @@
               w: 'auto',
               h: api.frameHeight-(50+  $('.top').height())
             },
+                allowEdit:true,
             pageParam:{
               'id':api.pageParam.id,
-              'avatar':api.pageParam.avatar
+              'avatar':api.pageParam.avatar,
+              'data':api.pageParam.data,
+              'index':api.pageParam.index
             },
             bounces: false,
             bgColor: '#eee',

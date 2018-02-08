@@ -336,6 +336,24 @@
   }
   function login(){
         //短信登录验证
+        var partten = /^1[34578]\d{9}$/;
+        if(!partten.test($('#tel').val())){
+          api.toast({
+              msg: '手机号码格式错误',
+              duration: 2000,
+              location: 'bottom'
+          });
+          return false
+
+        }
+        if(!$('#message').val()){
+          api.toast({
+              msg: '手机验证码不能为空',
+              duration: 2000,
+              location: 'bottom'
+          });
+          return false
+        }
         api.showProgress({
             style: 'default',
             animationType: 'fade',

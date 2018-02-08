@@ -148,7 +148,7 @@
   <div class="top"></div>
 <div id="wrap">
     <header>
-        <div id="cloud" class="topbar  activebar">
+        <div id="cloud" class="topbar  activebar" onclick="clear()">
                     天下吕氏
                     <span>
                       <img onclick="message()" src="../../image/message.png" alt="">
@@ -209,6 +209,7 @@
 <script type="text/javascript" src="../../script/websocket.js"></script>
 
 <script type="text/javascript">
+
 Array.prototype.unique = function(){
  var res = [this[0]];
  for(var i = 1; i < this.length; i++){
@@ -241,18 +242,13 @@ function menu(){
     rect_h=rect_h-25
 
   }
-  api.openFrame({
-      name: 'marketMenu',
-      url: '../../html/market/menuWin.html',
-      rect: {
-          x: 0,
-          y: 25,
-          w: 'auto',
-          h: 'auto'
-      },
+  api.openWin({
+      name: 'MarketUserWin',
+      url: '../../html/user/MarketUserCenterWin.html',
+
       bounces: false,
       animation:{
-        type:"movein",                //动画类型（详见动画类型常量）
+        type:"push",                //动画类型（详见动画类型常量）
         subType:"from_left",       //动画子类型（详见动画子类型常量）
         duration:200
       },
@@ -262,10 +258,24 @@ function menu(){
   });
 
 }
-function re(){
-  $('header>div>span i').hide()
-  sysInfo=[];
-  sysNum=0;
+function re(name){
+  if(name=='info'){
+    sysInfo=[];
+    sysNum=clientMessage.length;
+    sysNum?$('header>div>span i').text(sysNum):$('header>div>span i').hide()
+
+  }
+  else if(name=='client'){
+    clientMessage=[];
+    sysNum=sysInfoMessage.length;
+    sysNum?$('header>div>span i').text(sysNum):$('header>div>span i').hide()
+  }
+  if(clientMessage==[]&&sysInfoMessage==[]){
+    sysNum=0
+    $('header>div>span i').hide()
+
+  }
+
 }
 
 function message(){
@@ -278,15 +288,100 @@ function message(){
     apiready = function () {
       var time=new Date()
       var sysNum=0;
-      var sysInfoMessage=[]
+      api.addEventListener({
+      name:'noticeclicked'
+  },function(ret,err){
+    if(!JSON.parse(ret.value).data){
+      api.openWin({
+          name: 'friend',
+          url: '../../html/friend/friendWin.html',
+
+      });
+      return
+    }
+      api.openWin({
+          name: 'clientContactWin',
+          url: '../../html/friend/clientContactWin.html',
+          pageParam: {
+              id: JSON.parse(ret.value).data.sender_id,
+              avata:JSON.parse(ret.value).data.data.split(',')[0],
+              name:JSON.parse(ret.value).data.data.split(',')[1]
+          }
+      });
+  });
+       sysInfoMessage=[]
+       clientMessage=[]
       setInterval(function(){
         if($api.getStorage('user_id')){
           ws.send('ping')
+          wssClient.send('ping')
 
         }
 
+
      },10000);
 
+       let wssClient=new ReconnectingWebSocket("wss://wx2.kuaiyunma.com/sub/im/user_"+$api.getStorage('user_id'));
+       wssClient.onmessage = function(evt){
+         if(evt.data=="pong"){
+           return false
+         }
+         if($api.getStorage('clientMessage')){
+           clientMessage=$api.getStorage('clientMessage')
+           clientMessage.forEach(item=>{
+              if(JSON.stringify(item)==JSON.stringify(JSON.parse(evt.data).data)){
+                return false
+              }
+           })
+         }
+         sysNum++;
+         var time=0
+         if($api.getStorage('clientTime')){
+           time = parseInt($api.getStorage('clientTime'));
+         }
+         var messagetime=new Date(JSON.parse(evt.data).data.created_at).getTime()
+         if(time>parseInt(messagetime)){
+           return false
+         }
+         if(sysNum>0){
+           clientMessage.push(JSON.stringify(JSON.parse(evt.data).data))
+           clientMessage=clientMessage.unique()
+
+           $('header>div>span i').show()
+
+           var messnum=parseInt($('header>div>span i').text())
+           $('header>div>span i').text(clientMessage.length+sysInfoMessage.length)
+
+           api.notification({
+             sound:'default',
+               notify: {
+                   title:'天下吕氏',
+                   content: '您有新的客服消息',
+                   updateCurrent: true,
+                   extra:JSON.parse(evt.data)
+               }
+           }, function(ret, err) {
+               var id = ret.id;
+           });
+
+           clientMessage=clientMessage.unique()
+
+           $api.setStorage('clientMessage', clientMessage);
+           api.execScript({
+               name: 'remind',
+               frameName: 'remindFrame',
+               script: 'getClient();'
+           });
+            let str="updateList('"+evt.data+"')";
+           api.execScript({
+               name: 'clientContactWin',
+               frameName: 'clientContactFrame',
+               script: str
+           });
+
+         }
+       }
+      //系统消息
       var ws = new ReconnectingWebSocket("wss://wx2.kuaiyunma.com/sub/sys/"+$api.getStorage('user_id'));
         ws.onmessage = function(evt){
           if(evt.data=="pong"){
@@ -298,7 +393,6 @@ function message(){
               getData('/users/profile',function(data){
                 if(data.code==200){
                   if(data.data.uid==false){
-
                   }
                   else{
                     $api.setStorage('uid', data.data.uid);
@@ -334,7 +428,7 @@ function message(){
             sysInfoMessage=sysInfoMessage.unique()
 
             $('header>div>span i').show()
-            $('header>div>span i').text(sysInfoMessage.length)
+            $('header>div>span i').text(clientMessage.length+sysInfoMessage.length)
             api.notification({
               sound:'default',
                 notify: {
@@ -347,6 +441,11 @@ function message(){
             });
             sysInfoMessage=sysInfoMessage.unique()
             $api.setStorage('sysInfo', sysInfoMessage);
+            api.execScript({
+                name: 'remind',
+                frameName: 'remindFrame',
+                script: 'getInfo();'
+            });
           }
 
         };
@@ -409,45 +508,57 @@ function message(){
 // })
 
 
-        // api.openFrameGroup({
-        //     name: 'group',
-        //     scrollEnabled: false,
-        //
-        //     rect: {  x: 0,
-        //              y: y,
-        //              w: 'auto',
-        //              h:rect_h
-        //           },
-        //     index: 0,
-        //     frames: [
-        //         {
-        //             name: 'home',
-        //             url: '../../html/Home/main.html',
-        //             customRefreshHeader: 'UIPullRefreshFlash',
-        //             reload:true
-        //
-        //
-        //
-        //         },
-        //         {
-        //             name: 'market',
-        //             url: '../../html/market/marketWin.html',
-        //             reload:true
-        //         },
-        //         {
-        //             name: 'userCenter',
-        //             url: '../../html/user/userCenterWin.html',
-        //             reload:true
-        //         }
-        //     ]
-        // }, function (ret, err) {
-        //   $('ul').find('li').removeClass('active')
-        //   $('header').find('div').removeClass('activebar')
-        //   $('header').find('div').eq(ret.index).addClass('activebar')
-        //   $('ul').find('li').eq(ret.index).addClass('active')
-        //
-        //
-        // });
+        api.openFrameGroup({
+            name: 'group',
+            scrollEnabled: false,
+
+            rect: {  x: 0,
+                     y: y,
+                     w: 'auto',
+                     h:rect_h
+                  },
+            index: 0,
+            frames: [
+                {
+                    name: 'home',
+                    url: '../../html/Home/main.html',
+                    customRefreshHeader: 'UIPullRefreshFlash',
+                    useWKWebView:true,
+                    reload:true
+                },
+                {
+                    name: 'market',
+                    url: '../../html/market/marketWin.html',
+                    useWKWebView:true,
+                    allowEdit:true,
+                    reload:true
+                },
+                {
+                    name: 'userCenter',
+                    url: '../../html/user/userCenterWin.html',
+                    reload:true
+                }
+            ]
+        }, function (ret, err) {
+          api.setFrameAttr({ // 隐藏内容层
+                    name: 'home',
+                    hidden:true,
+                });
+                api.setFrameAttr({ // 隐藏内容层
+                          name: 'market',
+                          hidden:true,
+                      });
+                api.setFrameAttr({ // 隐藏内容层
+                          name: 'userCenter',
+                          hidden:true,
+                      });
+          $('ul').find('li').removeClass('active')
+          $('header').find('div').removeClass('activebar')
+          $('header').find('div').eq(ret.index).addClass('activebar')
+          $('ul').find('li').eq(ret.index).addClass('active')
+
+
+        });
 //                滑动
 
     }
@@ -466,22 +577,6 @@ function message(){
       if(!isiOS){rect_h=rect_h-25;   y=50+  $('.top').height()}
 
       if(name=='cloud'){
-        api.openFrame({
-            name: 'home',
-            url: '../../html/Home/main.html',
-            rect: {
-                x: 0,
-                y: y,
-                w: 'auto',
-                h: rect_h
-            },
-            customRefreshHeader: 'UIPullRefreshFlash',
-            reload:false,
-            bounces: false,
-            bgColor: '#fff',
-            vScrollBarEnabled: true,
-            hScrollBarEnabled: true
-        });
         api.setFrameAttr({ // 隐藏内容层
                   name: 'market',
                   hidden:true,
@@ -490,27 +585,15 @@ function message(){
                         name: 'userCenter',
                         hidden:true,
                     });
+        api.setFrameGroupIndex({
+          name: 'group',
+          index: 0
+      });
+
 
 
       }
       else if(name=='dev'){
-        api.openFrame({
-            name: 'market',
-            url: '../../html/market/marketWin.html',
-            rect: {
-                x: 0,
-                y: y,
-                w: 'auto',
-                h: rect_h
-            },
-            customRefreshHeader: 'UIPullRefreshFlash',
-            reload:false,
-            bounces: false,
-            progress:true,
-            bgColor: 'rgba(0,0,0,0)',
-            vScrollBarEnabled: true,
-            hScrollBarEnabled: true
-        });
         api.setFrameAttr({ // 隐藏内容层
                   name: 'home',
                   hidden:true,
@@ -519,24 +602,18 @@ function message(){
                         name: 'userCenter',
                         hidden:true,
                     });
+        api.setFrameGroupIndex({
+    name: 'group',
+    index: 1
+});
+
       }
       else if(name=='doc'){
-        api.openFrame({
-            name: 'userCenter',
-            url: '../../html/user/userCenterWin.html',
-            rect: {
-                x: 0,
-                y: y,
-                w: 'auto',
-                h: rect_h
-            },
-            customRefreshHeader: 'UIPullRefreshFlash',
-            reload:false,
-            bounces: false,
-            bgColor: 'rgba(0,0,0,0)',
-            vScrollBarEnabled: true,
-            hScrollBarEnabled: true
-        });
+
+        api.setFrameGroupIndex({
+      name: 'group',
+      index: 2
+  });
       }
         var $header = $api.dom('header');
         var $titleBar = $api.domAll($header, '.topbar');

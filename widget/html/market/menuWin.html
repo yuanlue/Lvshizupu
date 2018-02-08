@@ -6,20 +6,68 @@
       <title>title</title>
       <style>
       body{
+        background: #eee;
         padding:0;
         margin: 0;
     }
-    .usercenter{
-        width:80%;
-        display: inline-block;
-        background: white;
-        overflow: auto;
-        height:100vh;
+    h1{
+      margin:0;
     }
+    .marketUser{
+		min-height: 100vh;
+	}
+	.marketUser .banner>.info>.avata{
+		height:50px;
+		border-radius: 50%;
+		text-align: center;
+		vertical-align: middle;
+		display: inline-block;
+		overflow: hidden;
+		border:1px solid #676665;
+		width:50px;
+	}
+	.marketUser .banner>.info>.avata img{
+			width:100%;
+	}
+	.marketUser .banner>.info>.userinfo h1{
+		color:white;
+		font-size:16px;
+	}
+	.marketUser .banner>.info>.userinfo h1+span{
+		color:#d2bb81;
+	}
+	.marketUser .banner>.info>.userinfo h1+span button{
+		background-color: transparent;
+    color:#d2bb81;
+		border:1px solid #d2bb81;
+		padding:2px 5px;
+		border-radius:10px;
+	}
+	.marketUser .banner>.info>.userinfo{
+		vertical-align: middle;
+		display: inline-block;
+	}
+	.marketUser .banner{
+	  position: relative;
+  box-sizing: border-box;
+		display: flex;
+		justify-content:space-between;
+		padding:65px 10px;
+		height:145px;
+		width:100%;
+		background:url('../../image/market/userb.jpg');
+		background-size: cover;
+	}
+	.marketUser .banner i img{
+		width:55px;
+	}
+	.marketUser .banner i{
+		display: inline-block;
+	}
     .banner{
       width:100%;
-      height:155px;
-      background: url('../../image/market/userb.png') no-repeat;
+      height:77px;
+      background: url('../../image/market/userb.jpg') no-repeat;
       background-size: cover;
     }
     .usercenter header{
@@ -28,7 +76,6 @@
       line-height: 90px;
     }
     .usercenter header img{
-      border-radius: 50%;
       width:50px;
       vertical-align: middle;
     }
@@ -41,6 +88,13 @@
       font-size:14px;
       line-height: 50px;
     }
+      .usercenter>ul{
+        background: white;
+        margin-top:10px;
+      }
+      .usercenter>ul>li{
+        border-bottom:1px solid #eee;
+      }
     .usercenter ul>li img{
 
       margin-right:10px;
@@ -79,30 +133,77 @@
     }
     .usercenter ul>li>ol>li span{
       position: absolute;
-      right:10px;;
-      top:0;
+      right:20px;;
+      top:-10px;
       background: #9e2831;
       border-radius: 50%;
-      padding:2px 3px;
+      width:20px;
+      height:20px;
+      line-height: 20px;
+
       color:white;
       font-size:10px;
     }
-
+    *:focus{
+      outline: none;
+    }
     ul>li:active{
       background: #eee;
     }
+      .marketUser .return{
+        width:12px;
+      }
+    .marketUser .banner>.title{
+      text-align: left;
+      top:30px;
+      display: inline-block;
+      left:10px;
+      color:white;
+      font-size:16px;
+      position: absolute;
+      width:100%;
+    }
+    .marketUser .banner .info b{
+      font-weight: normal;
+
+    }
+    i img{
+      display: none;
+    }
+    i #jiangpai1{
+      display: inline-block;
+    }
       </style>
   </head>
-  <body onclick="cancel()">
-    <div class="usercenter">
-      <div class="banner">
-      </div>
-      <header>
-        <img src="../../image/male.png" alt="">
-        <span class="name"></span>
-      </header>
+  <body class="marketUser usercenter">
+
+    <div class="banner">
+      <h1 class="title">
+        <img class="return" onclick="api.closeWin()" src="../../image/return.png" alt="">
+      </h1>
+    <div class="info">
+      <span class="avata">
+        <img src="../../image/male.png">
+      </span>
+      <span class="userinfo">
+        <h1></h1>
+      <span>积分：<b>0</b>
+        <button onclick="rule()">等级规则</button>
+      </span>
+      </span>
+
+    </div>
+    <i>
+        <img id="jiangpai6" src="../../image/market/zuanshi.png" alt="">
+        <img id="jiangpai5" src="../../image/market/baijin.png" alt="">
+        <img id="jiangpai4" src="../../image/market/huangjin.png" alt="">
+        <img id="jiangpai3" src="../../image/market/yinpai.png" alt="">
+        <img id="jiangpai2" src="../../image/market/tongpai.png" alt="">
+        <img id="jiangpai1" src="../../image/market/zhucepai.png" alt="">
+
+      </i>
+</div>
       <ul>
-        <li onclick="cart()"><img src="../../image/cart.png" alt="">购物车</li>
         <li onclick="order('myorder','')"><img src="../../image/order.png" alt="">我的订单
           <ol>
               <li class="paying"  onclick="order('myorder','paying')">
@@ -125,6 +226,8 @@
 
           </ol>
         </li>
+        <li onclick="cart()"><img src="../../image/cart.png" alt="">购物车</li>
+
         <li onclick="order('collection')"><img src="../../image/Mshoucang.png" alt="">我的收藏</li>
         <li onclick="order('address')"><img src="../../image/shouhuodizhi.png" alt="">收货地址</li>
         <li style="display:none"><img src="../../image/cart.png" alt="">银行卡绑定</li>
@@ -140,6 +243,13 @@
   <script type="text/javascript" src="../../script/service.js"></script>
 
   <script type="text/javascript">
+  function rule(){
+    api.openWin({
+        name: 'ruleWin',
+        url: '../../html/market/ruleWin.html',
+    });
+
+  }
   function cancel(){
     api.closeFrame();
   }
@@ -193,6 +303,21 @@
     });
   }
   function init(){
+    api.showProgress({
+        style: 'default',
+        animationType: 'fade',
+        title: '努力加载中...',
+        text: '先喝杯茶...',
+        modal: false
+    });
+    getData('/shop/users/profile',res=>{
+      api.hideProgress();
+      if(res.code==200){
+        $('.usercenter .banner i img').hide()
+        $(`.usercenter .banner i #jiangpai${res.data.group_id}`).show()
+        $('.usercenter .info .userinfo span b').text(res.data.point)
+      }
+    },{},{'Authorization':$api.getStorage('token')})
     getData('/shop/orders/status',function(data){
       if(data.code==200){
         $('.paying>span').text(data.data.paying)
@@ -214,10 +339,10 @@
     },{},{'Authorization':$api.getStorage('token')})
 
     if($api.getStorage('avata')){
-      $('.usercenter header img').attr('src',$api.getStorage('avata'))
+      $('.usercenter .info .avata img').attr('src',$api.getStorage('avata'))
 
     }
-    $('.usercenter header .name').html($api.getStorage('mobile'))
+    $('.usercenter .info .userinfo h1').html($api.getStorage('mobile'))
   }
       apiready = function(){
         init()

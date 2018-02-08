@@ -22,6 +22,9 @@
     min-height:150px;
   	height:auto;
   }
+  .market>.banner .single{
+    min-height: 100px;
+  }
   .market>.banner img{
 width:100%;
   }
@@ -110,6 +113,7 @@ width:100%;
   }
   .market .visit ul>li{
     padding:10px;
+    vertical-align: top;
     font-size:0;
   	overflow: hidden;
   	background:white;
@@ -299,6 +303,7 @@ width:100%;
       background-size: cover;
     }
   .market .like>ul li{
+    position: relative;
     vertical-align: middle;
   	display: inline-block;
   	width:48%;
@@ -341,9 +346,7 @@ display: -webkit-box;
     color:#999;
     font-size:12px;
   }
-  [v-cloak]{
-    display: none;
-  }
+
   .market header>span:after{
     content:"";
     margin-left:5px;
@@ -378,6 +381,49 @@ display: -webkit-box;
     font-size:12px;
     color:#ccc;
   }
+    .market>.like ul li .label{
+      font-size:0;
+      position: absolute;
+      left:0;
+      top:0;
+    }
+  .market>.like ul li  .discountLabel{
+    margin:0;
+
+    font-size:12px;
+     padding: 4px 8px;
+     color:#fff;
+     background: #ef5737;
+  }
+  .market>.like ul li  .specialCount{
+    background:#dab611
+  }
+  .market>.like ul li .presallerLabel{
+    background: #a88462;
+  }
+  .market>.like ul li  .litmitLabel{
+    background: #9e2831
+  }
+  .market .activity-redbag{
+    position: fixed;
+    bottom:100px;
+    right:0;
+    display: inline-block;
+  }
+  .market .activity-redbag .img-redslide{
+    width:20px;
+  }
+  .market .activity-redbag .img-redbag{
+    width:30px;
+    z-index:-1;
+    top:15px;
+    position: absolute;
+    right:5px;
+  }
+  [v-cloak]{
+    display: none
+  }
+
 	</style>
 </head>
 <body>
@@ -416,9 +462,13 @@ display: -webkit-box;
         <img src="../../image/presaller.png" alt="">
         <p>预售中心</p>
       </li>
-      <li @click="all('collection')">
-        <img src="../../image/Mshoucang.png" alt="">
-        <p>我的收藏</p>
+      <li @click="all('myVoucher')" style="display:none">
+        <img src="../../image/kaquanbao.png" alt="">
+        <p>卡券包</p>
+      </li>
+      <li @click="all('myfoot')" >
+        <img src="../../image/Mfoot.png" alt="">
+        <p>我的足迹</p>
       </li>
       <li @click="all('recommend')">
         <img src="../../image/Mgoods.png" alt="">
@@ -432,7 +482,11 @@ display: -webkit-box;
         <img src="../../image/Mtime.png" alt="">
         <p>限时秒杀</p>
       </li>
-      <li >
+      <li @click="all('collection')" >
+        <img src="../../image/Mshoucang.png" alt="">
+        <p>我的收藏</p>
+      </li>
+      <li @click="all('voucherCenter')" style="display:none">
         <img src="../../image/lingquan.png" alt="">
         <p>领券中心</p>
       </li>
@@ -446,7 +500,7 @@ display: -webkit-box;
         <p>{{item.name}}
           <span>{{item.desc}}</span>
         </p>
-        <img v-for="p in item.ads" v-bind:src="url+p.img" alt="">
+        <img v-for="p in item.ads" v-bind:src="url+p.img" :error="errorImg" alt="">
       </li>
 
     </ul>
@@ -455,7 +509,8 @@ display: -webkit-box;
         <p>{{item.name}}
           <span>{{item.desc}}</span>
         </p>
-        <img v-for="p in item.ads" v-bind:src="url+p.img" alt="">
+        <img v-for="p in item.ads" v-bind:src="url+p.img" alt="" :error="errorImg">
+
       </li>
     </ol>
   </div>
@@ -464,7 +519,9 @@ display: -webkit-box;
   <ul>
     <li v-for="item in speGoods" @click="inner(item.id)">
         <div>
-        <img v-bind:src="url+item.img" alt="" :onerror="errorImg">
+        <img v-if="item.img" v-bind:src="url+item.img" alt="" :onerror="errorImg">
+        <img v-if="!item.img" src="../../image/default.png">
+
         </div>
         <p>{{item.sell_price}}</p>
       </li>
@@ -476,8 +533,13 @@ display: -webkit-box;
     <header @click="all('recommend')"><span>推荐商品</span></header>
     <ul>
       <li v-for="item in recomGoods" @click="inner(item.id)">
+
+
+
   				<div>
-  				<img v-bind:src="url+item.img" alt="" :onerror="errorImg">
+  				<img v-if="item.img" v-bind:src="url+item.img" alt="" :onerror="errorImg">
+          <img v-if="!item.img" src="../../image/default.png">
+
   				</div>
   				<p>{{item.name}}</p>
 
@@ -488,7 +550,7 @@ display: -webkit-box;
     </ul>
 
   </div>
-    <div class="limTime recom" v-cloak>
+    <div class="limTime recom" v-cloak v-if="timeGoods.length>0">
     <header><span>限时秒杀</span></header>
     <div>
       <p style="display:none">
@@ -511,7 +573,7 @@ display: -webkit-box;
     </ul>
 
   </div>
-    <div class="like" v-cloak>
+    <div class="like" v-cloak >
     <header><span>猜你喜欢</span></header>
 
     <ul>
@@ -534,6 +596,15 @@ display: -webkit-box;
 
   <ul>
     <li v-for="item in newGoods" @click="inner(item.id)">
+      <div class="label">
+        <span class="discountLabel litmitLabel" v-if="item.flash_type==1">限时抢购</span>
+        <span class="discountLabel specialCount" v-if="item.other_type==2">分类特价</span>
+        <span class="discountLabel specialCount" v-if="item.other_type==3">单品特价</span>
+        <span class="discountLabel specialCount" v-if="item.other_type==4">品牌特价</span>
+        <span class="discountLabel presallerLabel" v-if="item.presale">预售</span>
+      </div>
+
+
           <div>
         <img v-bind:src="url+item.img" alt="" :onerror="errorImg">
         </div>
@@ -543,11 +614,13 @@ display: -webkit-box;
         <p class="saleNum">销量：{{item.sale}}</p>
 
       </li>
-
   </ul>
 
 </div>
-
+  <span class="activity-redbag" @click="getred()">
+    <img class="img-redbag" src="../../image/market/redbug.png" alt="">
+    <img class="img-redslide" src="../../image/market/redbagSlide.png" alt="">
+  </span>
 </div>
 </body>
 <script type="text/javascript" src="../../script/api.js"></script>
@@ -557,9 +630,32 @@ display: -webkit-box;
 <script type="text/javascript" src="../../script/swiper-3.4.2.min.js"></script>
 
 <script type="text/javascript">
-  $(document).ajaxComplete(onComplete)
-  function onComplete(){
-    api.hideProgress();
+
+  function activityInner(id,type){
+    let name
+    switch (type) {
+      case 1:////"1" =>店铺
+        name="shopintro"
+        break;
+      case 2: ////"2" =>商品分类
+        name="allGoods"
+        break;
+      case 3:
+        name="goodsInner"
+        break; //"3" =>商品单品
+      case 4: //"4" =>商品品牌
+        break
+      case 5: ////"5" =>营销活动
+        name="litmitGoods"
+        break
+    }
+    api.openWin({
+        name: name,
+        url: '../../html/market/'+name+'Win.html',
+        pageParam: {
+            id: id
+        }
+    });
 
   }
     apiready = function(){
@@ -572,35 +668,56 @@ display: -webkit-box;
           recomGoods:[],
           likeGoods:[],
           speGoods:[],
+          redBagInfo:"",
           newGoods:[],
           page:0,
           errorImg: 'this.src="../../image/default.png"',
           sortList:[]
-
+        },
+        mounted(){
+          api.hideProgress();
         },
         created:function(){
+          api.showProgress({
+              style: 'default',
+              animationType: 'fade',
+              title: '努力加载中...',
+              text: '先喝杯茶...',
+              modal: false
+          });
+
           var that = this
           this.init()
           getData('/shop/categories',(data)=>{
+            let arr=[]
             data.data.forEach((item,index)=>{
               if(index<=5){
-                getData('/shop/ad_manages',(res)=>{
+                fetch({
+                  url:"/shop/ad_manages",
+                  method:"get",
+                  params:{'name':'逛商场广告位'+(index+1)}
+                }).then(res=>{
                   item.ads=res.data.imgs
-                },{'name':'逛商场广告位'+(index+1)},{'Authorization':$api.getStorage('token')})
-                this.sortList.push(item)
+                    arr.push(item)
+                })
+
+
+
               }
             })
+              this.sortList=arr
           },{},{'Authorization':$api.getStorage('token')})
           getData('/shop/ad_manages',function(data){
+            console.log(JSON.stringify(data))
             that.$nextTick(function(){
               if(!data.data.imgs||data.data.imgs=='undefined'){
-                $('.swiper-wrapper').append('<div class="swiper-slide single">'
+                $('.swiper-wrapper').append('<div class="swiper-slide single"  >'
                       +'<img src="../../image/default.png" alt="">'
                   +'</div>')
               }
               else{
                 data.data.imgs.forEach(item=>{
-                  $('.swiper-wrapper').append('<div class="swiper-slide single">'
+                  $('.swiper-wrapper').append('<div onclick="activityInner('+item.link_target_id+','+item.link_target_type+')" class="swiper-slide single">'
                         +'<img src="'+that.url+item.img+'" alt="">'
                     +'</div>')
                 })
@@ -644,6 +761,7 @@ display: -webkit-box;
             });
         },
       methods:{
+
         allContent(id,name,index){
           api.openWin({
               name: 'allgoods',
@@ -654,6 +772,46 @@ display: -webkit-box;
                   index:index+1
               }
           });
+        },
+        getred(){//领取红包
+          getData('/shop/red_packets',res=>{
+            if(res.code!=200){
+              api.toast({
+                  msg: res.message,
+                  duration: 2000,
+                  location: 'bottom'
+              });
+              return
+            }
+            console.log(JSON.stringify(res.data[0]))
+            if(!res.data){
+              api.toast({
+                  msg: '当前红包不存在',
+                  duration: 2000,
+                  location: 'bottom'
+              });
+              return
+            }
+            this.redBagInfo=res.data[0]
+            api.openFrame({
+                name: 'redbag',
+                url: '../../html/market/redbag.html',
+                rect: {
+                    x: 0,
+                    y: 0,
+                    w: 'auto',
+                    h: 'auto'
+                },
+                pageParam: {
+                    redBagInfo: this.redBagInfo
+                },
+                bounces: false,
+                bgColor: 'rgba(0,0,0,0.5)',
+                vScrollBarEnabled: true,
+                hScrollBarEnabled: true
+            });
+
+          },{'page_size':1,'page':1},{'Authorization':$api.getStorage('token')})
         },
         foot(){
           api.openWin({
@@ -682,12 +840,14 @@ display: -webkit-box;
               modal: false
           });
           getData('/shop/goods',function(data){
+            api.hideProgress();
+
             if(data.code==200){
               data.data.forEach(function(item){
                 that.newGoods.push(item)
               })
             }
-          },{'page':that.page,'page_size':6},{'Authorization':$api.getStorage('token')})
+          },{'page':that.page,'page_size':4},{'Authorization':$api.getStorage('token')})
 
         },
           init(){
@@ -702,7 +862,7 @@ display: -webkit-box;
                   that.newGoods=data.data
 
               }
-            },{'page':that.page,'page_size':6},{'Authorization':$api.getStorage('token')})
+            },{'page':that.page,'page_size':4},{'Authorization':$api.getStorage('token')})
             getData('/shop/categories/category_goods',function(data){
               if(data.code==200){
                 that.speGoods=data.data
@@ -716,13 +876,15 @@ display: -webkit-box;
             getData('/shop/goods/guess_favorites',function(data){
               if(data.code==200){
                 that.likeGoods=data.data
-                api.refreshHeaderLoadDone()
+                api.hideProgress();
+
 
               }
             },{},{'Authorization':$api.getStorage('token')})
             getData('/shop/goods/promotions/commend_goods?commend_id=4&page=1&page_size=6',function(data){
               if(data.code==200){
                 that.recomGoods=data.data
+                api.refreshHeaderLoadDone()
 
               }
             },{},{'Authorization':$api.getStorage('token')})

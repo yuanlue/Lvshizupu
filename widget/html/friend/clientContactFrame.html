@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      html,body{
+        margin:0;padding:0;
+      }
+      .conversation{
+         font-size:16px;
+         position: relative;
+         min-height:100vh;
+         background: #eee;
+         box-sizing: border-box;
+       }
+       .conversation ul{
+         padding-top:10px;
+         padding-bottom:100px;
+       }
+      .conversation i{
+         display: block;
+       }
+     .conversation  i>img{
+         border-radius: 50%;
+         width:50px;
+         height:50px;
+       }
+      .conversation i span>img{
+         max-width:100px;
+       }
+      .conversation  i span{
+        vertical-align: top;
+        border-radius:5px;
+        display: inline-block;
+        padding: 10px;
+        margin-left: 15px;
+        margin-right:15px;
+      }
+      .conversation .mine i span{
+       background-color: white;
+      }
+
+     .conversation li{
+        display: block;
+        padding:10px;
+      }
+
+     .conversation .other span{
+        margin-right:15px;
+        background:#9e2831;
+      }
+     .other i img,.other i span{
+       float: right;
+     }
+     .self{
+       padding-bottom:2rem/* 150px */;
+     }
+     .conversation i span{
+       position: relative;
+       max-width:60vw;
+       word-break:break-all;
+     }
+    .conversation  .mine i span::before{
+       top:.26666667rem/* 20px */;
+       content:"";
+       display: inline-block;
+       position: absolute;
+       width: 0;
+       height: 0;
+       border-top: 5px  solid transparent;
+       border-right: 10px solid white;
+       border-bottom: 5px solid transparent;
+       left:-.26666667rem/* 20px */;
+     }
+     .conversation .audio span img{
+       width:15px;
+       vertical-align: middle;
+     }
+     .conversation .other i span{
+       color:white;
+     }
+     .conversation .mine i span{
+       color:black
+     }
+     .conversation .other i span::after{
+       content:"";
+       display: inline-block;
+       position: absolute;
+       width: 0;
+       height: 0;
+       border-top: 5px  solid transparent;
+       border-left: 10px solid #9e2831;
+       border-bottom: 5px solid transparent;
+       right:-10px;
+                 top:10px;
+     }
+     .conversation .other:before,.conversation .other:after{
+        content: "";
+         clear: both;
+         display: block;
+         overflow: hidden;
+         font-size: 0;
+         height: 5px;
+     }
+     .conversation .mine,.other{
+     }
+     .conversation .error{
+       color:white;
+       position: absolute;
+       font-style: normal;
+       font-size:18px;
+       display: inline-block;
+       width:20px;
+       height:20px;
+       text-align: center;
+       line-height: 20px;
+       left:-30px;
+       top:30px;
+       background: #9e2831;
+       border-radius: 50%;
+     }
+     .conversation .loadding{
+       position: absolute;
+       width:100px;
+       height:calc(100% - 20px);
+       text-align: center;
+       background: rgba(0,0,0,0.3)
+     }
+     .conversation ul li .loadding img{
+       margin-top: 10px;
+       float: none;
+     width:50px;
+     left:35px;
+     }
+     .voice span,.audio span{
+       min-width:100px;
+
+     }
+     .conversation .voice span img{
+       vertical-align: middle;
+       width:15px;
+     }
+     .conversation .mine b{
+       float: right;
+       vertical-align: middle;
+     }
+     .conversation .mine .audio span img{
+       transform:rotate(180deg);
+     }
+     .conversation .popup{
+       display: none;
+       bottom:calc(70% - 150px);
+       text-align: center;
+       width:100%;
+       position: fixed;
+
+     }
+     .conversation .popup img{
+       width:150px;
+     }
+
+     .conversation  .menu ul li{
+       text-align: center;
+       width:100px;
+       display: inline-block
+     }
+     [v-cloak]{
+       display: none;
+     }
+      </style>
+  </head>
+  <body>
+  <div class="clienContact" @scroll.native="scroll()" v-cloak>
+    <div class="conversation" id="contact">
+    <ul >
+
+<li v-for="(item,index) in messageList" v-bind:class="{other:item.sender_id==myid,mine:item.sender_id!=myid}" >
+ <i class="male" >
+   <img v-if="item.sender_id==myid" v-bind:src="myAvata" >
+   <img v-if="item.sender_id!=myid" v-bind:src="shopAvata" >
+
+   <span v-if="item.message_type=='text'" class="text" >{{item.content}}</span>
+   <span class="text" v-if="item.message_type=='image'">
+   <i v-if="item.isloading" class="loadding" v-if="item.loading">
+       <img src="../../image/loading_more.gif" alt="">
+
+     </i>
+      <img  v-bind:src="item.content" @click="detailImge(item.content)">
+
+   </span>
+   <!-- <span v-if="item.message_type=='audio'">
+     <img src="./images/voice_other.png" alt="" v-if="!item.playing">
+     <img src="./images/voice_other_gif.gif" alt=""  v-if="item.playing">
+
+     <b>{{item.content_length}}s</b>
+   </span> -->
+
+ </i>
+</li>
+
+
+</ul>
+
+  </div>
+</div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
+    <script type="text/javascript">
+    function updateList(data){
+      data=JSON.parse(data)
+      if(data.data.sender_id==api.pageParam.id){
+          app.init()
+          window.scrollTo(0,$api.offset($api.byId("contact")).h);
+
+      }
+    }
+  apiready = function(){
+     app=new Vue({
+      el: '.clienContact',
+      data: {
+        info:true,
+        active:"通知消息",
+        chatList:[],
+        myid:"",
+        page:this.page,
+        myAvata:"",
+        shopName:"",
+        url:shopimgUrl,
+        shopAvata:"",
+        shopid:"",
+        scroll:"",
+        goodsName:"",
+        goodsImg:"",
+        messageList:[],
+        myname:""
+      },
+      created:function(){
+        let that = this
+        var frameht = api.frameHeight;
+        $api.getStorage('avata')?this.myAvata=$api.getStorage('avata').split('!')[0]:this.myAvata="../../image/male.png"
+        api.pageParam.avata?this.shopAvata=api.pageParam.avata:this.shopAvata="../../image/male.png"
+        var UIChatBox = api.require('UIChatBox');
+        var  obj=$api.dom('.conversation ul');
+        this.myid = $api.getStorage('user_id');
+        this.myname=$api.getStorage('mobile').substring(0,3)+'********'
+        this.shopid=api.pageParam.id
+        this.shopName=api.pageParam.name
+        this.init()
+        UIChatBox.open({
+            placeholder: '',
+            maxRows: 4,
+            texts: {
+                sendBtn: {
+                    title: '发送'
+                }
+            },
+            styles: {
+                inputBar: {
+                    borderColor: '#d9d9d9',
+                    bgColor: '#f2f2f2'
+                },
+                inputBox: {
+                    borderColor: '#B3B3B3',
+                    bgColor: '#FFFFFF'
+                },
+                emotionBtn:{
+
+                },
+                extrasBtn: {
+                    normalImg: 'widget://image/add1.png'
+                },
+                keyboardBtn: {
+                    normalImg: 'widget://image/key1.png'
+                },
+
+                indicator: {
+                    target: 'both',
+                    color: '#c4c4c4',
+                    activeColor: '#9e9e9e'
+                },
+                sendBtn: {
+                    titleColor: '#fff',
+                    bg: '#9e2831',
+                    activeBg: '#46a91e',
+                    titleSize: 14
+                }
+            },
+            extras: {
+                titleSize: 10,
+                titleColor: '#a3a3a3',
+                btns: [{
+                    title: '相册',
+                    normalImg: 'widget://image/album1.png',
+                    activeImg: 'widget://image/album2.png'
+                }, {
+                    title: '拍照',
+                    normalImg: 'widget://image/carema.png',
+                    activeImg: 'widget://image/carema.png'
+                }]
+            }
+        }, function(res, err) {
+            if (res) {
+              if(res.eventType=='clickExtras'){
+                  if(res.index==0){
+                    //相册
+                      api.getPicture({
+                        sourceType: 'all',
+                        encodingType: 'jpg',
+                        mediaValue: 'pic',
+                        destinationType: 'url',
+                        allowEdit: true,
+                        quality: 100,
+                        saveToPhotoAlbum: false
+                    }, function(ret, err) {
+                        if (ret) {
+                          ret.imgName="";
+                          var card=new Date().getTime()+Math.floor(Math.random()*100)
+                          var name=card+ret.imgName+'.png'
+                          ret.imgPath=ret.data
+                          that.uploadImg(ret)
+                        } else {
+                        }
+                    });
+                  }
+                  else if(res.index==1){
+                    //拍照
+                        api.getPicture({
+                          sourceType: 'all',
+                          encodingType: 'jpg',
+                          mediaValue: 'pic',
+                          destinationType: 'url',
+                          allowEdit: true,
+                          quality: 100,
+                          saveToPhotoAlbum: false
+                      }, function(ret, err) {
+                          if (ret) {
+                            ret.imgName="";
+                            var card=new Date().getTime()+Math.floor(Math.random()*100)
+                            var name=card+ret.imgName+'.png'
+                            ret.imgPath=ret.data
+                            that.uploadImg(ret)
+                          } else {
+                          }
+                      });
+                  }
+              }
+                if(res.eventType=='send'){
+                    that.send(res.msg,'text')
+                }
+            } else {
+            }
+        });
+        UIChatBox.addEventListener({
+                    target: 'inputBar',
+                    name: 'move'
+                }, function(ret,err){
+                    if(ret.panelHeight>0){
+                            api.setFrameAttr({
+                      name: 'contact',
+                      rect: {
+                                  h:frameht-ret.panelHeight
+                              },
+                  });
+                  }else{
+                      api.setFrameAttr({
+                      name: 'contact',
+                      rect: {
+                              h:frameht
+                              },
+                  });
+
+                      }
+
+                     setTimeout(function(){
+                        window.scrollTo(0,$api.offset($api.byId("contact")).h);
+                                      },20)
+
+                      });
+                      this.$nextTick(function(){
+                      setTimeout(function(){
+                         window.scrollTo(0,$api.offset($api.byId("contact")).h);
+                       },500)})
+      },
+      methods:{
+        detailImge(data){
+          let arr=[]
+          let imgindex = 0
+          this.messageList.forEach((item)=>{
+            if(item.message_type=='image'){
+              arr.push(item.content.split('!')[0])
+            }
+          })
+          arr.forEach((item,index)=>{
+          if(item==data.split('!')[0]){
+            imgindex=index
+          }
+          })
+          api.openWin({
+              name: 'imgWin',
+              url: '../../html/Home/imgWin.html',
+              pageParam: {
+                  imgarr:arr,
+                  index:imgindex
+              },
+              bgColor:"#000"
+          });
+
+        },
+        uploadImg(ret){
+          let that = this
+          var img =ret.imgPath
+          var card=new Date().getTime()+Math.floor(Math.random()*100)
+          var name=card+ret.imgName
+          var path='/'+$api.getStorage('uid')+'/'+api.pageParam.id+'/'+name
+          let para={
+              "sender_id": $api.getStorage('user_id'),
+              "sender_type": "user",
+              "receiver_id":api.pageParam.id,
+              "receiver_type": "seller",
+              "content": ret.imgPath,
+              "message_type": 'image',
+              "data":""+this.myAvata+","+$api.getStorage('user_id')+"",
+              'isloading':true
+            }
+          this.messageList.push(para)
+          setTimeout(function(){
+             window.scrollTo(0,$api.offset($api.byId("contact")).h);
+                           },20)
+          upload(path,'image',ret.imgPath,function(data){
+            if(data.code==200){
+
+              var url=data.data.url
+              para.content=url
+              delete para.isloading
+              //上传成功后 发送消息
+              postData('/pub/im/seller_'+api.pageParam.id,(data)=>{
+                  that.messageList[that.messageList.length-1].isloading=false
+            },para,{'Authorization':'8287565af678440aaecbea363fb57c5a'  })
+
+
+            }
+            else{
+              api.toast({
+                  msg: '图片发送失败',
+                  duration: 2000,
+                  location: 'bottom'
+              });
+              that.messageList.pop()
+
+            }
+          },{"Authorization":$api.getStorage('token')},function(err){
+            api.toast({
+                msg: '图片发送失败',
+                duration: 2000,
+                location: 'bottom'
+            });
+            that.messageList.pop()
+          })
+
+
+        },
+      init(){
+        this.page=1;
+        if(api.pageParam.goodsId){
+
+        }
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '努力加载中...',
+            text: '先喝杯茶...',
+            modal: false
+        });
+
+        getData('/im/messages',(data)=>{
+          api.hideProgress();
+          this.messageList=data.data.reverse()
+          getData('/shop/products/'+api.pageParam.goodsId,(data)=>{
+            if(data.code==200){
+              this.goodsName=data.data.goods.name
+              this.goodsImg=data.data.goods.img
+              this.send(this.url+this.goodsImg,'image')
+              this.send(this.goodsName,'text')
+            }
+            else{
+              api.toast({
+                  msg: data.message,
+                  duration: 2000,
+                  location: 'bottom'
+              });
+
+            }
+          },{},{'authorization':$api.getStorage('token'),'Accept':"text/json" })
+        },{'sender_id':$api.getStorage('user_id'),
+          'sender_type':'user',
+          'another_id':api.pageParam.id,
+          'another_type':'seller',
+          'page':this.page,
+          'page_size':10
+        },{'Authorization':'8287565af678440aaecbea363fb57c5a'})
+      },
+     send(content,type){
+        let para={
+            "sender_id": $api.getStorage('user_id'),
+            "sender_type": "user",
+            "receiver_id":api.pageParam.id,
+            "receiver_type": "seller",
+            "content": content,
+            "message_type": type,
+            "data":""+this.myAvata+","+$api.getStorage('user_id')+""
+          }
+           postData('/pub/im/seller_'+api.pageParam.id,(data)=>{
+               this.messageList.push(para)
+               window.scrollTo(0,$api.offset($api.byId("contact")).h);
+
+
+
+           },para,{'Authorization':'8287565af678440aaecbea363fb57c5a'})
+      },
+      menu(){
+        this.scroll = document.body.scrollTop;
+            if(this.scroll==0){
+              api.showProgress({
+              title: '努力加载中...',
+              text: '先喝杯茶...',
+              modal: false
+          });
+          this.page++
+          getData('/im/messages',(data)=>{
+            api.hideProgress();
+            if(!data.data){
+              return
+            }
+            data.data.forEach(item=>{
+                this.messageList.unshift(item)
+            })
+          },{'sender_id':$api.getStorage('user_id'),
+            'sender_type':'user',
+            'another_id':api.pageParam.id,
+            'another_type':'seller',
+            'page':this.page,
+            'from_id':this.messageList[0].id,
+            'page_size':10
+          },{'Authorization':'8287565af678440aaecbea363fb57c5a'})
+        }
+      }
+
+    },
+    mounted() {
+      window.addEventListener('scroll', this.menu)
+     },
+
+    })
+  };
+  </script>
+  </html>

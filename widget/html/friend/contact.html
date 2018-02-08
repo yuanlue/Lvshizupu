@@ -391,6 +391,12 @@ function receive(obj){
     },{'authorization':$api.getStorage('token')})
   }
       apiready = function(){
+        var str="upitem('"+JSON.stringify(api.pageParam.data)+"','"+api.pageParam.index+"')";
+        api.execScript({
+            name: 'friend',
+            script: str
+        });
+
         api.addEventListener({
           name:'online'
       }, function(ret, err){
@@ -507,9 +513,6 @@ function receive(obj){
                         mediaValue: 'pic',
                         destinationType: 'url',
                         allowEdit: true,
-                        quality: 50,
-                        targetWidth: 100,
-                        targetHeight: 100,
                         saveToPhotoAlbum: false
                     }, function(ret, err) {
                         if (ret) {
@@ -542,9 +545,6 @@ function receive(obj){
                           mediaValue: 'pic',
                           destinationType: 'url',
                           allowEdit: true,
-                          quality: 50,
-                          targetWidth: 100,
-                          targetHeight: 100,
                           saveToPhotoAlbum: false
                       }, function(ret, err) {
                           if (ret) {

@@ -42,6 +42,7 @@
           margin-right:5px;
         }
         .topinfo{
+          z-index:999;
           position: fixed;
           top:0;
           width:100%;
@@ -82,6 +83,7 @@
         }
 
         .shopintro>ul li{
+          position: relative;
           vertical-align: middle;
           display: inline-block;
           width:48%;
@@ -98,6 +100,30 @@
           height:145px;
           padding:10px;
         }
+        .shopintro ul li .label{
+          font-size:0;
+          position: absolute;
+          left:0;
+          top:0;
+        }
+      .shopintro ul li  .discountLabel{
+        margin:0;
+
+        font-size:12px;
+         padding: 4px 8px;
+         color:#fff;
+         background: #ef5737;
+      }
+      .shopintro ul li   .specialCount{
+        background:#dab611
+      }
+      .shopintro ul li .presallerLabel{
+        background: #a88462;
+      }
+      .shopintro ul li  .litmitLabel{
+        background: #9e2831
+      }
+
         .shopintro>ul li p{
           overflow : hidden;
       text-overflow: ellipsis;
@@ -155,6 +181,13 @@
         </div>
         <ul>
           <li v-for="item in Goods" @click="inner(item.id)">
+            <div class="label">
+              <span class="discountLabel litmitLabel" v-if="item.flash_type==1">限时抢购</span>
+              <span class="discountLabel specialCount" v-if="item.other_type==2">分类特价</span>
+              <span class="discountLabel specialCount" v-if="item.other_type==3">单品特价</span>
+              <span class="discountLabel specialCount" v-if="item.other_type==4">品牌特价</span>
+              <span class="discountLabel presallerLabel" v-if="item.presale">预售</span>
+            </div>
                 <div>
               <img v-bind:src="url+item.img" alt="" :onerror="errorImg">
               </div>
@@ -164,7 +197,7 @@
               <p class="saleNum">销量：{{item.sale}}</p>
             </li>
         </ul>
-        
+
       </div>
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
