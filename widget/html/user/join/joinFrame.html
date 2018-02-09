@@ -181,8 +181,7 @@
 
     citySelector.open({
       titleImg:"widget://image/status.png",
-      cancelImg:'#fff',
-      enterImg:'#fff'
+  
   }, function(ret, err) {
       if (ret) {
       $('.address').text(ret.province+'/'+ret.city+'/'+ret.county)

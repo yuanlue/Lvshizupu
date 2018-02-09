@@ -462,7 +462,7 @@ display: -webkit-box;
         <img src="../../image/presaller.png" alt="">
         <p>预售中心</p>
       </li>
-      <li @click="all('myVoucher')" style="display:none">
+      <li @click="all('myVoucher')" style="display:none" >
         <img src="../../image/kaquanbao.png" alt="">
         <p>卡券包</p>
       </li>
@@ -533,9 +533,6 @@ display: -webkit-box;
     <header @click="all('recommend')"><span>推荐商品</span></header>
     <ul>
       <li v-for="item in recomGoods" @click="inner(item.id)">
-
-
-
   				<div>
   				<img v-if="item.img" v-bind:src="url+item.img" alt="" :onerror="errorImg">
           <img v-if="!item.img" src="../../image/default.png">
@@ -617,7 +614,7 @@ display: -webkit-box;
   </ul>
 
 </div>
-  <span style="display:none" class="activity-redbag" @click="getred()">
+  <span class="activity-redbag" style="display:none" @click="getred()">
     <img class="img-redbag" src="../../image/market/redbug.png" alt="">
     <img class="img-redslide" src="../../image/market/redbagSlide.png" alt="">
   </span>
@@ -700,7 +697,10 @@ display: -webkit-box;
                 }).then(res=>{
                   item.ads=res.data.imgs
                     arr.push(item)
-                })
+                }).catch(function(error) {
+                  console.log('error: ' + console.log(JSON.stringify(error)));
+                });
+
               }
             })
               this.sortList=arr
@@ -871,14 +871,14 @@ display: -webkit-box;
                 that.timeGoods=data.data
               }
             },{},{'Authorization':$api.getStorage('token')})
-            getData('/shop/goods/guess_favorites',function(data){
+            getData('/shop/goods/guess_favorites?page=1&page_size=4',function(data){
               if(data.code==200){
                 that.likeGoods=data.data
                 api.hideProgress();
 
 
               }
-            },{},{'Authorization':$api.getStorage('token')})
+            },{page:1,page_size:4},{'Authorization':$api.getStorage('token')})
             getData('/shop/goods/promotions/commend_goods?commend_id=4&page=1&page_size=6',function(data){
               if(data.code==200){
                 that.recomGoods=data.data

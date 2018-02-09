@@ -483,22 +483,7 @@ function message(){
    y=45+  $('.top').height()
 
   if(!isiOS){rect_h=rect_h-25;   y=50+  $('.top').height()}
-  api.openFrame({
-      name: 'home',
-      url: '../../html/Home/main.html',
-      rect: {
-          x: 0,
-          y: y,
-          w: 'auto',
-          h: rect_h
-      },
-      customRefreshHeader: 'UIPullRefreshFlash',
-      reload:true,
-      bounces: true,
-      bgColor: 'rgba(0,0,0,0)',
-      vScrollBarEnabled: true,
-      hScrollBarEnabled: true
-  });
+  
 
 
 //       rong.getTotalUnreadCount(function(ret, err) {
@@ -530,7 +515,7 @@ function message(){
                     name: 'market',
                     url: '../../html/market/marketWin.html',
                     useWKWebView:true,
-                    allowEdit:true,
+                    receive:true,
                     reload:true
                 },
                 {
@@ -540,18 +525,7 @@ function message(){
                 }
             ]
         }, function (ret, err) {
-          api.setFrameAttr({ // 隐藏内容层
-                    name: 'home',
-                    hidden:true,
-                });
-                api.setFrameAttr({ // 隐藏内容层
-                          name: 'market',
-                          hidden:true,
-                      });
-                api.setFrameAttr({ // 隐藏内容层
-                          name: 'userCenter',
-                          hidden:true,
-                      });
+
           $('ul').find('li').removeClass('active')
           $('header').find('div').removeClass('activebar')
           $('header').find('div').eq(ret.index).addClass('activebar')
@@ -577,31 +551,14 @@ function message(){
       if(!isiOS){rect_h=rect_h-25;   y=50+  $('.top').height()}
 
       if(name=='cloud'){
-        api.setFrameAttr({ // 隐藏内容层
-                  name: 'market',
-                  hidden:true,
-              });
-              api.setFrameAttr({ // 隐藏内容层
-                        name: 'userCenter',
-                        hidden:true,
-                    });
+
         api.setFrameGroupIndex({
           name: 'group',
           index: 0
       });
-
-
-
       }
       else if(name=='dev'){
-        api.setFrameAttr({ // 隐藏内容层
-                  name: 'home',
-                  hidden:true,
-              });
-              api.setFrameAttr({ // 隐藏内容层
-                        name: 'userCenter',
-                        hidden:true,
-                    });
+
         api.setFrameGroupIndex({
     name: 'group',
     index: 1

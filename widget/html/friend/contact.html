@@ -351,6 +351,8 @@ function scroll(){
 //接收消息
 function receive(obj){
   //发送者是当前这个人
+  console.log(obj)
+
   obj=JSON.parse(obj)
   if(obj.sender==api.pageParam.id){
     var  tar=$api.dom('.conversation ul');

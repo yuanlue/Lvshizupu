@@ -569,7 +569,6 @@ function friend(){
 function chatInit(){
   ws = new ReconnectingWebSocket("wss://wx2.kuaiyunma.com/sub/chat/"+$api.getStorage('uid'));
     ws.onmessage = function(evt){
-
       if(evt.data=="pong"){
         return false
       }

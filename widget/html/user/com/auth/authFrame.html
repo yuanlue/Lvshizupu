@@ -210,9 +210,8 @@ else{
 
     citySelector.open({
       fixedOn: api.frameName,
-      titleImg:"widget://image/status.png",
-      cancelImg:'#fff',
-      enterImg:'#fff'
+      titleImg:"widget://image/status.png"
+
   }, function(ret, err) {
       if (ret) {
       $('.address').text(ret.province+'/'+ret.city+'/'+ret.county)
