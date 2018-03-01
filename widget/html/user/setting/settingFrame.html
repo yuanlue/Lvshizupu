@@ -140,23 +140,13 @@
       var ac = ret.buttonIndex;
       if(ac==1){
         $api.clearStorage();
-
-
         api.closeWin({
             name: 'home'
         });
-
-
-        api.execScript({
-            name: 'home',
-            frameName: 'user',
-            script: 're();'
+        api.closeWin({
+            name: 'login'
         });
-        api.execScript({
-            name: 'home',
-            frameName: 'home',
-            script: 're();'
-        });
+
         api.toast({
                 msg: '注销成功',
                 duration:2000,
@@ -165,6 +155,10 @@
             api.openWin({
                 name: 'login',
                 url: '../../../html/login/login.html',
+                reload:true,
+                pageParam:{
+                  url:"setting"
+                },
                 useWKWebView:false,
                 historyGestureEnabled:false,
                 slidBackEnabled:false

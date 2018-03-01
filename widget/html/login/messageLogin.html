@@ -126,9 +126,33 @@
           bottom:10px;
           right:0;
         }
+        .randomLook{
+          position: absolute;
+          top:40px;
+          right:10px;
+          color:#fff;
+          font-size:14px;
+          background: #9e2931;
+          border-radius: 10px;
+          padding:5px 10px;;
+        }
+        .lookClose{
+          position: absolute;
+          top:40px;
+          left:10px;
+          color:#9e2931;
+          border-radius: 50%;
+          width:20px;
+          border:2px solid #9e2931;
+          height:20px;
+          line-height: 20px;
+          text-align: center;
+        }
       </style>
   </head>
   <body>
+    <span onclick="randomLook()" class="randomLook">随便看看</span>
+    <span class="lookClose" onclick="randomLook()">x</span>
   <div class="logo">
     <img src="../../image/logo.png" alt="">
   </div>
@@ -157,6 +181,18 @@
 
 
   <script type="text/javascript">
+  function randomLook(){
+    if(api.pageParam.url){
+      api.openWin({
+          name: 'home',
+          url: '../../html/Home/homeWin.html',
+      });
+      return
+    }
+
+    api.closeWin();
+
+  }
   function wechatLogin(){
     wx.isInstalled(function(ret, err) {
         if (ret.installed) {
@@ -180,7 +216,6 @@
                           $api.setStorage('uid',data.data.uid);
                           $api.setStorage('joined_family',data.data.joined_family);
                           $api.setStorage('user_id',data.data.user_id);
-
                           api.execScript({
                               name: 'home',
                               frameName: 'userCenter',
@@ -188,21 +223,33 @@
                           });
                           api.execScript({
                               name: 'home',
+                              script: 'sysChat();'
+                          });
+                          api.execScript({
+                              name: 'home',
                               frameName: 'home',
                               script: 're();'
                           });
-                          api.openWin({
-                              name: 'home',
-                              url: '../../html/Home/homeWin.html',
-                              cache:false,
-                              useWKWebView:false,
-                              reload:true,
-                              pageParam:{
-                                token:data.data.token
-                              },
-                              historyGestureEnabled:false,
-                              slidBackEnabled:false
-                          });
+                          if(api.pageParam.url){
+                            api.openWin({
+                                name: 'home',
+                                url: '../../html/Home/homeWin.html',
+                                cache:false,
+                                useWKWebView:false,
+                                reload:true,
+                                pageParam:{
+                                  token:data.data.token
+                                },
+                                historyGestureEnabled:false,
+                                slidBackEnabled:false
+                            });
+                          return
+                          }
+                          api.closeWin();
+
+
+
+
 
 
                     }
@@ -288,6 +335,9 @@
             w: 'auto',
             h: 'auto'
         },
+        pageParam:{
+          url:api.pageParam.url
+        },
         bounces: false,
         bgColor: 'rgba(0,0,0,0)',
         vScrollBarEnabled: true,
@@ -326,6 +376,7 @@
       api.hideProgress();
 
       if(data.code==200){
+
         api.toast({
                 msg: '登录成功',
                 duration:2000,
@@ -337,22 +388,38 @@
             $api.setStorage('avata',data.data.avatar);
             $api.setStorage('user_id',data.data.user_id);
             $api.setStorage('joined_family',data.data.joined_family);
-
             api.execScript({
                 name: 'home',
                 frameName: 'userCenter',
                 script: 're();'
             });
-            api.openWin({
+            api.execScript({
                 name: 'home',
-                url: '../../html/Home/homeWin.html',
-                useWKWebView:false,
-                pageParam:{
-                  token:data.data.token
-                },
-                historyGestureEnabled:false,
-                slidBackEnabled:false
+                script: 'sysChat();'
             });
+            api.execScript({
+                name: 'home',
+                frameName: 'home',
+                script: 're();'
+            });
+            if(api.pageParam.url){
+              api.openWin({
+                  name: 'home',
+                  url: '../../html/Home/homeWin.html',
+                  cache:false,
+                  useWKWebView:false,
+                  reload:true,
+                  pageParam:{
+                    token:data.data.token
+                  },
+                  historyGestureEnabled:false,
+                  slidBackEnabled:false
+              });
+            return
+            }
+            api.closeWin();
+
+
       }
       else{
         api.toast({

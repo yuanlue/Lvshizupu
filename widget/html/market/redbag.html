@@ -198,7 +198,13 @@
 
         },
         init(){
+          let that = this
           this.redInfo=api.pageParam.redBagInfo
+          getData(`/shop/red_packets/${this.redInfo.id}/is_taken`,data=>{
+            if(data.data.taken==1){
+              this.money=this.redInfo.amount
+            }
+          },{},{'Authorization':$api.getStorage('token')})
           console.log(JSON.stringify(this.redInfo))
         },
         close(){

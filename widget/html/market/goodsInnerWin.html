@@ -101,9 +101,15 @@
     </div>
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+
   <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
   <script type="text/javascript">
   function cart(){
+    limitLogin()
+    if(!$api.getStorage('token')){
+      return
+    }
     api.openWin({
         name: 'cart',
         url: '../../html/market/cartWin.html',

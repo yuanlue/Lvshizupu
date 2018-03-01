@@ -106,6 +106,35 @@
   color:#fef7d5;
   font-size:16px;
 }
+.goodsdetail .tab .price{
+  line-height: 1;
+  border:none !important;
+line-height: 50px;
+color:#ef5737;
+font-size:12px;
+}
+.goodsdetail .tab .price input{
+  width:25px;
+  text-align: center;
+}
+.goodsdetail .tab .price i{
+  font-style:normal;
+font-size:16px;
+}
+.goodsdetail .tab .price {
+float: right;
+}
+
+.goodsdetail .tab .price i{
+  font-size:15px;
+display: inline-block;
+background-color: #fef7d5;
+color:#9e2931;
+text-align: center;
+font-weight: bold;
+width:22px;
+line-height:22px;
+}
 .goodsdetail>.opera .btn .nostart{
   background: #ccc;
     font-size:16px;
@@ -710,7 +739,8 @@
               <header>
                商品详情
               </header>
-              <div class="inner" v-html="goodsDetail.content"></div>
+              <div class="inner" v-html="goodsDetail.content">
+              </div>
 
               </div>
               <div class="opera">
@@ -780,7 +810,11 @@
             				</li>
             					<li>
             					<b>数量:</b>
-            					<input v-model="sallernum" type="number" placeholder="请填写商品数量">
+                    <span class="price">
+                    <i class="sub" @click="sub()">-</i>
+                    <input v-model="sallernum" type="number" placeholder="请填写商品数量">
+                    <i class="add" @click="add()">+</i>
+                  </span>
             				</li>
             			</ul>
             			</form>
@@ -879,8 +913,8 @@
         this.$nextTick(function(){
           $('.inner img').each(function(){
             $(this).on("error", function () {
-              var src=$(this).attr('src')
 
+              var src=$(this).attr('src')
               $(this).attr('src',that.url+src)
           });
 
@@ -890,6 +924,21 @@
         })
       },
     methods:{
+      add(){
+        this.sallernum++
+      },
+      sub(){
+        if(this.sallernum==1){
+          api.toast({
+              msg: '数量不能为0',
+              duration: 2000,
+              location: 'bottom'
+          });
+      return
+        }
+        this.sallernum--;
+
+      },
       formData(data){
           if(data.goods.promotion_data){
             if(!data.goods.promotion_data.start_time){
@@ -916,6 +965,10 @@
       },
 
       contact(){
+        limitLogin()
+        if(!$api.getStorage('token')){
+          return
+        }
         let that = this
         let id=0;
         let avata="https://shop.yiwenyiwen.com/upload/2017/12/23/20171223153558578.png"
@@ -1047,6 +1100,10 @@
     },
     collect(){
       var that = this
+      limitLogin()
+      if(!$api.getStorage('token')){
+        return
+      }
       postData('/shop/goods/add_favorite',function(data){
         if(data.code==200){
           that.acollect=true
@@ -1069,6 +1126,10 @@
       })
     },
     addtoCart(){
+      limitLogin()
+      if(!$api.getStorage('token')){
+        return
+      }
       if(this.isSell!=1){
         api.toast({
             msg: '秒杀活动尚未开始',
@@ -1079,7 +1140,7 @@
       }
       if(this.goodsDetail.promotion_data.disEndTime){
         api.toast({
-            msg: '秒杀活动商品不能添加到购物车',
+            msg: '秒杀活动商品不能添加到购物车，请直接购买',
             duration: 2000,
             location: 'bottom'
         });
@@ -1087,7 +1148,7 @@
       }
       if(this.goodsDetail.presale){
         api.toast({
-            msg: '预售商品不能加入购物车',
+            msg: '预售商品不能加入购物车,请直接购买',
             duration: 2000,
             location: 'bottom'
         });
@@ -1154,19 +1215,22 @@
           text: '先喝杯茶...',
           modal: false
       });
-      getData('/shop/favorites/'+api.pageParam.id+'/is_favorite',function(data){
-        if(data.code==200){
-          that.acollect=data.data.is_favorite
-        }
-        else{
-          api.toast({
-              msg: data.message,
-              duration: 2000,
-              location: 'bottom'
-          });
+      if($api.getStorage('token')){
+        getData('/shop/favorites/'+api.pageParam.id+'/is_favorite',function(data){
+          if(data.code==200){
+            that.acollect=data.data.is_favorite
+          }
+          else{
+            api.toast({
+                msg: data.message,
+                duration: 2000,
+                location: 'bottom'
+            });
 
-        }
-      },{},{'Authorization':$api.getStorage('token')})
+          }
+        },{},{'Authorization':$api.getStorage('token')})
+      }
+
         getData('/shop/comments',function(data){
           if(data.code==200){
             if(!data.data.comments){
@@ -1240,7 +1304,7 @@
               that.cartid=data.data.goods.id
               that.saller	=data.data.seller;
 
-          },{},{'Authorization':$api.getStorage('token')})
+          },{},{'Authorization':$api.getStorage('token')},false)
         },
         cart(){
           api.openWin({
@@ -1251,6 +1315,10 @@
 
         },
         buy(){
+          limitLogin()
+          if(!$api.getStorage('token')){
+            return
+          }
           var that = this
         		var para={
       		  "order": {

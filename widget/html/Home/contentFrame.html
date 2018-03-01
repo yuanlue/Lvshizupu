@@ -148,7 +148,6 @@
         text: '先喝杯茶...',
         modal: false
     });
-    if($api.getStorage('token')){
         getData('/'+api.pageParam.category+'/'+api.pageParam.id,function(data){
         api.hideProgress();
         title=data.data.title
@@ -211,7 +210,7 @@
 
       }
         },{},{"Authorization":$api.getStorage('token')})
-      }
+
       var imgarr=[]
         $('img').each(function(index){
           imgarr.push($(this).attr('src'))

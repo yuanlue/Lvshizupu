@@ -147,7 +147,6 @@
    	}
    	.confirmOrder .funway ul li span{
    		margin-right:10px;
-   		float: right;
    	}
 
    	  .confirmOrder .funway ul li:before{
@@ -318,13 +317,13 @@
      </li>
      <li class="buymessage" v-for="item in info.coupons">
 
-       <b v-if="item.seller_id==0">平台优惠：</b>
-        <b v-if="item.seller_id!=0">{{item.name}}：</b>
+       <span v-if="item.seller_id==0">平台优惠券：</span>
+        <span v-if="item.seller_id!=0">店铺优惠券：</span>
        省{{item.amount}}：满{{item.condition}}减{{item.amount}}元
      </li>
      <li class="buymessage" v-for="item in info.red_packets">
-       <b v-if="item.seller_id==0">平台优惠：</b>
-        <b v-if="item.seller_id!=0">{{item.name}}：</b>
+       <span v-if="item.seller_id==0">平台红包优惠：</span>
+        <span v-if="item.seller_id!=0">平台优惠券：</span>
        省{{item.amount}}：满{{item.condition}}减{{item.amount}}元
      </li>
 
@@ -638,7 +637,7 @@
                           url: '../../html/market/paysuccessWin.html',
 
                       });
-                      return 
+                      return
                   }//验证是不是免费的
                   if(className=='wap_alipay'){
                     var aliPayPlus = api.require('aliPayPlus');

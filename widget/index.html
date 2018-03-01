@@ -15,10 +15,11 @@
 <script type="text/javascript" src="script/jquery-3.2.1.min.js"></script>
 <script type="text/javascript">
     apiready = function () {
-      api.openFrame({
-          name: 'login',
-          url: 'html/login/login.html',
+      api.openWin({
+          name: 'home',
+          url: 'html/Home/homeWin.html',
           useWKWebView:false,
+          reload:true,
           historyGestureEnabled:false,
           slidBackEnabled:false
       });

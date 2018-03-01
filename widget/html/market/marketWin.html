@@ -462,11 +462,11 @@ display: -webkit-box;
         <img src="../../image/presaller.png" alt="">
         <p>预售中心</p>
       </li>
-      <li @click="all('myVoucher')" style="display:none" >
+      <li @click="all('myVoucher')"  >
         <img src="../../image/kaquanbao.png" alt="">
         <p>卡券包</p>
       </li>
-      <li @click="all('myfoot')" >
+      <li @click="all('myfoot')" style="display:none" >
         <img src="../../image/Mfoot.png" alt="">
         <p>我的足迹</p>
       </li>
@@ -482,11 +482,11 @@ display: -webkit-box;
         <img src="../../image/Mtime.png" alt="">
         <p>限时秒杀</p>
       </li>
-      <li @click="all('collection')" >
+      <li @click="all('collection')" style="display:none">
         <img src="../../image/Mshoucang.png" alt="">
         <p>我的收藏</p>
       </li>
-      <li @click="all('voucherCenter')" style="display:none">
+      <li @click="all('voucherCenter')" >
         <img src="../../image/lingquan.png" alt="">
         <p>领券中心</p>
       </li>
@@ -570,7 +570,7 @@ display: -webkit-box;
     </ul>
 
   </div>
-    <div class="like" v-cloak >
+    <div class="like" v-cloak v-if="likeGoods.length>0">
     <header><span>猜你喜欢</span></header>
 
     <ul>
@@ -614,7 +614,7 @@ display: -webkit-box;
   </ul>
 
 </div>
-  <span class="activity-redbag" style="display:none" @click="getred()">
+  <span class="activity-redbag"  @click="getred()">
     <img class="img-redbag" src="../../image/market/redbug.png" alt="">
     <img class="img-redslide" src="../../image/market/redbagSlide.png" alt="">
   </span>
@@ -772,6 +772,10 @@ display: -webkit-box;
           });
         },
         getred(){//领取红包
+          limitLogin()
+          if(!$api.getStorage('token')){
+            return
+          }
           getData('/shop/red_packets',res=>{
             if(res.code!=200){
               api.toast({
@@ -782,7 +786,7 @@ display: -webkit-box;
               return
             }
             console.log(JSON.stringify(res.data[0]))
-            if(!res.data){
+            if(!res.data[0]){
               api.toast({
                   msg: '当前红包不存在',
                   duration: 2000,
@@ -790,6 +794,7 @@ display: -webkit-box;
               });
               return
             }
+
             this.redBagInfo=res.data[0]
             api.openFrame({
                 name: 'redbag',
@@ -819,6 +824,13 @@ display: -webkit-box;
 
         },
         all(name){
+          if(name=='cart'||name=='myorder'||name=='myVoucher'||name=='myfoot'||name=='collection'||name=='voucherCenter'){
+              limitLogin()
+              if(!$api.getStorage('token')){
+                return
+              }
+          }
+
           api.openWin({
               name: name,
               url: '../../html/market/'+name+'Win.html',
@@ -849,6 +861,8 @@ display: -webkit-box;
 
         },
           init(){
+            
+
             var that =this
             that.timeGoods=[],
             that.recomGoods=[],
@@ -864,6 +878,8 @@ display: -webkit-box;
             getData('/shop/categories/category_goods',function(data){
               if(data.code==200){
                 that.speGoods=data.data
+                api.refreshHeaderLoadDone()
+
               }
             },{'id':67,'page':1,'page_size':4},{'Authorization':$api.getStorage('token')})
             getData('/shop/goods/promotions/flash_sale',function(data){
@@ -871,18 +887,20 @@ display: -webkit-box;
                 that.timeGoods=data.data
               }
             },{},{'Authorization':$api.getStorage('token')})
-            getData('/shop/goods/guess_favorites?page=1&page_size=4',function(data){
-              if(data.code==200){
-                that.likeGoods=data.data
-                api.hideProgress();
+            if($api.getStorage('token')){
+              getData('/shop/goods/guess_favorites?page=1&page_size=4',function(data){
+                if(data.code==200){
+                  that.likeGoods=data.data
+                  api.hideProgress();
 
 
-              }
-            },{page:1,page_size:4},{'Authorization':$api.getStorage('token')})
+                }
+              },{page:1,page_size:4},{'Authorization':$api.getStorage('token')})
+            }
+
             getData('/shop/goods/promotions/commend_goods?commend_id=4&page=1&page_size=6',function(data){
               if(data.code==200){
                 that.recomGoods=data.data
-                api.refreshHeaderLoadDone()
 
               }
             },{},{'Authorization':$api.getStorage('token')})

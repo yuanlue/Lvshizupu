@@ -18,34 +18,23 @@
   <script type="text/javascript">
       apiready = function(){
         exitApp()
-
-        if($api.getStorage('token')){
-          api.openWin({
-              name: 'home',
-              url: '../../html/Home/homeWin.html',
-              useWKWebView:false,
-
-              historyGestureEnabled:false,
-              slidBackEnabled:false
-          });
-        }
-        else{
-          api.openFrame({
-              name: 'loginFrame',
-              url: '../../html/login/messageLogin.html',
-              rect: {
-                  x: 0,
-                  y: 0,
-                  w: 'auto',
-                  h: 'auto'
-              },
-
-              bounces: false,
-              bgColor: 'rgba(0,0,0,0)',
-              vScrollBarEnabled: true,
-              hScrollBarEnabled: true
-          });
-        }
+        api.openFrame({
+            name: 'loginFrame',
+            url: '../../html/login/messageLogin.html',
+            rect: {
+                x: 0,
+                y: 0,
+                w: 'auto',
+                h: 'auto'
+            },
+            pageParam:{
+              url:api.pageParam.url
+            },
+            bounces: false,
+            bgColor: 'rgba(0,0,0,0)',
+            vScrollBarEnabled: true,
+            hScrollBarEnabled: true
+        });
 
       };
   </script>

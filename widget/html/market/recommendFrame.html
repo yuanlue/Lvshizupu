@@ -224,6 +224,14 @@
               if(data.code==200){
                 that.Goods=data.data
                 api.hideProgress();
+              }
+              else{
+                console.log(data.message)
+                api.toast({
+                    msg: data.message,
+                    duration: 2000,
+                    location: 'bottom'
+                });
 
               }
             },{'commend_id':1,'page':1,'page_size':4},{'Authorization':$api.getStorage('token')})

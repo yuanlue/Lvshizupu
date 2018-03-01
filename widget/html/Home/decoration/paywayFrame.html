@@ -36,13 +36,16 @@
 
   <script type="text/javascript">
   function pay(way){
+    limitLogin()
+    if(!$api.getStorage('token')){
+      return
+    }
     if(way=='alipay'){
       var aliPayPlus = api.require('aliPayPlus');
 
       postData('/alipay/pay',function(res){
       //发送验证码
         if(res.code==200){
-
           aliPayPlus.payOrder({
         orderInfo: res.data
     }, function(ret, err) {

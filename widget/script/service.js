@@ -1,7 +1,29 @@
-// window.baseurl="https://api.yiwenyiwen.com/"
-window.baseurl="https://wx2.kuaiyunma.com"
-window.shopimgUrl="https://shop.kuaiyunma.com/"
-// window.shopimgUrl="https://shop.yiwenyiwen.com/"
+ window.baseurl="https://api.yiwenyiwen.com"
+//window.baseurl="https://wx2.kuaiyunma.com"
+//window.shopimgUrl="https://shop.kuaiyunma.com/"
+ window.shopimgUrl="https://shop.yiwenyiwen.com"
+function limitLogin(url){
+  if(!$api.getStorage('token')){
+    api.closeWin({
+        name: 'login'
+    });
+
+    api.openWin({
+        name: 'login',
+        url: '../../html/login/login.html',
+        rect: {
+            x: 0,
+            y: 0,
+            w: 'auto',
+            h: 'auto'
+        },
+        bounces: true,
+        bgColor: 'rgba(0,0,0,0)',
+        vScrollBarEnabled: true,
+        hScrollBarEnabled: true
+    });
+  }
+}
 function fetch(obj){
   return new Promise((resolve,reject)=>{
       $.ajax({
@@ -30,7 +52,7 @@ function postData(para,callback,parama,header){
               url: baseurl+para,
               dataType: "json",
               headers: header,
-              async: true,
+              async: false,
               success: function(data){
                         callback(data)
             },
@@ -62,7 +84,6 @@ function getData(para,callback,parama,header,isasync){
                         callback(data)
             },
             error:function(err){
-              console.log(JSON.stringify(err))
               api.toast({
                       msg: '服务器异常',
                       duration:2000,

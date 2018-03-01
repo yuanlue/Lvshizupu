@@ -170,8 +170,8 @@
                   {{item.start_at | formatDate}}~{{item.end_at | formatDate}}
                 </p>
               </span>
-              <span class="status lq" v-bind:class="{shoplq:!item.seller_id,lq:item.seller_id}">
-                立即使用
+              <span @click="use()" class="status lq" v-bind:class="{shoplq:!item.seller_id,lq:item.seller_id}">
+                可以使用
               </span>
             </li>
           </ul>
@@ -205,6 +205,9 @@
 
       },
     methods:{
+      use(){
+
+      },
       sonChangeActive(index){
         this.couActive=index
           this.init()

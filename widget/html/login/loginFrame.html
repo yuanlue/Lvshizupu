@@ -122,10 +122,20 @@
           padding:0 15px;
           margin-left:5px;
         }
-
+      .randomLook{
+        position: absolute;
+        top:40px;
+        right:10px;
+        color:#fff;
+        font-size:14px;
+        background: #9e2931;
+        border-radius: 10px;
+        padding:5px 10px;;
+      }
       </style>
   </head>
   <body>
+    <span onclick="randomLook()" class="randomLook">随便看看</span>
   <div class="logo">
     <img src="../../image/logo.png" alt="">
   </div>
@@ -152,9 +162,19 @@
   <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
   <script type="text/javascript" src="../../script/service.js"></script>
   <script type="text/javascript" src="../../script/exit.js"></script>
-
-
   <script type="text/javascript">
+  function randomLook(){
+
+    if(api.pageParam.url){
+      api.openWin({
+          name: 'home',
+          url: '../../html/Home/homeWin.html',
+      });
+      return
+    }
+
+    api.closeWin();
+  }
   function wechatLogin(){
     wx.isInstalled(function(ret, err) {
         if (ret.installed) {
@@ -184,23 +204,30 @@
                           });
                           api.execScript({
                               name: 'home',
+                              script: 'sysChat();'
+                          });
+                          api.execScript({
+                              name: 'home',
                               frameName: 'home',
                               script: 're();'
                           });
+                          if(api.pageParam.url){
+                            api.openWin({
+                                name: 'home',
+                                url: '../../html/Home/homeWin.html',
+                                cache:false,
+                                useWKWebView:false,
+                                reload:true,
+                                pageParam:{
+                                  token:data.data.token
+                                },
+                                historyGestureEnabled:false,
+                                slidBackEnabled:false
+                            });
+                          return
+                          }
+                          api.closeWin();
 
-
-                          api.openWin({
-                              name: 'home',
-                              url: '../../html/Home/homeWin.html',
-                              cache:false,
-                              useWKWebView:false,
-                              reload:true,
-                              pageParam:{
-                                token:data.data.token
-                              },
-                              historyGestureEnabled:false,
-                              slidBackEnabled:false
-                          });
                     }
                     else{
                     api.openWin({
@@ -386,23 +413,29 @@
                 });
                 api.execScript({
                     name: 'home',
+                    script: 'sysChat();'
+                });
+                api.execScript({
+                    name: 'home',
                     frameName: 'home',
                     script: 're();'
                 });
-
-
-                api.openWin({
-                    name: 'home',
-                    url: '../../html/Home/homeWin.html',
-                    cache:false,
-                    useWKWebView:false,
-                    reload:true,
-                    pageParam:{
-                      token:data.data.token
-                    },
-                    historyGestureEnabled:false,
-                    slidBackEnabled:false
-                });
+                if(api.pageParam.url){
+                  api.openWin({
+                      name: 'home',
+                      url: '../../html/Home/homeWin.html',
+                      cache:false,
+                      useWKWebView:false,
+                      reload:true,
+                      pageParam:{
+                        token:data.data.token
+                      },
+                      historyGestureEnabled:false,
+                      slidBackEnabled:false
+                  });
+                return
+                }
+                api.closeWin();
           }
           else{
             api.toast({

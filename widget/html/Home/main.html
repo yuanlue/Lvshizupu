@@ -317,7 +317,7 @@ Array.prototype.unique = function(){
  }
  return res;
 }
-function re(){
+function rel(){
 if($api.getStorage('messageList')){
 if($api.getStorage('messageList').length<1){
   $('.quanzi i').text("")
@@ -532,6 +532,10 @@ function friend(){
         });
 
       }else{
+      limitLogin()
+      if(!$api.getStorage('token')){
+        return
+      }
         getData('/users/profile',function(data){
           if(data.code==200){
             if(data.data.uid==false){
@@ -567,6 +571,7 @@ function friend(){
 
 }
 function chatInit(){
+
   ws = new ReconnectingWebSocket("wss://wx2.kuaiyunma.com/sub/chat/"+$api.getStorage('uid'));
     ws.onmessage = function(evt){
       if(evt.data=="pong"){
@@ -696,15 +701,15 @@ function chatInit(){
       });
       var contactManList=[];
       var messageList=[];//接收消息列表
-       setInterval(function(){
-         if($api.getStorage('uid')!=null&&$api.getStorage('uid')!='undefined'&&$api.getStorage('joined_family')!='false'){
-           ws.send('ping')
-         }
-      },10000);
+
 
       if($api.getStorage('uid')!=null&&$api.getStorage('uid')!='undefined'&&$api.getStorage('joined_family')!='false'){
       chatInit()
-
+      setInterval(function(){
+        if($api.getStorage('uid')!=null&&$api.getStorage('uid')!='undefined'&&$api.getStorage('joined_family')!='false'){
+          ws.send('ping')
+        }
+     },10000);
       }
 
 

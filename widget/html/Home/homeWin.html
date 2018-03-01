@@ -209,7 +209,15 @@
 <script type="text/javascript" src="../../script/websocket.js"></script>
 
 <script type="text/javascript">
-
+function changeA(index){
+  $('ul').find('li').removeClass('active')
+  $('header').find('div').removeClass('activebar')
+  $('header').find('div').eq(index).addClass('activebar')
+  $('ul').find('li').eq(index).addClass('active')
+}
+function lre(){
+  window.location.reload()
+}
 Array.prototype.unique = function(){
  var res = [this[0]];
  for(var i = 1; i < this.length; i++){
@@ -240,7 +248,10 @@ function menu(){
   var y=50+  $('.top').height()
   if(!isiOS){
     rect_h=rect_h-25
-
+  }
+  limitLogin()
+  if(!$api.getStorage('token')){
+    return
   }
   api.openWin({
       name: 'MarketUserWin',
@@ -286,6 +297,7 @@ function message(){
 
 }
     apiready = function () {
+
       var time=new Date()
       var sysNum=0;
       api.addEventListener({
@@ -311,16 +323,108 @@ function message(){
   });
        sysInfoMessage=[]
        clientMessage=[]
-      setInterval(function(){
-        if($api.getStorage('user_id')){
-          ws.send('ping')
-          wssClient.send('ping')
-
-        }
+       sysChat()
 
 
-     },10000);
 
+            api.addEventListener({
+            name:'offline'
+        }, function(ret, err){
+          api.toast({
+                  msg: '当前网络状态不稳定',
+                  duration:2000,
+                  location: 'bottom'
+              });
+        });
+
+        exitApp()
+      var u = navigator.userAgent;
+      var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+       isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+      if(isiOS){
+        $('.top').hide()
+      }
+
+
+  var $header = $api.dom('header');
+  $api.fixIos7Bar($header);
+  var $body = $api.dom('body');
+  var $footer = $api.byId('footer');
+  var header_h = $api.offset($header).h;
+  var body_h = $api.offset($body).h;
+  var footer_h = $api.offset($footer).h;
+
+  var rect_h = body_h - header_h - footer_h;
+   y=45+  $('.top').height()
+
+  if(!isiOS){rect_h=rect_h-25;   y=50+  $('.top').height()}
+
+
+
+//       rong.getTotalUnreadCount(function(ret, err) {
+//       })
+//       rong.getConversationList(function (ret, err) {
+//
+// })
+
+          api.openFrameGroup({
+              name: 'group',
+              scrollEnabled: false,
+              preload:3,
+              rect: {  x: 0,
+                       y: y,
+                       w: 'auto',
+                       h:rect_h
+                    },
+              index: 0,
+              frames: [
+                  {
+                      name: 'home',
+                      url: '../../html/Home/main.html',
+                      customRefreshHeader: 'UIPullRefreshFlash',
+                      useWKWebView:true,
+                      reload:true
+                  },
+                  {
+                      name: 'market',
+                      url: '../../html/market/marketWin.html',
+                      useWKWebView:true,
+                      receive:true,
+                      reload:true
+                  },
+                  {
+                      name: 'userCenter',
+                      url: '../../html/user/userCenterWin.html',
+                      reload:true
+                  }
+              ]
+          }, function (ret, err) {
+            $('ul').find('li').removeClass('active')
+            $('header').find('div').removeClass('activebar')
+            $('header').find('div').eq(ret.index).addClass('activebar')
+            $('ul').find('li').eq(ret.index).addClass('active')
+
+
+          });
+
+
+
+//                滑动
+
+
+    }
+    // 随意切换按钮
+    function sysChat(){
+      if($api.getStorage('user_id')){
+        setInterval(function(){
+          if($api.getStorage('user_id')){
+            ws.send('ping')
+            wssClient.send('ping')
+
+          }
+
+
+       },10000);
        let wssClient=new ReconnectingWebSocket("wss://wx2.kuaiyunma.com/sub/im/user_"+$api.getStorage('user_id'));
        wssClient.onmessage = function(evt){
          if(evt.data=="pong"){
@@ -381,6 +485,7 @@ function message(){
 
          }
        }
+
       //系统消息
       var ws = new ReconnectingWebSocket("wss://wx2.kuaiyunma.com/sub/sys/"+$api.getStorage('user_id'));
         ws.onmessage = function(evt){
@@ -449,94 +554,9 @@ function message(){
           }
 
         };
-
-
-
-            api.addEventListener({
-            name:'offline'
-        }, function(ret, err){
-          api.toast({
-                  msg: '当前网络状态不稳定',
-                  duration:2000,
-                  location: 'bottom'
-              });
-        });
-
-        exitApp()
-      var u = navigator.userAgent;
-      var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
-       isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
-      if(isiOS){
-        $('.top').hide()
-      }
-
-
-  var $header = $api.dom('header');
-  $api.fixIos7Bar($header);
-  var $body = $api.dom('body');
-  var $footer = $api.byId('footer');
-  var header_h = $api.offset($header).h;
-  var body_h = $api.offset($body).h;
-  var footer_h = $api.offset($footer).h;
-
-  var rect_h = body_h - header_h - footer_h;
-   y=45+  $('.top').height()
-
-  if(!isiOS){rect_h=rect_h-25;   y=50+  $('.top').height()}
-  
-
-
-//       rong.getTotalUnreadCount(function(ret, err) {
-//       })
-//       rong.getConversationList(function (ret, err) {
-//
-// })
-
-
-        api.openFrameGroup({
-            name: 'group',
-            scrollEnabled: false,
-
-            rect: {  x: 0,
-                     y: y,
-                     w: 'auto',
-                     h:rect_h
-                  },
-            index: 0,
-            frames: [
-                {
-                    name: 'home',
-                    url: '../../html/Home/main.html',
-                    customRefreshHeader: 'UIPullRefreshFlash',
-                    useWKWebView:true,
-                    reload:true
-                },
-                {
-                    name: 'market',
-                    url: '../../html/market/marketWin.html',
-                    useWKWebView:true,
-                    receive:true,
-                    reload:true
-                },
-                {
-                    name: 'userCenter',
-                    url: '../../html/user/userCenterWin.html',
-                    reload:true
-                }
-            ]
-        }, function (ret, err) {
-
-          $('ul').find('li').removeClass('active')
-          $('header').find('div').removeClass('activebar')
-          $('header').find('div').eq(ret.index).addClass('activebar')
-          $('ul').find('li').eq(ret.index).addClass('active')
-
-
-        });
-//                滑动
-
+  }
     }
-    // 随意切换按钮
+
     function randomSwitchBtn(obj, name, index) {
       var $header = $api.dom('header');
       $api.fixIos7Bar($header);
@@ -566,7 +586,10 @@ function message(){
 
       }
       else if(name=='doc'){
-
+      limitLogin()
+      if(!$api.getStorage('token')){
+        return
+      }
         api.setFrameGroupIndex({
       name: 'group',
       index: 2
