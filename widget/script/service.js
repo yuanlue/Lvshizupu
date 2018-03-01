@@ -1,7 +1,7 @@
- window.baseurl="https://api.yiwenyiwen.com"
-//window.baseurl="https://wx2.kuaiyunma.com"
-//window.shopimgUrl="https://shop.kuaiyunma.com/"
- window.shopimgUrl="https://shop.yiwenyiwen.com"
+ // window.baseurl="https://api.yiwenyiwen.com"
+window.baseurl="https://wx2.kuaiyunma.com"
+window.shopimgUrl="https://shop.kuaiyunma.com/"
+ // window.shopimgUrl="https://shop.yiwenyiwen.com"
 function limitLogin(url){
   if(!$api.getStorage('token')){
     api.closeWin({
