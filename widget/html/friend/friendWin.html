@@ -304,7 +304,7 @@ function contact(obj){
 
     }
     function upitem(data,index){
-    
+
       UIListView.updateItem({
         index: index,
         data: JSON.parse(data),
@@ -480,28 +480,29 @@ function contact(obj){
         } else {
         }
     });
+    UIListView.setRefreshFooter({
+      loadingImg: 'widget://res/UIListView_arrow.png',
+      bgColor: '#F5F5F5',
+      textColor: '#8E8E8E',
+      textUp: '上拉加载更多...',
+      textDown: '松开开始加载...',
+      showTime: true
+  }, function(ret, err) {
+    if (ret) {
+        loadmore()
+    } else {
+        api.toast({
+            msg: '已经是所有数据了',
+            duration: 2000,
+            location: 'bottom'
+        });
+
+
+    }
+  });
   },{},{"Authorization":$api.getStorage('token')})
 
-  UIListView.setRefreshFooter({
-  loadingImg: 'widget://res/UIListView_arrow.png',
-  bgColor: '#F5F5F5',
-  textColor: '#8E8E8E',
-  textUp: '上拉加载更多...',
-  textDown: '松开开始加载...',
-  showTime: true
-}, function(ret, err) {
-  if (ret) {
-      loadmore()
-  } else {
-      api.toast({
-          msg: '已经是所有数据了',
-          duration: 2000,
-          location: 'bottom'
-      });
 
-
-  }
-});
 }
 
 </script>

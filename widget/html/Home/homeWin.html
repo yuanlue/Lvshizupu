@@ -176,20 +176,20 @@
 
     <div id="footer">
         <ul>
-            <li tapmode="active" class="active" onclick="randomSwitchBtn(this,'cloud',0)">
+            <li tapmode="active" class="active" onclick="randomButton(this,'cloud',0)">
               <img src="../../image/lv.png" alt="">
                 <a class="bottom_btn cloud">首页</a>
             </li>
 
 
 
-            <li tapmode="active" onclick="randomSwitchBtn(this,'dev',1)">
+            <li tapmode="active" onclick="randomButton(this,'dev',1)">
               <img src="../../image/shang.png" alt="">
 
                 <a class="bottom_btn dev ">商城</a>
             </li>
 
-            <li tapmode="active" onclick="randomSwitchBtn(this,'doc',2)">
+            <li tapmode="active" onclick="randomButton(this,'doc',2)">
               <img src="../../image/ren.png" alt="">
 
                 <a class="bottom_btn doc ">我的</a>
@@ -297,7 +297,6 @@ function message(){
 
 }
     apiready = function () {
-
       var time=new Date()
       var sysNum=0;
       api.addEventListener({
@@ -432,11 +431,7 @@ function message(){
          }
          if($api.getStorage('clientMessage')){
            clientMessage=$api.getStorage('clientMessage')
-           clientMessage.forEach(item=>{
-              if(JSON.stringify(item)==JSON.stringify(JSON.parse(evt.data).data)){
-                return false
-              }
-           })
+
          }
          sysNum++;
          var time=0
@@ -557,7 +552,7 @@ function message(){
   }
     }
 
-    function randomSwitchBtn(obj, name, index) {
+    function randomButton(obj, name, index) {
       var $header = $api.dom('header');
       $api.fixIos7Bar($header);
       var $body = $api.dom('body');
