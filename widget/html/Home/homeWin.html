@@ -13,16 +13,20 @@
             margin:0;
         }
         #footer {
+          padding:5px 0;
             width: 100%;
             text-align: center;
-            height: 52px;
             box-sizing: border-box;
-            line-height: 52px;
             background-color: #fff;
             border-top:1px solid #dbdbdb;
         }
+        #footer  a{
+          font-size:13px;
+          text-align: center;
+          display: block;
+        }
         #footer li img{
-          width:24px;
+          width:20px;
           vertical-align: middle;
           display: inline
         }
@@ -89,17 +93,7 @@
         ul li:active{
           background: #eee
         }
-        #footer ul .active:before{
-          content:"";
-          display:inline-block;
-          background: url("../../image/fish.png") no-repeat;
-          background-size: cover;
-          width:28px;
-          height:12px;
-          position: absolute;
-          bottom:12px;
 
-        }
         header>div{
           position: relative;
         }
@@ -126,7 +120,7 @@
             display:none;
             color:#9e2932;
           }
-          #dev>img{
+          #cloud>img{
             width:20px;
             line-height: 50px;
             position: absolute;
@@ -142,6 +136,19 @@
             display: none;
             height:100vh;
           }
+        #footer li .activeimg{
+            display: none ;
+          }
+        #footer li.active .activeimg{
+            display:inline-block  !important;
+          }
+          #footer li.active img{
+            display: none;
+          }
+        #cart span{
+          width:auto;
+        }
+
     </style>
 </head>
 <body>
@@ -149,6 +156,8 @@
 <div id="wrap">
     <header>
         <div id="cloud" class="topbar  activebar" onclick="clear()">
+          <img onclick="menu()" class="menu" src="../../image/market/menu.png" alt="">
+
                     天下吕氏
                     <span>
                       <img onclick="message()" src="../../image/message.png" alt="">
@@ -157,9 +166,19 @@
 
         </div>
 
-        <div id="dev" class="topbar ">
-                  <img onclick="menu()" class="menu" src="../../image/market/menu.png" alt="">
-                    商城
+        <div id="dev" class="topbar markectHeader ">
+                    文化
+                    <span><img onclick="message()" src="../../image/message.png" alt="">
+                      <i></i>
+                    </span>
+
+        </div>
+        <div id="cart" class="topbar  activebar">
+                    购物车
+                    <span onclick="changeC()" class="adminstor">管理</span>
+        </div>
+        <div id="class" class="topbar ">
+                    分销中心
                     <span><img onclick="message()" src="../../image/message.png" alt="">
                       <i></i>
                     </span>
@@ -176,22 +195,37 @@
 
     <div id="footer">
         <ul>
-            <li tapmode="active" class="active" onclick="randomButton(this,'cloud',0)">
-              <img src="../../image/lv.png" alt="">
-                <a class="bottom_btn cloud">首页</a>
+          <li tapmode="active" class="active" onclick="randomButton(this,'cloud',0)">
+            <img src="../../image/tab_shop.png" alt="">
+            <img class="activeimg" src="../../image/tab_shop_active.png" alt="">
+
+              <a class="bottom_btn dev ">商城</a>
+          </li>
+
+            <li tapmode="active"  onclick="randomButton(this,'dev',1)">
+              <img src="../../image/tab_home.png" alt="">
+              <img class="activeimg"  src="../../image/tab_home_active.png" alt="">
+
+                <a class="bottom_btn cloud">文化</a>
+            </li>
+
+            <li tapmode="active"  onclick="randomButton(this,'cart',4)">
+              <img src="../../image/tab_cart.png" alt="">
+              <img class="activeimg"  src="../../image/tab_cart_active.png" alt="">
+
+                <a class="bottom_btn cloud">购物车</a>
+            </li>
+            <li tapmode="active"  onclick="randomButton(this,'class',3)">
+              <img src="../../image/tab_class.png" alt="">
+              <img class="activeimg"  src="../../image/tab_class_active.png" alt="">
+
+                <a class="bottom_btn cloud">分销中心</a>
             </li>
 
 
-
-            <li tapmode="active" onclick="randomButton(this,'dev',1)">
-              <img src="../../image/shang.png" alt="">
-
-                <a class="bottom_btn dev ">商城</a>
-            </li>
-
-            <li tapmode="active" onclick="randomButton(this,'doc',2)">
-              <img src="../../image/ren.png" alt="">
-
+            <li tapmode="active" onclick="randomButton(this,'doc',4)">
+              <img src="../../image/tab_user.png" alt="">
+              <img class="activeimg"  src="../../image/tab_user_active.png" alt="">
                 <a class="bottom_btn doc ">我的</a>
             </li>
 
@@ -209,11 +243,26 @@
 <script type="text/javascript" src="../../script/websocket.js"></script>
 
 <script type="text/javascript">
+function changeC(){
+  if($('.adminstor').text()=='管理'){
+    $('.adminstor').text('完成')
+  }
+  else{
+    $('.adminstor').text('管理')
+
+  }
+  api.execScript({
+      frameName: 'cartFrame',
+      script: 'change();'
+  });
+
+}
 function changeA(index){
   $('ul').find('li').removeClass('active')
   $('header').find('div').removeClass('activebar')
   $('header').find('div').eq(index).addClass('activebar')
   $('ul').find('li').eq(index).addClass('active')
+  var src = $('.active img').attr('src')
 }
 function lre(){
   window.location.reload()
@@ -281,6 +330,7 @@ function re(name){
     sysNum=sysInfoMessage.length;
     sysNum?$('header>div>span i').text(sysNum):$('header>div>span i').hide()
   }
+
   if(clientMessage==[]&&sysInfoMessage==[]){
     sysNum=0
     $('header>div>span i').hide()
@@ -301,8 +351,8 @@ function message(){
       var sysNum=0;
       api.addEventListener({
       name:'noticeclicked'
-  },function(ret,err){
-    if(!JSON.parse(ret.value).data){
+    },function(ret,err){
+      if(!JSON.parse(ret.value).data){
       api.openWin({
           name: 'friend',
           url: '../../html/friend/friendWin.html',
@@ -353,7 +403,7 @@ function message(){
   var body_h = $api.offset($body).h;
   var footer_h = $api.offset($footer).h;
 
-  var rect_h = body_h - header_h - footer_h;
+  var rect_h = body_h - header_h - footer_h + 50;
    y=45+  $('.top').height()
 
   if(!isiOS){rect_h=rect_h-25;   y=50+  $('.top').height()}
@@ -371,12 +421,19 @@ function message(){
               scrollEnabled: false,
               preload:3,
               rect: {  x: 0,
-                       y: y,
+                       y: 25,
                        w: 'auto',
-                       h:rect_h
+                       h:rect_h + y -25
                     },
               index: 0,
               frames: [
+                {
+                    name: 'market',
+                    url: '../../html/market/marketWin.html',
+                    useWKWebView:true,
+                    receive:true,
+                    reload:true
+                },
                   {
                       name: 'home',
                       url: '../../html/Home/main.html',
@@ -384,11 +441,26 @@ function message(){
                       useWKWebView:true,
                       reload:true
                   },
+
                   {
-                      name: 'market',
-                      url: '../../html/market/marketWin.html',
+                      name: 'cartFrame',
+                      url: '../../html/market/cart.html',
+                      reload:true,
                       useWKWebView:true,
                       receive:true,
+                      reload:true
+                  },
+                  {
+                      name: 'classFrame',
+                      url: '../../html/class/classFrame.html',
+                      reload:true,
+                      useWKWebView:true,
+                      receive:true,
+                      reload:true
+                  },
+                  {
+                      name: 'userCenter',
+                      url: '../../html/user/userCenterWin.html',
                       reload:true
                   },
                   {
@@ -551,7 +623,29 @@ function message(){
         };
   }
     }
+    function tabinit(){
+      var $header = $api.dom('header');
+      $api.fixIos7Bar($header);
+      var $body = $api.dom('body');
+      var $footer = $api.byId('footer');
+      var header_h = $api.offset($header).h;
+      var body_h = $api.offset($body).h;
+      var footer_h = $api.offset($footer).h;
 
+      var rect_h = body_h - header_h - footer_h;
+       y=45+  $('.top').height()
+
+      if(!isiOS){rect_h=rect_h-25;   y=50+  $('.top').height()}
+      api.setFrameGroupAttr({
+          name: 'group',
+          rect: {  x: 0,
+                   y: y,
+                   w: 'auto',
+                   h:rect_h
+                },
+      });
+
+    }
     function randomButton(obj, name, index) {
       var $header = $api.dom('header');
       $api.fixIos7Bar($header);
@@ -564,20 +658,28 @@ function message(){
       var rect_h = body_h - header_h - footer_h;
       var y=45+  $('.top').height()
       if(!isiOS){rect_h=rect_h-25;   y=50+  $('.top').height()}
-
+      tabinit()
       if(name=='cloud'){
 
         api.setFrameGroupIndex({
           name: 'group',
           index: 0
       });
+      api.setFrameGroupAttr({
+        name: 'group',
+        rect: {  x: 0,
+                 y: 25,
+                 w: 'auto',
+                 h:rect_h + y -25
+              }
+    });
       }
       else if(name=='dev'){
 
         api.setFrameGroupIndex({
-    name: 'group',
-    index: 1
-});
+        name: 'group',
+        index: 1
+    });
 
       }
       else if(name=='doc'){
@@ -587,8 +689,29 @@ function message(){
       }
         api.setFrameGroupIndex({
       name: 'group',
-      index: 2
+      index: 4
   });
+      }
+      else if(name=='class'){
+      limitLogin()
+      if(!$api.getStorage('token')){
+        return
+      }
+        api.setFrameGroupIndex({
+      name: 'group',
+      index: 3
+  });
+      }
+      else if(name='cart'){
+        limitLogin()
+        if(!$api.getStorage('token')){
+          return
+        }
+          api.setFrameGroupIndex({
+        name: 'group',
+        reload:true,
+        index: 2
+    });
       }
         var $header = $api.dom('header');
         var $titleBar = $api.domAll($header, '.topbar');
@@ -598,9 +721,11 @@ function message(){
         $api.addCls($api.byId(name), 'activebar');
         var $footer = $api.byId('footer');
         var $footerBar = $api.domAll($footer, 'li');
+
         for (var j = 0; j < $footerBar.length; j++) {
             $api.removeCls($footerBar[j], 'active');
         }
+
         $api.addCls(obj, 'active');
 
 

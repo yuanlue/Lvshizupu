@@ -202,7 +202,12 @@ function errHandle(obj){
         $('.info').show()
         $('.invate').show()
       }
+      try {
         $api.attr(imgobj,'src',$api.getStorage('avata').split('!')[0]);
+
+      } catch (e) {
+        console.log(e)
+      }
 errHandle()
 }
 }

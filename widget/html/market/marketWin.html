@@ -29,24 +29,21 @@
 width:100%;
   }
   .market .search {
+    display: flex;
+    justify-content:space-between;
     box-sizing: border-box;
   	line-height:45px;
   	padding:0 10px;
-    z-index:9999;
-  	position: absolute;
   	width:100%;
-  	bottom:-15px;
   }
   .market .search input{
     background: white;
   	text-align: center;
   	font-size:14px;
-  	border-radius: 20px;
-  	box-shadow: 1px 1px 5px #ccc;
+  	border-radius: 10px;
     border-bottom:1px solid #ccc;
-    -webkit-box-shadow:1px 1px 5px #ccc;
-  	width:100%;
-  	line-height: 45px;
+  	width:70%;
+  	line-height: 30px;
   }
   .market .menu{
   	background-color: white;
@@ -365,6 +362,13 @@ display: -webkit-box;
     background-size: cover;
     width:42px;
   }
+  .header{
+    padding:6px 0;
+    position: fixed;
+    width:100%;
+    background: rgba(0,0,0,0.4);
+    z-index: 9999;
+  }
   .popup{
     z-index:2001;
     background: rgba(0,0,0,0.5);
@@ -423,11 +427,25 @@ display: -webkit-box;
   [v-cloak]{
     display: none
   }
+  .header .search img{
 
+    width:25px;
+    height:25px;
+  }
 	</style>
 </head>
 <body>
   <div class="market" >
+    <div class="header">
+      <div class="search">
+        <img onclick="menu()" class="header_menu" src="../../image/class.png" alt="">
+
+        <input  @click="search()" type="text" placeholder="请输入商品／店铺名">
+        <img onclick="message()" src="../../image/msg.png" alt="">
+
+      </div>
+    </div>
+
   <div class="banner ">
     <div class="swiper-container">
     <div class="swiper-wrapper">
@@ -435,9 +453,7 @@ display: -webkit-box;
       </div>
     </div>
 
-  <div class="search" @click="search()">
-    <input type="text" placeholder="请输入商品／店铺名">
-  </div>
+
   </div>
   <div class="menu">
     <ul>
@@ -627,7 +643,35 @@ display: -webkit-box;
 <script type="text/javascript" src="../../script/swiper-3.4.2.min.js"></script>
 
 <script type="text/javascript">
+function menu(){
 
+  limitLogin()
+  if(!$api.getStorage('token')){
+    return
+  }
+  api.openWin({
+      name: 'MarketUserWin',
+      url: '../../html/user/MarketUserCenterWin.html',
+
+      bounces: false,
+      animation:{
+        type:"push",                //动画类型（详见动画类型常量）
+        subType:"from_left",       //动画子类型（详见动画子类型常量）
+        duration:200
+      },
+      bgColor: 'rgba(0,0,0,0.2)',
+      vScrollBarEnabled: true,
+      hScrollBarEnabled: true
+  });
+
+}
+function message(){
+  api.openWin({
+      name: 'remind',
+      url: '../../html/friend/remind.html'
+  });
+
+}
   function activityInner(id,type){
     let name
     switch (type) {
