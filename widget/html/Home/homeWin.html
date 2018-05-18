@@ -21,6 +21,7 @@
             border-top:1px solid #dbdbdb;
         }
         #footer  a{
+          margin:0;
           font-size:13px;
           text-align: center;
           display: block;
@@ -148,7 +149,20 @@
         #cart span{
           width:auto;
         }
-
+        #footer li{
+          position: relative;
+        }
+        #footer .num{
+          position: absolute;
+          top:0;
+          right:10px;
+          border-radius: 50%;
+          background: #9e2932;
+          width:15px;
+          line-height:15px;
+          color:white;
+          font-size:10px;
+        }
     </style>
 </head>
 <body>
@@ -214,6 +228,7 @@
               <img class="activeimg"  src="../../image/tab_cart_active.png" alt="">
 
                 <a class="bottom_btn cloud">购物车</a>
+                <span class="num"></span>
             </li>
             <li tapmode="active"  onclick="randomButton(this,'class',3)">
               <img src="../../image/tab_class.png" alt="">
@@ -243,6 +258,38 @@
 <script type="text/javascript" src="../../script/websocket.js"></script>
 
 <script type="text/javascript">
+checkCartNum()
+function checkCartNum(){
+  var para= {
+         "cart": {
+           "except": { "goods": [], "product": [] }
+         }
+       }
+      postData('/shop/carts',function(data){
+        if(data.code==200){
+          try {
+            $('#footer .num').text(data.data.goods.length)
+            if(data.data.goods.length<1){
+                $('#footer .num').text("")
+            }
+          } catch (e) {
+              console.log(e)
+                $('#footer .num').text("")
+          }
+        }
+        else{
+          api.toast({
+                    msg: '服务器错误',
+                    duration:5000,
+                    location: 'bottom'
+                });
+        }
+
+      },JSON.stringify(para),
+      {'Authorization':$api.getStorage('token'),
+      'Content-Type':'application/json'
+    })
+}
 function changeC(){
   if($('.adminstor').text()=='管理'){
     $('.adminstor').text('完成')
@@ -707,6 +754,7 @@ function message(){
         if(!$api.getStorage('token')){
           return
         }
+        $('.adminstor').text('管理')
           api.setFrameGroupIndex({
         name: 'group',
         reload:true,

@@ -479,12 +479,22 @@
                 buttons: ['确定', '取消']
             }, function(ret, err) {
                 var ac = ret.buttonIndex;
+                api.execScript({
+                    name: 'home',
+                    script: 'checkCartNum();'
+                });
+
                 if(ac==1){
                   arr.forEach(p=>{
                       window.setTimeout(
                         function(){
                           postData('/shop/carts/remove',function(data){
                             if(data.code==200){
+                              api.execScript({
+                                  name: 'home',
+                                  script: 'checkCartNum();'
+                              });
+
                               api.toast({
                                       msg: '删除成功',
                                       duration:5000,
@@ -758,6 +768,11 @@
                             duration:5000,
                             location: 'bottom'
                         });
+                        api.execScript({
+                            name: 'home',
+                            script: 'checkCartNum();'
+                        });
+
                         postData('/shop/carts',function(data){
                           api.hideProgress();
 
