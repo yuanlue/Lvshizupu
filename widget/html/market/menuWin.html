@@ -23,7 +23,6 @@
 		vertical-align: middle;
 		display: inline-block;
 		overflow: hidden;
-		border:1px solid #676665;
 		width:50px;
 	}
 	.marketUser .banner>.info>.avata img{
@@ -52,10 +51,9 @@
   box-sizing: border-box;
 		display: flex;
 		justify-content:space-between;
-		padding:65px 10px;
-		height:145px;
+		padding:35px 10px 0;
 		width:100%;
-		background:url('../../image/market/userb.jpg');
+		background:#9e2931;
 		background-size: cover;
 	}
 	.marketUser .banner i img{
@@ -66,7 +64,6 @@
 	}
     .banner{
       width:100%;
-      height:77px;
       background: url('../../image/market/userb.jpg') no-repeat;
       background-size: cover;
     }
@@ -97,8 +94,7 @@
       }
     .usercenter ul>li img{
 
-      margin-right:10px;
-      width:24px;
+      width:25px;
       vertical-align: middle;
     }
     .cancel{
@@ -134,7 +130,7 @@
     .usercenter ul>li>ol>li span{
       position: absolute;
       right:20px;;
-      top:-10px;
+      top:-5px;
       background: #9e2831;
       border-radius: 50%;
       width:20px;
@@ -170,17 +166,50 @@
     i #jiangpai1{
       display: inline-block;
     }
+    .tab{
+      background: #981d25;
+      line-height: 35px;
+      font-size:0;
+      text-align: center;
+    }
+    .tab>div{
+      display: inline-block;
+      width:50%;
+      font-size:13px;
+      color:white;
+    }
+    .order .remark{
+      color:#999999;
+      float: right;
+      font-size:12px;
+    }
+    .market{
+      margin-top:10px;
+      font-size:14px;
+      background: white;
+    }
+    .market header{
+      line-height: 50px;
+    }
+      .usercenter .market ul{
+        font-size:0;
+      }
+    .usercenter .market ul li{
+      padding-top:10px;
+      line-height: 1;
+      width:25%;
+      display: inline-block;
+      text-align: center;
+    }
       </style>
   </head>
   <body class="marketUser usercenter">
 
     <div class="banner">
-      <h1 class="title">
-        <img class="return" onclick="api.closeWin()" src="../../image/return.png" alt="">
-      </h1>
+
     <div class="info">
-      <span class="avata">
-        <img src="../../image/male.png">
+      <span class="avata pic">
+        <img onclick="changePic()" src="../../image/male.png">
       </span>
       <span class="userinfo">
         <h1></h1>
@@ -199,9 +228,15 @@
         <img id="jiangpai1" src="../../image/market/zhucepai.png" alt="">
 
       </i>
+
 </div>
-      <ul>
-        <li onclick="order('myorder','')"><img src="../../image/order.png" alt="">我的订单
+<div class="tab">
+  <div  onclick="rule()">等级规则</div>
+  <div onclick="userInfo()" class="info">账户信息</div>
+</div>
+      <ul class="order">
+        <li onclick="order('myorder','')">我的订单
+          <span class="remark">查看更多订单</span>
           <ol>
               <li class="paying"  onclick="order('myorder','paying')">
                 <span>1</span>
@@ -223,16 +258,36 @@
 
           </ol>
         </li>
-        <li onclick="cart()"><img src="../../image/cart.png" alt="">购物车</li>
-
-        <li onclick="order('collection')"><img src="../../image/Mshoucang.png" alt="">我的收藏</li>
-        <li onclick="order('address')"><img src="../../image/shouhuodizhi.png" alt="">收货地址</li>
-        <li style="display:none"><img src="../../image/cart.png" alt="">银行卡绑定</li>
-        <li  onclick="order('myfoot')"><img src="../../image/Mfoot.png" alt="">我的足迹</li>
-        <li onclick="opens()"><img src="../../image/mshop.png" alt="">我要开店</li>
-
 
       </ul>
+      <div class="market">
+        <header>商城服务</header>
+        <ul>
+          <li onclick="order('collection')"><img src="../../image/user_collect.png" alt="">
+            <p>我的收藏</p></li>
+          <li onclick="order('address')"><img src="../../image/user_address.png" alt="">
+          <p>收货地址</p></li>
+          <li onclick="order('myfoot')"><img src="../../image/user_foot.png" alt="">
+          <p>我的足迹</p></li>
+          <li onclick="order('collection')"><img src="../../image/user_shop.png" alt=""><p>我的收藏</p></li>
+          <li onclick="order('myVoucher')"><img src="../../image/user_kaquan.png" alt=""><p>卡券中心</p></li>
+          <li onclick="order('myfoot')"><img src="../../image/user_kaquanbao.png" alt=""><p>卡券包</p></li>
+        </ul>
+      </div>
+      <div class="market">
+        <header>宗亲服务</header>
+        <ul>
+          <li class="invate" onclick="navchange('invitation')"><img src="../../image/user_yaoqing.png" alt="">
+            <p>邀请异性宗亲</p></li>
+          <li onclick="navchange('join')"><img src="../../image/user_join.png" alt="">
+          <p>加入宗亲</p></li>
+          <li onclick="navchange('record')"><img src="../../image/user_don.png" alt=""><p>捐款记录</p></li>
+          <li onclick="navchange('com')"><img src="../../image/user_entre.png" alt=""><p>企业管理</p></li>
+          <li onclick="navchange('advice')"><img src="../../image/user_back.png" alt=""><p>用户反馈</p></li>
+          <li onclick="navchange('setting')"><img src="../../image/user_set.png" alt=""><p>设置</p></li>
+
+        </ul>
+      </div>
     </div>
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
@@ -240,6 +295,63 @@
   <script type="text/javascript" src="../../script/service.js"></script>
 
   <script type="text/javascript">
+  function re(){
+    window.location.reload()
+  }
+  function userInfo(){
+    api.openWin({
+        name: 'userInfo',
+        url: '../../html/user/userInfo.html',
+        bounces:false
+    });
+
+  }
+  function changePic(){
+    api.getPicture({
+      sourceType: 'all',
+      encodingType: 'jpg',
+      mediaValue: 'pic',
+      destinationType: 'url',
+      allowEdit: true,
+      quality: 50,
+      targetWidth: 100,
+      targetHeight: 100,
+      saveToPhotoAlbum: false
+  }, function(ret, err) {
+      if (ret.data.length>1) {
+        api.showProgress({
+        title: '努力上传图像...',
+        text: '先喝杯茶...',
+        modal: false
+    });
+      changeAvata(ret.data,{'authorization':$api.getStorage('token')},function(data){
+        api.hideProgress();
+
+        if(data.code==200){
+          obj=$api.dom('.name')
+          imgobj=$api.dom('.pic img')
+          $api.setStorage('avata', data.data.url);
+
+          $api.attr(imgobj,'src',data.data.url);
+        }
+
+
+
+      },function(err){
+        alert(JSON.stringify(err))
+
+        api.toast({
+                msg: '上传失败',
+                duration:2000,
+                location: 'bottom'
+            });
+      })
+
+      } else {
+
+      }
+  });
+  }
   function rule(){
     api.openWin({
         name: 'ruleWin',
@@ -288,7 +400,30 @@
     },{},{'Authorization':$api.getStorage('token')})
 
   }
+  function navchange(url){
+    if(url=="join"){
+      if($api.getStorage('joined_family')=="true"){
+          api.openWin({
+              name: 'joinSuccess',
+              url: '../../html/user/join/success.html',
+          });
+              return false;
+      }
+
+    }
+    api.openWin({
+        name: url,
+        url: '../../html/user/'+url+'/'+url+'.html',
+    });
+
+  }
   function order(name,type){
+    if(name=='cart'||name=='myorder'||name=='myVoucher'||name=='myfoot'||name=='collection'||name=='voucherCenter'){
+        limitLogin()
+        if(!$api.getStorage('token')){
+          return
+        }
+    }
     api.openWin({
         name: name,
         url: '../../html/market/'+name+'Win.html',
@@ -307,6 +442,10 @@
         text: '先喝杯茶...',
         modal: false
     });
+    if($api.getStorage('joined_family')=='true'){
+      $('.info').show()
+      $('.invate').show()
+    }
     getData('/shop/users/profile',res=>{
       api.hideProgress();
       if(res.code==200){

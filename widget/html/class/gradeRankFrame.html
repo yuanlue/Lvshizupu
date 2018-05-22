@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+          body{
+            background: #f1f3f8;
+            min-height: 100vh;
+          }
+          .g_info{
+            padding:15px;
+            color:#333;
+            background: white;
+            justify-content: space-between;
+            display: flex;
+          }
+          .g_info .info img{
+            vertical-align: middle;
+            width:57px;
+          }
+          .g_info .info  h1{
+            font-size:16px;
+          }
+          .g_info .info  p{
+            font-size:13px;
+
+          }
+          .g_info .intro{
+            vertical-align: middle;
+            display: inline-block;
+          }
+          .status{
+            font-size:18px;
+            display: flex;
+            align-items: center;
+          }
+          .status span{
+            color:#9e2831;
+          }
+          .rank_list{
+            margin-top:10px;
+          }
+          .rank_list header{
+            line-height: 38px;
+            background: white;
+            text-align: center;
+            font-size:13px;
+            color:#333;
+          }
+          .rank_list{
+            background: white;
+          }
+          .rank_list table{
+            width:100%;
+          }
+          .rank_list table td img{
+            width:36px;
+            vertical-align: middle;
+          }
+          .rank_list table thead{
+            color:#767676;
+            border-top:1px solid #d2d2d2;
+            border-bottom:1px solid #d2d2d2;
+            font-size:13px;
+          }
+          .rank_list table td{
+            border-bottom:1px solid #d2d2d2;
+            color:#9e2831;
+            padding:10px 0;
+            vertical-align: middle;
+            text-align: center;
+          }
+          .rank_list table thead td{
+            color:#767676;
+
+          }
+          .rank_list .thumb{
+            color:#767676;
+          }
+          .opera{
+            padding:25px 15px;
+          }
+          .opera button{
+            width:100%;
+            font-size:15px;
+            line-height: 49px;
+            color:#767676;
+            border:1px solid #d2d2d2;
+            background: #f3f3f3;
+          }
+      </style>
+  </head>
+  <body>
+    <div class="g_rank">
+      <div class="g_info">
+        <div class="info">
+          <img src="../../image/male.png" alt="">
+          <div class="intro">
+             <h1>酷我音乐盒</h1>
+             <p>累计奖金 0.00</p>
+          </div>
+
+        </div>
+        <div class="status">
+          TOP <span>23</span>
+        </div>
+      </div>
+      <div class="rank_list">
+        <header>累计奖金排名为定时刷新（最多显示五名）</header>
+        <table>
+          <thead>
+            <td>
+              排名
+            </td>
+            <td>
+              昵称
+            </td>
+            <td>
+              累计奖金
+            </td>
+          </thead>
+          <tbody>
+            <tr>
+              <td >TOP1</td>
+              <td class="thumb">
+                <img src="../../image/male.png" alt="">
+                alue
+              </td>
+              <td >
+              500.00
+              </td>
+            </tr>
+            <tr>
+              <td >TOP2</td>
+              <td class="thumb">
+                <img src="../../image/male.png" alt="">
+                alue
+              </td>
+              <td >
+              500.00
+              </td>
+            </tr>
+            <tr>
+              <td >TOP3</td>
+              <td class="thumb">
+                <img src="../../image/male.png" alt="">
+                alue
+              </td>
+              <td >
+              500.00
+              </td>
+            </tr>
+          </tbody>
+        </table>
+          <div class="opera">
+            <button>已经加载完成</button>
+          </div>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+
+      };
+  </script>
+  </html>

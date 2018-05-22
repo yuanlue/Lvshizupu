@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      body{
+        background: #f1f3f8;
+        min-height: 100vh;
+      }
+          .g_top{
+            color:white;
+            background: #932831;
+            line-height: 63px;
+            padding:0 10px;
+          }
+          .g_detail .tab{
+            margin-top:10px;
+
+            background: white;
+            font-size:0;
+            text-align: center;
+          }
+          .g_detail .tab>ul>li{
+            line-height: 60px;
+
+            width:20%;
+            font-size:15px;
+            display: inline-block;
+          }
+          .g_detail .tab>ul>li.active{
+            border-bottom:3px solid #932831;
+          }
+          .grade_list{
+            margin-top:10px;
+          }
+          .grade_list img{
+              width:49px;
+          }
+          .grade_list li{
+            padding:20px 20px 0;
+            background: white;
+          }
+          .grade_list li>p{
+            line-height: 1;
+            margin-bottom:14px;
+            font-size:13px;
+            color:#767676;
+          }
+            .grade_list li>p>span{
+              font-size:15px;
+              color:#333;
+              float: right;
+            }
+            .footer{
+              margin-top:6px;
+              text-align: right;
+              line-height: 60px;
+              font-size:12px;
+              color:#333;
+              border-top: 1px solid #eaeaea;
+            }
+            .footer span{
+              font-size:15px;
+              color:#333;
+            }
+      </style>
+  </head>
+  <body>
+    <div class="g_detail">
+      <div class="g_top">
+        累计奖金：+0.00元
+      </div>
+      <div class="tab">
+        <ul>
+          <li class="active">所有</li>
+          <li>待审核</li>
+          <li>待打款</li>
+          <li>已打款</li>
+          <li>无效</li>
+
+        </ul>
+      </div>
+      <div class="grade_list">
+          <ul>
+            <li>
+              <p class="avata"><img src="../../image/male.png" alt=""></p>
+              <p>分销等级：用户本人</p>
+              <p>订单编号：123466 <span>已完成</span></p>
+              <p>下单时间：2018年05月21日13:56:00</p>
+              <div class="footer">
+                预计佣金：<span>+0.00</span>
+              </div>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+
+      };
+  </script>
+  </html>

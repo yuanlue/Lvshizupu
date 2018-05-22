@@ -272,6 +272,9 @@ function checkCartNum(){
             if(data.data.goods.length<1){
                 $('#footer .num').text("")
             }
+            else if(data.data.goods.length>=99){
+                $('#footer .num').text("99+")
+            }
           } catch (e) {
               console.log(e)
                 $('#footer .num').text("")
@@ -507,14 +510,10 @@ function message(){
                   },
                   {
                       name: 'userCenter',
-                      url: '../../html/user/userCenterWin.html',
+                      url: '../../html/market/menuWin.html',
                       reload:true
                   },
-                  {
-                      name: 'userCenter',
-                      url: '../../html/user/userCenterWin.html',
-                      reload:true
-                  }
+
               ]
           }, function (ret, err) {
             $('ul').find('li').removeClass('active')
@@ -734,8 +733,10 @@ function message(){
       if(!$api.getStorage('token')){
         return
       }
+
         api.setFrameGroupIndex({
       name: 'group',
+      reload:true,
       index: 4
   });
       }

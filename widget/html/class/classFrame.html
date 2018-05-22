@@ -6,20 +6,129 @@
       <title>title</title>
       <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
       <style>
-          .empty{
-            text-align: center;
-            padding:50px;
-            font-size:15px;
+          .banner{
+            font-size:14px;
+          justify-content: space-between;
+            display: flex;
+            background: #9e2931;
+            padding:35px 10px;
+            color:white;
           }
+          .banner .recomd{
+            display: flex;
+            justify-content: center;
+            align-items:center;
+
+          }
+          .banner .info{
+            vertical-align: middle;
+          }
+          .banner .avata img{
+            vertical-align: middle;
+            width:50px;
+            height:50px;
+          }
+          .banner header{
+            background: #981d25;
+          }
+          .header_info{
+            font-size:13px;
+            display: flex;
+            justify-content:space-between;
+            background: #981d25;
+            line-height: 37px;
+            padding:0 10px;
+            color:white;
+          }
+          .header_info button{
+            border:1px solid #dab611;
+            font-size:12px;
+            border-radius: 10px;
+            padding:2px 5px;
+            color:#dab611;
+            vertical-align: middle;
+          }
+            .tab_list ul {
+              font-size:0;
+            }
+        .tab_list ul li{
+          border-bottom:1px solid #eee;
+          padding:20px 0;
+          font-size: 12px;
+          display: inline-block;
+          width:33.3%;
+          text-align: center;
+        }
+        .tab_list ul li img{
+          width:20px;
+        }
+        .tab_list ul li span{
+          color:#9e2931;
+        }
       </style>
   </head>
   <body>
-      <div class="empty">
-        敬请期待
+    <div class="classG">
+      <div class="banner">
+        <span class="avata">
+          <img src="../../image/male.png" alt="">
+          <span class="info">
+            <p>[分销VIP]</p>
+            <p>推荐人：总店</p>
+          </span>
+        </span>
+        <span class="recomd">推荐码:1289</span>
       </div>
+      <div class="header_info">
+        成功提现奖金：0.00 <span>可提现金额：0.00 <button>提现</button></span>
+      </div>
+      <div class="tab_list">
+        <ul>
+          <li onclick="navchange('myGrade')">
+            <img src="../../image/class_money.png" alt="">
+            <p>我的奖金</p>
+            <span>0元</span>
+          </li>
+          <li onclick="navchange('gradeinfo')">
+            <img src="../../image/class_grade.png" alt="">
+            <p>奖金明细</p>
+            <span>1笔</span>
+          </li>
+          <li onclick="navchange('getMoney')">
+            <img src="../../image/class_detail.png" alt="">
+            <p>提现明细</p>
+            <span>0笔</span>
+          </li>
+          <li onclick="navchange('classCircle')">
+            <img src="../../image/class_circle.png" alt="">
+            <p>我的圈子</p>
+            <span>0人</span>
+          </li>
+          <li>
+            <img src="../../image/class_erwe.png" alt="">
+            <p>推广二维码</p>
+            <span></span>
+
+          </li>
+          <li  onclick="navchange('gradeRank')">
+            <img src="../../image/class_rank.png" alt="">
+            <p>奖金排行</p>
+            <span></span>
+
+          </li>
+        </ul>
+      </div>
+    </div>
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
   <script type="text/javascript">
+  function navchange(name){
+    api.openWin({
+        name: 'myGrade',
+        url: `./${name}Win.html`,
+    });
+
+  }
       apiready = function(){
 
       };

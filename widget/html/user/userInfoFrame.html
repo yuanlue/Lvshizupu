@@ -44,6 +44,10 @@
           getData('/clan_users/'+$api.getStorage('uid'),function(data){
               api.hideProgress();
             if(data.data==null){
+                $('#sex>span').text('无')
+                $('#tel>span').text('无')
+                $('#name>span').text('无')
+                $('#state>span').text('未加入宗亲')
               return false
             }
 
