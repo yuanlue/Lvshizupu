@@ -71,7 +71,7 @@
   <body>
     <div class="g_detail">
       <div class="g_top">
-        累计奖金：+0.00元
+        可提现:+{{info.apply_amount}}元
       </div>
       <div class="tab">
         <ul>
@@ -99,9 +99,67 @@
     </div>
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
   <script type="text/javascript">
-      apiready = function(){
+  apiready = function(){
+    // 融云模块
+    var app=new Vue({
+      el: '.g_detail',
+      data: {
+        orderInfo:[],
+        active : 0,
+        info:[]
+      },
+      created:function(){
+        this.init()
+      },
+    methods:{
+      navchange(index){
+        this.active = index
+        this.init()
+      },
+      init(){
+        this.orderInfo = []
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '努力加载中...',
+            text: '先喝杯茶...',
+            modal: false
+        });
+        var that = this
+        getData('/shop/users/order_withdraw_list',function(res){
+          console.log(JSON.stringify(res.data))
+        },{},{'Authorization':$api.getStorage('token')})
 
-      };
+        getData('/shop/users/recommend_withdraw',function(res){
+          api.hideProgress();
+          that.info = res.data.get_order_commission_total
+          console.log(JSON.stringify(res.data))
+
+          // console.log(that.active)
+          // if(that.active ==  '0'){
+          //   that.orderInfo = res.data.commission_list_query
+          // }
+          // else {
+          //    res.data.commission_list_query.forEach(item=>{
+          //      if(item.status == that.active){
+          //        that.orderInfo.push(item)
+          //      }
+          //    })
+          // }
+          // console.log(JSON.stringify(that.orderInfo))
+          // // if(item.status == ){}
+
+        },{},{'Authorization':$api.getStorage('token')},false)
+      }
+
+    }
+    })
+
+
+  }
   </script>
   </html>

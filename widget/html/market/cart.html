@@ -554,30 +554,33 @@
              }
            }
           var that =this
-          postData('/shop/carts',function(data){
-            api.hideProgress();
-            arr=data.data.goods
-            if(data.code==200){
-              data.data.goods.forEach(function(item){
-                item.active=true
-              })
+          if($api.getStorage('user_id')){
+            postData('/shop/carts',function(data){
+              api.hideProgress();
+              arr=data.data.goods
+              if(data.code==200){
+                data.data.goods.forEach(function(item){
+                  item.active=true
+                })
 
-              data.data.goods=that.adData(data.data.goods)
-              that.goods=data.data
-              console.log(JSON.stringify(that.goods))
-            }
-            else{
-              api.toast({
-                        msg: '服务器错误',
-                        duration:5000,
-                        location: 'bottom'
-                    });
-            }
+                data.data.goods=that.adData(data.data.goods)
+                that.goods=data.data
+                console.log(JSON.stringify(that.goods))
+              }
+              else{
+                api.toast({
+                          msg: '服务器错误',
+                          duration:5000,
+                          location: 'bottom'
+                      });
+              }
 
-          },JSON.stringify(para),
-          {'Authorization':$api.getStorage('token'),
-          'Content-Type':'application/json'
-        })
+            },JSON.stringify(para),
+            {'Authorization':$api.getStorage('token'),
+            'Content-Type':'application/json'
+          })
+          }
+
         },
         charge(){
           if(this.ischarge==true){

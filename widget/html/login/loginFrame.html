@@ -185,11 +185,13 @@
                 getData('/weixin/oauth2_callback',function(data){
                   if(data.code==200){
                     if(data.data.exist==true){
+
                       api.toast({
                               msg: '登录成功',
                               duration:2000,
                               location: 'bottom'
                           });
+                          $api.setStorage('invite_code',data.data.invite_code)
                           $api.setStorage('avata',data.data.avatar);
                           $api.setStorage('token',data.data.token)
                           $api.setStorage('mobile',data.data.mobile);
@@ -398,6 +400,7 @@
                     duration:2000,
                     location: 'bottom'
                 });
+                $api.setStorage('invite_code',data.data.invite_code)
 
                 $api.setStorage('avata',data.data.avatar);
 

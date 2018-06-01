@@ -58,6 +58,7 @@ function postData(para,callback,parama,header){
             },
 
             error:function(err){
+
               console.log(JSON.stringify(err))
               api.toast({
                       msg: '服务器异常',
@@ -84,11 +85,12 @@ function getData(para,callback,parama,header,isasync){
                         callback(data)
             },
             error:function(err){
-              api.toast({
-                      msg: '服务器异常',
-                      duration:2000,
-                      location: 'bottom'
-                  });
+
+              // api.toast({
+              //         msg: '服务器异常',
+              //         duration:2000,
+              //         location: 'bottom'
+              //     });
             }
           });
 

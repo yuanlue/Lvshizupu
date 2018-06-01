@@ -269,7 +269,6 @@
           <p>收货地址</p></li>
           <li onclick="order('myfoot')"><img src="../../image/user_foot.png" alt="">
           <p>我的足迹</p></li>
-          <li onclick="order('collection')"><img src="../../image/user_shop.png" alt=""><p>我的收藏</p></li>
           <li onclick="order('myVoucher')"><img src="../../image/user_kaquan.png" alt=""><p>卡券中心</p></li>
           <li onclick="order('myfoot')"><img src="../../image/user_kaquanbao.png" alt=""><p>卡券包</p></li>
         </ul>
@@ -435,44 +434,49 @@
     });
   }
   function init(){
-    api.showProgress({
-        style: 'default',
-        animationType: 'fade',
-        title: '努力加载中...',
-        text: '先喝杯茶...',
-        modal: false
-    });
+
     if($api.getStorage('joined_family')=='true'){
       $('.info').show()
       $('.invate').show()
     }
-    getData('/shop/users/profile',res=>{
-      api.hideProgress();
-      if(res.code==200){
-        $('.usercenter .banner i img').hide()
-        $(`.usercenter .banner i #jiangpai${res.data.group_id}`).show()
-        $('.usercenter .info .userinfo span b').text(res.data.point)
-      }
-    },{},{'Authorization':$api.getStorage('token')})
-    getData('/shop/orders/status',function(data){
-      if(data.code==200){
-        $('.paying>span').text(data.data.paying)
-        $('.shipping>span').text(data.data.shipping)
+    if($api.getStorage('user_id')){
+      api.showProgress({
+          style: 'default',
+          animationType: 'fade',
+          title: '努力加载中...',
+          text: '先喝杯茶...',
+          modal: false
+      });
+      getData('/shop/users/profile',res=>{
+        api.hideProgress();
+        if(res.code==200){
+          $('.usercenter .banner i img').hide()
+          $(`.usercenter .banner i #jiangpai${res.data.group_id}`).show()
+          $('.usercenter .info .userinfo span b').text(res.data.point)
+        }
+      },{},{'Authorization':$api.getStorage('token')})
+      getData('/shop/orders/status',function(data){
+        if(data.code==200){
+          $('.paying>span').text(data.data.paying)
+          $('.shipping>span').text(data.data.shipping)
 
-        $('.incoming>span').text(data.data.incoming)
+          $('.incoming>span').text(data.data.incoming)
 
-        $('.commenting>span').text(data.data.commenting)
+          $('.commenting>span').text(data.data.commenting)
 
-      }
-      else{
-        api.toast({
-            msg: '网络错误',
-            duration: 2000,
-            location: 'bottom'
-        });
+        }
+        else{
+          api.toast({
+              msg: '网络错误',
+              duration: 2000,
+              location: 'bottom'
+          });
 
-      }
-    },{},{'Authorization':$api.getStorage('token')})
+        }
+      },{},{'Authorization':$api.getStorage('token')})
+
+    }
+
 
     if($api.getStorage('avata')){
       $('.usercenter .info .avata img').attr('src',$api.getStorage('avata'))

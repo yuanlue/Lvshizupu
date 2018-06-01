@@ -66,40 +66,115 @@
               font-size:15px;
               color:#333;
             }
+            .empty{
+              padding-top:20px;
+              font-size:16px;
+              text-align: center;
+            }
+            .empty img{
+              margin-top:20px;
+              width:100px;
+            }
+            [v-cloak]{
+              display: none;
+            }
       </style>
   </head>
   <body>
-    <div class="g_detail">
+    <div class="g_detail" v-cloak>
       <div class="g_top">
-        累计奖金：+0.00元
+        可提现:+{{info.apply_amount}}元
       </div>
       <div class="tab">
         <ul>
-          <li class="active">所有</li>
-          <li>代付款</li>
-          <li>已付款</li>
-          <li>已完成</li>
+          <li @click="navchange(0)" :class="{'active':active == '0'}">所有</li>
+          <li @click="navchange(2)" :class="{'active':active == '2'}">待付款</li>
+          <li @click="navchange(1)" :class="{'active':active == '1'}">已付款</li>
+          <li @click="navchange(6)" :class="{'active':active == '6'}">已完成</li>
         </ul>
       </div>
       <div class="grade_list">
           <ul>
-            <li>
-              <p class="avata"><img src="../../image/male.png" alt=""></p>
-              <p>分销等级：用户本人</p>
-              <p>订单编号：123466 <span>已完成</span></p>
-              <p>下单时间：2018年05月21日13:56:00</p>
+            <li v-for="item in orderInfo">
+              <p class="avata">
+                <img v-if="item.avatar" v-bind:src="item.avatar" alt="">
+                <img v-if="!item.avatar"  src="../../image/male.png" alt="">
+
+              </p>
+              <p v-if="item.username">分销姓名：{{item.username}}</p>
+              <p>订单编号：{{item.order_no}}
+                <span >{{item.status}}</span>
+
+              </p>
+              <p>下单时间：{{item.order_create_time}}</p>
               <div class="footer">
-                预计佣金：<span>+0.00</span>
+                预计佣金：<span>+{{item.commission_profit_amount}}</span>
               </div>
             </li>
           </ul>
       </div>
+      <div class="empty" v-if="orderInfo.length < 1">
+        <img src="../../image/market/empty.png" alt="">
+        <p>暂无奖金</p>
+      </div>
     </div>
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
   <script type="text/javascript">
-      apiready = function(){
+  apiready = function(){
+    // 融云模块
+    var app=new Vue({
+      el: '.g_detail',
+      data: {
+        orderInfo:[],
+        active : 0,
+        info:[]
+      },
+      created:function(){
+        this.init()
+      },
+    methods:{
+      navchange(index){
+        this.active = index
+        this.init()
+      },
+      init(){
+        this.orderInfo = []
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '努力加载中...',
+            text: '先喝杯茶...',
+            modal: false
+        });
+        var that = this
+        getData('/shop/users/recommend_commission',function(res){
+          api.hideProgress();
+          console.log(JSON.stringify(res.data))
+          if(that.active ==  '0'){
+            that.info = res.data.get_order_commission_total
+            that.orderInfo = res.data.commission_list_query
+          }
+          else {
+             res.data.commission_list_query.forEach(item=>{
+               if(item.status == that.active){
+                 that.orderInfo.push(item)
+               }
+             })
+          }
+          console.log(JSON.stringify(that.orderInfo))
+          // if(item.status == ){}
 
-      };
+        },{},{'Authorization':$api.getStorage('token')},false)
+      }
+
+    }
+    })
+
+
+}
   </script>
   </html>

@@ -209,6 +209,7 @@
                               duration:2000,
                               location: 'bottom'
                           });
+                          $api.setStorage('invite_code',data.data.invite_code)
 
                           $api.setStorage('avata',data.data.avatar);
                           $api.setStorage('token',data.data.token)
@@ -382,6 +383,7 @@
                 duration:2000,
                 location: 'bottom'
             });
+            $api.setStorage('invite_code',data.data.invite_code)
             $api.setStorage('token',data.data.token)
             $api.setStorage('mobile',data.data.mobile);
             $api.setStorage('uid',data.data.uid);

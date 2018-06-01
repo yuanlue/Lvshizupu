@@ -174,6 +174,7 @@
     <div class="loginInfo"><input type="number" id="tel" placeholder="已输入手机号"><span onclick="verification()">获取验证码</span></div>
     <div class="loginInfo"> <input type="text" id="message" placeholder="填写验证码"></div>
     <div class="loginInfo"> <input type="password" id="password" placeholder="6-16位登录密码"><i onclick="eye()"></i></div>
+    <div class="loginInfo"> <input type="text" id="recommond" placeholder="请输入推荐码（选填）"></div>
 
     <div class="opera">
       <button onclick="login()">注册</button>
@@ -211,6 +212,7 @@
                               duration:2000,
                               location: 'bottom'
                           });
+                          $api.setStorage('invite_code',data.data.invite_code)
 
                           $api.setStorage('avata',data.data.avatar);
                           $api.setStorage('token',data.data.token)
@@ -399,7 +401,9 @@ function agreement(){
     }
     //验证是否已经注册
     postData('/users/is_registered',function(data){
-        if(data.code!='-1'){
+      console.log(JSON.stringify(data))
+      console.log(data.code)
+        if(data.code!=-1){
           api.toast({
                   msg: '该用户已经注册',
                   duration:2000,
@@ -407,24 +411,30 @@ function agreement(){
               });
         }
         else{
+          console.log('=====')
+          console.log(data.code)
           //该用户未注册 验证手机
           postData('/sms/'+$('#tel').val()+'/validate',function(res){
+            console.log(JSON.stringify(res))
             if(res.code==200){
               //验证成功
               //进行注册
               postData('/users',function(sta){
+                console.log('user')
                 if(sta.code==200){
                   api.toast({
                           msg: '注册成功',
                           duration:2000,
                           location: 'bottom'
                       });
+                      $api.setStorage('invite_code',sta.data.invite_code)
+
                       $api.setStorage('token',sta.data.token)
                       $api.setStorage('mobile',sta.data.mobile);
                       $api.setStorage('uid',sta.data.uid);
                       $api.setStorage('joined_family',sta.data.joined_family);
                       $api.setStorage('avata',sta.data.avatar);
-                      $api.setStorage('user_id',data.data.user_id);
+                      $api.setStorage('user_id',sta.data.user_id);
                       api.execScript({
                           name: 'home',
                           frameName: 'userCenter',
@@ -456,6 +466,7 @@ function agreement(){
               },{
                 'user':
               {
+                'invite_code':$('#recommond').val(),
                 'mobile':$('#tel').val(),
                 'password':$('#password').val()
               }
@@ -474,7 +485,7 @@ function agreement(){
         }
 
 
-    })
+    },{ 'mobile':$('#tel').val() })
   }
       apiready = function(){
         wx = api.require('wx');

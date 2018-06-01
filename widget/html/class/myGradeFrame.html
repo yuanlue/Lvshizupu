@@ -9,20 +9,7 @@
           body{
             background: #f1f3f8;
           }
-          .banner{
-            padding:35px 0 28px;
-            box-sizing: border-box;
-            text-align: center;
-            background: #9e2831;
-            color:white;
-          }
-          .banner h1{
-            font-size:21px;
-            font-weight: normal;
-          }
-          .banner p{
-            font-size:13px;
-          }
+
           .list li{
             background: white;
             padding:0 10px;
@@ -43,7 +30,7 @@
               float: right;
             }
             .opera {
-              background: #ccc;
+              background: #9e2831;
               line-height: 47px;
               position: fixed;
               bottom:0;
@@ -51,30 +38,87 @@
               text-align: center;
               color:white;
             }
+            .calcel{
+              background: #9e2831;
+
+            }
+            [v-cloak]{
+              display: none
+            }
       </style>
   </head>
   <body>
-    <div class="banner">
-        <h1>0.00</h1>
-        <p>积累奖金（元）</p>
-    </div>
+    <div class="banner myGrade" v-cloak>
+        <!-- <h1>0.00</h1>
+        <p>积累奖金（元）</p> -->
     <div class="list">
       <ul>
-        <li>可提现奖金<span>0.00</span></li>
-        <li>已申请奖金<span>0.00</span></li>
-        <li>待打款奖金<span>0.00</span></li>
-        <li>无效奖金<span>0.00</span></li>
-        <li>成功体现奖金<span>0.00</span></li>
-        <li>待收货奖金<span>0.00</span></li>
-        <li>未结算奖金<span>0.00</span></li>
+        <li>待收入佣金<span>{{orderInfo.get_order_commission_total.pending_amount}}</span></li>
+        <li>可提现佣金<span>{{orderInfo.get_order_commission_total.apply_amount}}</span></li>
+        <li>待审核佣金<span>{{orderInfo.get_order_commission_total.check_amount}}</span></li>
+        <li>已到账佣金<span>{{orderInfo.get_order_commission_total.finish_amount}}</span></li>
+
       </ul>
     </div>
-    <div class="opera">我要提现</div>
+    <div @click = "apply" v-if = "orderInfo.get_order_commission_total.apply_amount > 0 " class="opera">我要提现</div>
+    <div @click = "apply" v-if = "orderInfo.get_order_commission_total.apply_amount == 0  " class="opera cancel">我要提现</div>
+
+  </div>
+
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
   <script type="text/javascript">
-      apiready = function(){
+  apiready = function(){
+    // 融云模块
+    var app=new Vue({
+      el: '.myGrade',
+      data: {
+        orderInfo:[]
+      },
+      created:function(){
+        this.init()
+      },
+    methods:{
+      apply(){
+        var that = this
+        api.confirm({
+          title: '提示',
+          msg: `您确认要将${that.orderInfo.get_order_commission_total.apply_amount}元提现吗？`,
+          buttons: ['确定', '取消']
+      }, function(ret, err) {
+          var index = ret.buttonIndex;
+          console.log(index)
+          if(index == 1){
+            postData('/shop/users/recommend_withdraw_do',function(res){
+              console.log(res)
+            },{'note':''},{'Authorization':$api.getStorage('token')})
+          }
+      });
+      },
+      init(){
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '努力加载中...',
+            text: '先喝杯茶...',
+            modal: false
+        });
 
-      };
+        var that = this
+        getData('/shop/users/recommend_commission',function(res){
+         that.orderInfo = res.data
+         api.hideProgress();
+
+        },{},{'Authorization':$api.getStorage('token')})
+      }
+
+    }
+    })
+
+
+}
   </script>
   </html>

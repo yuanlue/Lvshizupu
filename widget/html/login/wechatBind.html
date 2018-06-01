@@ -389,6 +389,8 @@ function agreement(){
                       duration:2000,
                       location: 'bottom'
                   });
+                  $api.setStorage('invite_code',data.data.invite_code)
+
                   $api.setStorage('token',sta.data.token)
                   $api.setStorage('mobile',sta.data.mobile);
                   $api.setStorage('uid',sta.data.uid);

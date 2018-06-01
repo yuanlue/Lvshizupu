@@ -65,6 +65,9 @@
         .tab_list ul li span{
           color:#9e2931;
         }
+        .header_info i {
+          font-style: normal;
+        }
       </style>
   </head>
   <body>
@@ -73,38 +76,38 @@
         <span class="avata">
           <img src="../../image/male.png" alt="">
           <span class="info">
-            <p>[分销VIP]</p>
             <p>推荐人：总店</p>
           </span>
         </span>
-        <span class="recomd">推荐码:1289</span>
+        <span class="recomd">推荐码: <b></b></span>
       </div>
       <div class="header_info">
-        成功提现奖金：0.00 <span>可提现金额：0.00 <button>提现</button></span>
+        <p>成功提现奖金：<i id="succss">0.00</i> </p>
+        <p><span >可提现金额：<i id="can">0.00</i> <button onclick="navchange('myGrade')">提现</button></span></p>
       </div>
       <div class="tab_list">
         <ul>
-          <li onclick="navchange('myGrade')">
+          <li id="myg" onclick="navchange('myGrade')">
             <img src="../../image/class_money.png" alt="">
             <p>我的奖金</p>
             <span>0元</span>
           </li>
-          <li onclick="navchange('gradeinfo')">
+          <li id="graderD" onclick="navchange('gradeinfo')">
             <img src="../../image/class_grade.png" alt="">
             <p>奖金明细</p>
             <span>1笔</span>
           </li>
-          <li onclick="navchange('getMoney')">
+          <li id="tixian" onclick="navchange('getMoney')">
             <img src="../../image/class_detail.png" alt="">
             <p>提现明细</p>
             <span>0笔</span>
           </li>
-          <li onclick="navchange('classCircle')">
+          <li class="circle" onclick="navchange('classCircle')">
             <img src="../../image/class_circle.png" alt="">
             <p>我的圈子</p>
             <span>0人</span>
           </li>
-          <li>
+          <!-- <li>
             <img src="../../image/class_erwe.png" alt="">
             <p>推广二维码</p>
             <span></span>
@@ -114,13 +117,16 @@
             <img src="../../image/class_rank.png" alt="">
             <p>奖金排行</p>
             <span></span>
-
-          </li>
+          </li> -->
         </ul>
       </div>
     </div>
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+
   <script type="text/javascript">
   function navchange(name){
     api.openWin({
@@ -130,6 +136,28 @@
 
   }
       apiready = function(){
+        if($api.getStorage('token')){
+          getData('/shop/users/recommend_commission',function(res){
+            $('#graderD span').text(`${res.data.commission_list_query.length}笔`)
+
+            // if(item.status == ){}
+
+          },{},{'Authorization':$api.getStorage('token')},false)
+          getData('/shop/users/recommend_withdraw',function(res){
+            api.hideProgress();
+              console.log(JSON.stringify(res.data.withdraw_list_query.length))
+            $('#success').text(res.data.get_order_commission_total.finish_amount)
+            $('#myg span').text(res.data.get_order_commission_total.apply_amount)
+            $('#can').text(`${res.data.get_order_commission_total.apply_amount}元`)
+            $('#tixian span').text(`${res.data.withdraw_list_query.length}笔`)
+          },{},{'Authorization':$api.getStorage('token')},false)
+            getData('/shop/users/recommend_user',function(res){
+            $('.circle span').text(res.data.length)
+          },{},{'Authorization':$api.getStorage('token')})
+            if($api.getStorage('invite_code')){
+              $('.recomd b').text($api.getStorage('invite_code'))
+            }
+        }
 
       };
   </script>

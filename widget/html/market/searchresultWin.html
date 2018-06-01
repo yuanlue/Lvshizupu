@@ -51,6 +51,7 @@
         if(isiOS){
           $('.top').css({'background':'white',"height":"20px"})
         }
+        var h = $api.getStorage('h');
           api.openFrame({
               name: 'refundFrame',
               url: '../../html/market/searchresultFrame.html',
@@ -58,7 +59,7 @@
                 x: 0,
                 y: 50+  $('.top').height(),
                 w: 'auto',
-                h: api.frameHeight-(50+  $('.top').height())
+                h: h
               },
               pageParam:{
                 name:api.pageParam.name

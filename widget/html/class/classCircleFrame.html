@@ -18,7 +18,7 @@
           .tab li{
             text-align: center;;
             display: inline-block;
-            width: 50%;
+            width: 33%;
             font-size: 15px;
             color:#932831;
           }
@@ -69,14 +69,24 @@
               font-size:12px;
               text-align: right;
             }
+            .empty{
+              padding-top:20px;
+              font-size:16px;
+              text-align: center;
+            }
+            .empty img{
+              margin-top:20px;
+              width:100px;
+            }
       </style>
   </head>
   <body>
     <div class="classCircle">
       <div class="tab">
         <ul>
-          <li class="active">一级</li>
-          <li>二级</li>
+          <li v-bind:class="{'active':active == 1}" @click="navchange(1)">一级</li>
+          <li v-bind:class="{'active':active == 2}" @click="navchange(2)">二级</li>
+          <li v-bind:class="{'active':active == 3}" @click="navchange(3)">三级</li>
         </ul>
       </div>
       <div class="header">
@@ -85,29 +95,81 @@
       </div>
       <div class="list">
         <ul>
-          <li>
+          <li v-for="item in manList" >
             <div class="male_info">
               <img src="../../image/male.png" alt="">
               <span>
-                <h1><img src="../../image/class_start.png" alt="">Leon</h1>
-                <p>成为分销商时间：2018年05月21日17:04:37</p>
+                <h1 v-if = "item.true_name"><img src="../../image/class_start.png" alt="">{{item.true_name}}</h1>
+                <h1 v-if = "item.username"><img src="../../image/class_start.png" alt="">{{item.username.split('.')[1]}}</h1>
+                <p>用户状态：
+                  <span v-if="item.status == 1">正常</span>
+                  <span v-if="item.status == 2">删除</span>
+                  <span v-if="item.status == 3">锁定</span>
+                </p>
+                <p>成为分销商时间：{{item.level_name}}</p>
               </span>
             </div>
-            <div class="status">
-              <h1>+0
-                <p>0个成员</p>
-              </h1>
-
-            </div>
           </li>
+
         </ul>
+      </div>
+      <div class="empty" v-if = "manList.length <1 ">
+        <img src="../../image/market/empty.png" alt="">
+        <p>暂无圈友！</p>
+      </div>
+
       </div>
     </div>
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
-  <script type="text/javascript">
-      apiready = function(){
+  <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../script/service.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>  <script type="text/javascript">
+  apiready = function(){
+    // 融云模块
+    var app=new Vue({
+      el: '.classCircle',
+      data: {
+        manList:[],
+        active:1,
+        selName:"一级",
+        oneEmpty:true,
+        twoEmpty:true,
+        threeEmpty:true
+      },
+      created:function(){
+        this.init()
+      },
+    methods:{
+      navchange(index){
+        this.active = index
+        if(index == 2){
+          this.selName = '二级'
+        }
+        else if(index == 3){
+          this.selName = '三级'
+        }
+        else if(index == 1){
+          this.selName = "一级"
+        }
+        this.init()
+      },
+      init(){
+        var that = this
+        this.manList = []
+        getData('/shop/users/recommend_user',function(res){
+            res.data.forEach(item=>{
+              if(item.level_name == that.selName){
+                that.manList.push(item)
+              }
+            })
+        },{},{'Authorization':$api.getStorage('token')})
+      }
 
-      };
+    }
+    })
+
+
+}
   </script>
   </html>
