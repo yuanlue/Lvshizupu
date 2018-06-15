@@ -76,7 +76,7 @@
         <span class="avata">
           <img src="../../image/male.png" alt="">
           <span class="info">
-            <p>推荐人：总店</p>
+            <p><span></span></p>
           </span>
         </span>
         <span class="recomd">推荐码: <b></b></span>
@@ -128,6 +128,7 @@
   <script type="text/javascript" src="../../script/jquery-3.2.1.min.js"></script>
 
   <script type="text/javascript">
+
   function navchange(name){
     api.openWin({
         name: 'myGrade',
@@ -135,8 +136,35 @@
     });
 
   }
+
       apiready = function(){
+
+        if($api.getStorage('mobile')){
+          $('.info p  span').text($api.getStorage('mobile'))
+        }
         if($api.getStorage('token')){
+          api.showProgress({
+              style: 'default',
+              animationType: 'fade',
+              title: '努力加载中...',
+              text: '先喝杯茶...',
+              modal: false
+          });
+          getData('/users/profile',function(data){
+            console.log(JSON.stringify(data))
+            if(data.code==200){
+              alert(JSON.stringify(data.data))
+              
+            }
+            else{
+
+            }
+          },{},{'Authorization':$api.getStorage('token')})
+          getData('/shop/users/order_commission_list',function(res){
+
+            // if(item.status == ){}
+
+          },{},{'Authorization':$api.getStorage('token')},false)
           getData('/shop/users/recommend_commission',function(res){
             $('#graderD span').text(`${res.data.commission_list_query.length}笔`)
 
@@ -144,8 +172,8 @@
 
           },{},{'Authorization':$api.getStorage('token')},false)
           getData('/shop/users/recommend_withdraw',function(res){
+
             api.hideProgress();
-              console.log(JSON.stringify(res.data.withdraw_list_query.length))
             $('#success').text(res.data.get_order_commission_total.finish_amount)
             $('#myg span').text(res.data.get_order_commission_total.apply_amount)
             $('#can').text(`${res.data.get_order_commission_total.apply_amount}元`)
@@ -154,7 +182,7 @@
             getData('/shop/users/recommend_user',function(res){
             $('.circle span').text(res.data.length)
           },{},{'Authorization':$api.getStorage('token')})
-            if($api.getStorage('invite_code')){
+            if($api.getStorage('invite_code') && $api.getStorage('invite_code')!="undefined"){
               $('.recomd b').text($api.getStorage('invite_code'))
             }
         }

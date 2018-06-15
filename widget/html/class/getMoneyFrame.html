@@ -40,6 +40,7 @@
               width:49px;
           }
           .grade_list li{
+            border-bottom:10px solid #f1f3f8;
             padding:20px 20px 0;
             background: white;
           }
@@ -66,14 +67,17 @@
               font-size:15px;
               color:#333;
             }
+            [v-cloak]{
+              display: none;
+            }
       </style>
   </head>
   <body>
     <div class="g_detail">
       <div class="g_top">
-        可提现:+{{info.apply_amount}}元
+        可提现:+{{apply}}元
       </div>
-      <div class="tab">
+      <!-- <div class="tab">
         <ul>
           <li class="active">所有</li>
           <li>待审核</li>
@@ -82,16 +86,16 @@
           <li>无效</li>
 
         </ul>
-      </div>
-      <div class="grade_list">
+      </div> -->
+      <div class="grade_list" v-cloak>
           <ul>
-            <li>
+            <li v-for="item in info">
               <p class="avata"><img src="../../image/male.png" alt=""></p>
-              <p>分销等级：用户本人</p>
-              <p>订单编号：123466 <span>已完成</span></p>
-              <p>下单时间：2018年05月21日13:56:00</p>
+              <p>用户id：{{item.user_id}}</p>
+              <p>订单编号：{{item.commission_order_id}} <span>{{item.dispose_idea}}</span></p>
+              <p>下单时间：{{item.apply_time | formatDate}}</p>
               <div class="footer">
-                预计佣金：<span>+0.00</span>
+                预计佣金：<span>+{{item.withdraw_amount}}</span>
               </div>
             </li>
           </ul>
@@ -110,7 +114,8 @@
       data: {
         orderInfo:[],
         active : 0,
-        info:[]
+        info:[],
+        apply:0,
       },
       created:function(){
         this.init()
@@ -130,14 +135,17 @@
             modal: false
         });
         var that = this
-        getData('/shop/users/order_withdraw_list',function(res){
-          console.log(JSON.stringify(res.data))
-        },{},{'Authorization':$api.getStorage('token')})
+        // getData('/shop/users/order_withdraw_list',function(res){
+        //   console.log(JSON.stringify(res.data))
+        //   alert(JSON.stringify(res.data))
+        // },{},{'Authorization':$api.getStorage('token')})
 
         getData('/shop/users/recommend_withdraw',function(res){
           api.hideProgress();
-          that.info = res.data.get_order_commission_total
           console.log(JSON.stringify(res.data))
+          that.info = res.data.withdraw_list_query
+          that.apply = res.data.get_order_commission_total.apply_amount
+          console.log(JSON.stringify(that.info))
 
           // console.log(that.active)
           // if(that.active ==  '0'){
@@ -156,6 +164,19 @@
         },{},{'Authorization':$api.getStorage('token')},false)
       }
 
+    },
+    filters:{
+      formatDate: function (value) {
+         console.log(value)
+         var date=new Date(value)
+         var year=date.getFullYear().toString()
+         var month=(date.getMonth()+1).toString()
+         var day=date.getDate()
+         var hour = date.getHours()
+         var min = date.getMinutes()
+
+         return  year+"-"+month+"-"+day+"  "+hour+":"+min
+      }
     }
     })
 

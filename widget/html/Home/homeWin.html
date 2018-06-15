@@ -612,6 +612,7 @@ function message(){
               //审核通过
               var jsfun = 'chatInit();';
               getData('/users/profile',function(data){
+                console.log(JSON.stringify(data))
                 if(data.code==200){
                   if(data.data.uid==false){
                   }

@@ -100,7 +100,7 @@
               <img src="../../image/male.png" alt="">
               <span>
                 <h1 v-if = "item.true_name"><img src="../../image/class_start.png" alt="">{{item.true_name}}</h1>
-                <h1 v-if = "item.username"><img src="../../image/class_start.png" alt="">{{item.username.split('.')[1]}}</h1>
+                <h1 v-if = "item.username"><img src="../../image/class_start.png" alt="">{{item.username}}</h1>
                 <p>用户状态：
                   <span v-if="item.status == 1">正常</span>
                   <span v-if="item.status == 2">删除</span>

@@ -204,6 +204,7 @@
 
                   if(data.code==200){
                     if(data.data.exist==true){
+                      alert(JSON.stringify(data.data))
                       api.toast({
                               msg: '登录成功',
                               duration:2000,
@@ -377,6 +378,7 @@
       api.hideProgress();
 
       if(data.code==200){
+        // alert(JSON.stringify(data.data))
 
         api.toast({
                 msg: '登录成功',

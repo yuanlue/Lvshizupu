@@ -82,6 +82,94 @@
         this.init()
       },
     methods:{
+      wechatLogin(){
+            wx = api.require('wx');
+            wx.isInstalled(function(ret, err) {
+            if (ret.installed) {
+              wx.auth({
+                apiKey: ''
+              }, function(ret, err) {
+                if (ret.status) {
+                    getData('/weixin/oauth2_callback',function(data){
+                      if(data.code==200){
+                        if(data.data.exist==true){
+                          api.toast({
+                                  msg: '登录成功',
+                                  duration:2000,
+                                  location: 'bottom'
+                              });
+                              $api.setStorage('invite_code',data.data.invite_code)
+
+                              $api.setStorage('avata',data.data.avatar);
+                              $api.setStorage('token',data.data.token)
+                              $api.setStorage('mobile',data.data.mobile);
+                              $api.setStorage('uid',data.data.uid);
+                              $api.setStorage('joined_family',data.data.joined_family);
+                              $api.setStorage('user_id',data.data.user_id);
+                              api.execScript({
+                                  name: 'home',
+                                  frameName: 'userCenter',
+                                  script: 're();'
+                              });
+                              api.execScript({
+                                  name: 'home',
+                                  script: 'sysChat();'
+                              });
+                              api.execScript({
+                                  name: 'home',
+                                  frameName: 'home',
+                                  script: 're();'
+                              });
+                              if(api.pageParam.url){
+                                api.openWin({
+                                    name: 'home',
+                                    url: '../../html/Home/homeWin.html',
+                                    cache:false,
+                                    useWKWebView:false,
+                                    reload:true,
+                                    pageParam:{
+                                      token:data.data.token
+                                    },
+                                    historyGestureEnabled:false,
+                                    slidBackEnabled:false
+                                });
+                              return
+                              }
+                              api.closeWin();
+                        }
+                        else{
+                        api.openWin({
+                            name: 'wechat',
+                            url: '../../html/login/wechatBind.html',
+                            pageParam:{
+                              avatar:data.data.avatar,
+                              userName:data.data.username,
+                              sex:data.data.sex,
+                              unionid:data.data.unionid
+                            },
+                            bgColor: 'rgba(0,0,0,0)',
+                            vScrollBarEnabled: true,
+                            hScrollBarEnabled: true
+                        });
+                      }
+
+                      }
+                      else{
+                        api.toast({
+                          msg: data.message,
+                          duration: 2000,
+                          location: 'bottom'
+                      });
+                      }
+                    },{'code':ret.code},{'Authorization':$api.getStorage('token')})
+                } else {
+                }
+              });
+            } else {
+                alert('当前设备未安装微信客户端');
+            }
+        });
+      },
       apply(){
         var that = this
         api.confirm({
@@ -92,9 +180,41 @@
           var index = ret.buttonIndex;
           console.log(index)
           if(index == 1){
-            postData('/shop/users/recommend_withdraw_do',function(res){
-              console.log(res)
-            },{'note':''},{'Authorization':$api.getStorage('token')})
+            getData('/users/profile',function(data){
+              console.log(JSON.stringify(data))
+              if(data.code==200){
+                if(data.data.bind_wechat==false){
+                  //没有绑定
+                  that.wechatLogin()
+                }
+                else{
+                  postData('/shop/users/recommend_withdraw_do',function(res){
+                    console.log(JSON.stringify(res))
+                    if(res.code == 200){
+                      api.toast({
+                          msg: '申请成功',
+                          duration: 2000,
+                          location: 'bottom'
+                      });
+                      api.closeWin();
+
+
+                    }
+                    else{
+                      api.toast({
+                          msg: res.message,
+                          duration: 2000,
+                          location: 'bottom'
+                      });
+                    }
+                  },{'note':''},{'Authorization':$api.getStorage('token')})
+                }
+              }
+              else{
+
+              }
+            },{},{'Authorization':$api.getStorage('token')})
+
           }
       });
       },

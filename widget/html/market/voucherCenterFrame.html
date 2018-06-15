@@ -80,6 +80,15 @@
           [v-cloak]{
             display: none;
           }
+          .empty{
+            margin-top:20px;
+            text-align: center;
+            font-size:15px;
+          }
+          .empty img{
+            margin-top:10px;
+            width:100px;
+          }
       </style>
   </head>
   <body>
@@ -103,6 +112,10 @@
             </span>
           </li>
         </ul>
+        <div class="empty" v-if="Goods.length<1">
+            <img src="../../image/market/empty.png" alt="">
+            <p>暂无可领取的卡券</p>
+        </div>
       </div>
   </body>
   <script type="text/javascript" src="../../script/api.js"></script>
