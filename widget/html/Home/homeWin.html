@@ -22,7 +22,7 @@
         }
         #footer  a{
           margin:0;
-          font-size:13px;
+          font-size:14px;
           text-align: center;
           display: block;
         }
@@ -612,7 +612,6 @@ function message(){
               //审核通过
               var jsfun = 'chatInit();';
               getData('/users/profile',function(data){
-                console.log(JSON.stringify(data))
                 if(data.code==200){
                   if(data.data.uid==false){
                   }

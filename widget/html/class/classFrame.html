@@ -107,11 +107,12 @@
             <p>我的圈子</p>
             <span>0人</span>
           </li>
-          <!-- <li>
+        <li onclick="navchange('erwei')">
             <img src="../../image/class_erwe.png" alt="">
             <p>推广二维码</p>
             <span></span>
-
+          </li>
+        <!--
           </li>
           <li  onclick="navchange('gradeRank')">
             <img src="../../image/class_rank.png" alt="">
@@ -153,8 +154,7 @@
           getData('/users/profile',function(data){
             console.log(JSON.stringify(data))
             if(data.code==200){
-              alert(JSON.stringify(data.data))
-              
+
             }
             else{
 
